@@ -1,0 +1,25 @@
+[package]
+name = "moodbridge_rust"
+version = "0.1.0"
+edition = "2021"
+authors = ["Tyler Colby <tbcolby@gmail.com>"]
+description = "High-performance legal dashboard in Rust with SQLite and Axum"
+
+[dependencies]
+axum = "0.7"
+tokio = { version = "1.0", features = ["full"] }
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "sqlite", "chrono", "uuid"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }
+clap = { version = "4.0", features = ["derive"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["fs", "cors"] }
+askama = { version = "0.12", features = ["with-axum"] }
+thiserror = "1.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+sha2 = "0.10"
+hex = "0.4"

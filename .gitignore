@@ -1,0 +1,38 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# Database
+data/main.db
+data/main.db-wal
+data/main.db-shm
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+
+# Legal documents (sensitive)
+documents/
+evidence/
+*.pdf
+*.docx
+*.xlsx
+
+# Temporary files
+tmp/
+temp/
