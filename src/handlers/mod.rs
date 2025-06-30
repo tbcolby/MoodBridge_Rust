@@ -471,14 +471,14 @@ pub async fn commit_changes(
 
             // Try to commit to git if it's a git repository
             let git_status = std::process::Command::new("git")
-                .args(&["add", target_file])
+                .args(["add", target_file])
                 .current_dir("/Users/tyler/Documents/mallory-legal-20250629")
                 .output();
 
             let mut git_committed = false;
             if git_status.is_ok() {
                 let git_commit = std::process::Command::new("git")
-                    .args(&["commit", "-m", &format!("Update {}", target_file)])
+                    .args(["commit", "-m", &format!("Update {}", target_file)])
                     .current_dir("/Users/tyler/Documents/mallory-legal-20250629")
                     .output();
 

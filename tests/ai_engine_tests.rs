@@ -1,10 +1,8 @@
-use tokio::test;
+use crate::ai::core_engine::{AdvancedPromptRequest, AiCoreEngine, ConversationContext, InputType};
 use crate::ai::{AiConfig, AiService, AnalysisRequest, InsightType};
-use crate::ai::core_engine::{
-    AiCoreEngine, AdvancedPromptRequest, InputType, ConversationContext
-};
 use serde_json::json;
 use std::collections::HashMap;
+use tokio::test;
 
 #[tokio::test]
 async fn test_ai_config_default() {
@@ -34,7 +32,7 @@ async fn test_advanced_prompt_request_creation() {
         max_response_length: Some(2000),
         style_preference: Some("professional".to_string()),
     };
-    
+
     assert_eq!(request.input, "Analyze this legal case");
     assert!(matches!(request.input_type, InputType::Text));
     assert!(request.require_citations);
@@ -51,7 +49,7 @@ async fn test_conversation_context() {
         context_tags: vec!["trends".to_string(), "analysis".to_string()],
         embedding: None,
     };
-    
+
     assert_eq!(context.user_input, "What are the trends?");
     assert_eq!(context.confidence, 0.95);
     assert_eq!(context.context_tags.len(), 2);
@@ -64,7 +62,7 @@ async fn test_input_type_serialization() {
     let structured_type = InputType::Structured;
     let visual_type = InputType::Visual;
     let contextual_type = InputType::Contextual;
-    
+
     // Test that all input types can be created
     assert!(matches!(text_type, InputType::Text));
     assert!(matches!(voice_type, InputType::Voice));
@@ -77,13 +75,13 @@ async fn test_input_type_serialization() {
 async fn test_analysis_request() {
     let mut options = HashMap::new();
     options.insert("depth".to_string(), "detailed".to_string());
-    
+
     let request = AnalysisRequest {
         operation_type: "pattern_detection".to_string(),
         input_data: json!({"cases": [], "incidents": []}),
         options: Some(options),
     };
-    
+
     assert_eq!(request.operation_type, "pattern_detection");
     assert!(request.options.is_some());
 }
@@ -92,7 +90,7 @@ async fn test_analysis_request() {
 mod ai_insights_tests {
     use super::*;
     use crate::ai::AiInsight;
-    
+
     #[test]
     fn test_ai_insight_creation() {
         let insight = AiInsight {
@@ -102,12 +100,12 @@ mod ai_insights_tests {
             generated_by: "gpt-4".to_string(),
             created_at: chrono::Utc::now(),
         };
-        
+
         assert!(matches!(insight.insight_type, InsightType::Pattern));
         assert_eq!(insight.confidence_score, 0.85);
         assert_eq!(insight.generated_by, "gpt-4");
     }
-    
+
     #[test]
     fn test_insight_types() {
         let pattern = InsightType::Pattern;
@@ -116,7 +114,7 @@ mod ai_insights_tests {
         let timeline = InsightType::TimelineCorrelation;
         let sentiment = InsightType::SentimentAnalysis;
         let document = InsightType::DocumentAnalysis;
-        
+
         // Test all insight types can be created
         assert!(matches!(pattern, InsightType::Pattern));
         assert!(matches!(risk, InsightType::RiskAssessment));
