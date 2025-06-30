@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎓 MoodBridge DevOps Academy</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            background: #ecf0f1;
+            border-radius: 25px;
+            height: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            width: 0%;
+            border-radius: 25px;
+            transition: width 0.5s ease;
+        }
+        
+        .learning-path {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .module {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .module:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .module.completed {
+            border-left: 5px solid #2ecc71;
+        }
+        
+        .module.current {
+            border-left: 5px solid #3498db;
+            background: rgba(52, 152, 219, 0.05);
+        }
+        
+        .module.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .module-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .module-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .module-status {
+            font-size: 1.5rem;
+        }
+        
+        .module-description {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .module-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .detail-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .achievements {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            margin-top: 30px;
+        }
+        
+        .achievements h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .achievement {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .achievement.earned {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+        
+        .achievement-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .achievement-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .achievement-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .resources {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            margin-top: 30px;
+        }
+        
+        .resources h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .resource-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .quiz-container {
+            margin-top: 20px;
+        }
+        
+        .question {
+            margin-bottom: 20px;
+        }
+        
+        .question h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .option {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            background: #e9ecef;
+        }
+        
+        .option.selected {
+            background: #3498db;
+            color: white;
+        }
+        
+        .option.correct {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .option.incorrect {
+            background: #e74c3c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 MoodBridge DevOps Academy</h1>
+            <p>Master enterprise-grade DevOps automation with hands-on learning</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="overallProgress"></div>
+            </div>
+            <p id="progressText">Progress: 0% Complete</p>
+        </div>
+
+        <div class="learning-path">
+            <!-- Module 1: Foundation -->
+            <div class="module current" data-module="1">
+                <div class="module-header">
+                    <div class="module-title">
+                        🏗️ Module 1: DevOps Foundation
+                        <span class="module-status">📖</span>
+                    </div>
+                </div>
+                <div class="module-description">
+                    Learn the fundamentals of the MoodBridge DevOps system, including architecture, components, and basic setup procedures.
+                </div>
+                <div class="module-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Duration</div>
+                        <div class="detail-value">30 minutes</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Difficulty</div>
+                        <div class="detail-value">Beginner</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Prerequisites</div>
+                        <div class="detail-value">Basic Git</div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="startModule(1)">Start Learning</button>
+                    <button class="btn btn-secondary" onclick="viewResources(1)">Resources</button>
+                </div>
+            </div>
+
+            <!-- Module 2: Commit Automation -->
+            <div class="module locked" data-module="2">
+                <div class="module-header">
+                    <div class="module-title">
+                        🔄 Module 2: Commit Automation
+                        <span class="module-status">🔒</span>
+                    </div>
+                </div>
+                <div class="module-description">
+                    Master the automated commit checker system, learn to interpret reports, and understand cross-project monitoring.
+                </div>
+                <div class="module-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Duration</div>
+                        <div class="detail-value">45 minutes</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Difficulty</div>
+                        <div class="detail-value">Intermediate</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Hands-on Labs</div>
+                        <div class="detail-value">3 exercises</div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" disabled>Complete Module 1 First</button>
+                </div>
+            </div>
+
+            <!-- Module 3: Quality Gates -->
+            <div class="module locked" data-module="3">
+                <div class="module-header">
+                    <div class="module-title">
+                        ⚡ Module 3: Quality Gates & Pre-commit Hooks
+                        <span class="module-status">🔒</span>
+                    </div>
+                </div>
+                <div class="module-description">
+                    Implement and customize pre-commit hooks, understand Rust toolchain integration, and set up quality enforcement.
+                </div>
+                <div class="module-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Duration</div>
+                        <div class="detail-value">60 minutes</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Difficulty</div>
+                        <div class="detail-value">Advanced</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Tools Used</div>
+                        <div class="detail-value">Rust, Clippy, rustfmt</div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" disabled>Complete Module 2 First</button>
+                </div>
+            </div>
+
+            <!-- Module 4: Dashboard Creation -->
+            <div class="module locked" data-module="4">
+                <div class="module-header">
+                    <div class="module-title">
+                        📊 Module 4: DevOps Dashboard
+                        <span class="module-status">🔒</span>
+                    </div>
+                </div>
+                <div class="module-description">
+                    Build beautiful, responsive DevOps dashboards with real-time monitoring, interactive elements, and modern design principles.
+                </div>
+                <div class="module-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Duration</div>
+                        <div class="detail-value">90 minutes</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Difficulty</div>
+                        <div class="detail-value">Intermediate</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Technologies</div>
+                        <div class="detail-value">HTML5, CSS3, JavaScript</div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" disabled>Complete Module 3 First</button>
+                </div>
+            </div>
+
+            <!-- Module 5: Enterprise Integration -->
+            <div class="module locked" data-module="5">
+                <div class="module-header">
+                    <div class="module-title">
+                        🏢 Module 5: Enterprise Integration
+                        <span class="module-status">🔒</span>
+                    </div>
+                </div>
+                <div class="module-description">
+                    Scale DevOps practices for enterprise environments, implement security standards, and integrate with existing workflows.
+                </div>
+                <div class="module-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Duration</div>
+                        <div class="detail-value">120 minutes</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Difficulty</div>
+                        <div class="detail-value">Expert</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Certification</div>
+                        <div class="detail-value">Final Exam</div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" disabled>Complete Module 4 First</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievements Section -->
+        <div class="achievements">
+            <h3>🏆 Achievements</h3>
+            <div class="achievement-grid">
+                <div class="achievement">
+                    <div class="achievement-icon">🎯</div>
+                    <div class="achievement-title">First Steps</div>
+                    <div class="achievement-desc">Complete Module 1</div>
+                </div>
+                <div class="achievement">
+                    <div class="achievement-icon">🔄</div>
+                    <div class="achievement-title">Automation Master</div>
+                    <div class="achievement-desc">Set up commit automation</div>
+                </div>
+                <div class="achievement">
+                    <div class="achievement-icon">⚡</div>
+                    <div class="achievement-title">Quality Guardian</div>
+                    <div class="achievement-desc">Implement quality gates</div>
+                </div>
+                <div class="achievement">
+                    <div class="achievement-icon">📊</div>
+                    <div class="achievement-title">Dashboard Creator</div>
+                    <div class="achievement-desc">Build custom dashboard</div>
+                </div>
+                <div class="achievement">
+                    <div class="achievement-icon">🏢</div>
+                    <div class="achievement-title">Enterprise Expert</div>
+                    <div class="achievement-desc">Complete all modules</div>
+                </div>
+                <div class="achievement">
+                    <div class="achievement-icon">🎓</div>
+                    <div class="achievement-title">DevOps Certified</div>
+                    <div class="achievement-desc">Pass final certification</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resources Section -->
+        <div class="resources">
+            <h3>📚 Learning Resources</h3>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <h4>📖 Documentation</h4>
+                    <p>Complete implementation guides, API references, and troubleshooting documentation.</p>
+                    <button class="btn btn-primary" onclick="openResource('docs')">View Docs</button>
+                </div>
+                <div class="resource-card">
+                    <h4>🛠️ Hands-on Labs</h4>
+                    <p>Interactive exercises and real-world scenarios to practice your DevOps skills.</p>
+                    <button class="btn btn-primary" onclick="openResource('labs')">Start Labs</button>
+                </div>
+                <div class="resource-card">
+                    <h4>💡 Best Practices</h4>
+                    <p>Industry standards, enterprise patterns, and proven methodologies for DevOps success.</p>
+                    <button class="btn btn-primary" onclick="openResource('practices')">Learn More</button>
+                </div>
+                <div class="resource-card">
+                    <h4>🎥 Video Tutorials</h4>
+                    <p>Step-by-step video guides covering setup, configuration, and advanced techniques.</p>
+                    <button class="btn btn-primary" onclick="openResource('videos')">Watch Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Module Content -->
+    <div id="moduleModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="moduleContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentProgress = 0;
+        let completedModules = [];
+
+        function updateProgress() {
+            const progressFill = document.getElementById('overallProgress');
+            const progressText = document.getElementById('progressText');
+            progressFill.style.width = currentProgress + '%';
+            progressText.textContent = `Progress: ${currentProgress}% Complete`;
+        }
+
+        function startModule(moduleNum) {
+            const moduleContent = getModuleContent(moduleNum);
+            document.getElementById('moduleContent').innerHTML = moduleContent;
+            document.getElementById('moduleModal').style.display = 'block';
+        }
+
+        function completeModule(moduleNum) {
+            if (!completedModules.includes(moduleNum)) {
+                completedModules.push(moduleNum);
+                currentProgress = (completedModules.length / 5) * 100;
+                updateProgress();
+                
+                // Update module status
+                const moduleElement = document.querySelector(`[data-module="${moduleNum}"]`);
+                moduleElement.classList.remove('current');
+                moduleElement.classList.add('completed');
+                moduleElement.querySelector('.module-status').textContent = '✅';
+                
+                // Unlock next module
+                const nextModule = document.querySelector(`[data-module="${moduleNum + 1}"]`);
+                if (nextModule) {
+                    nextModule.classList.remove('locked');
+                    nextModule.classList.add('current');
+                    nextModule.querySelector('.module-status').textContent = '📖';
+                    nextModule.querySelector('.btn').disabled = false;
+                    nextModule.querySelector('.btn').textContent = 'Start Learning';
+                    nextModule.querySelector('.btn').className = 'btn btn-primary';
+                }
+                
+                // Award achievement
+                awardAchievement(moduleNum);
+            }
+            closeModal();
+        }
+
+        function awardAchievement(moduleNum) {
+            const achievements = document.querySelectorAll('.achievement');
+            if (achievements[moduleNum - 1]) {
+                achievements[moduleNum - 1].classList.add('earned');
+            }
+        }
+
+        function getModuleContent(moduleNum) {
+            const contents = {
+                1: `
+                    <h2>🏗️ DevOps Foundation</h2>
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand MoodBridge DevOps architecture</li>
+                        <li>Learn about quality gates and automation</li>
+                        <li>Explore the commit checker system</li>
+                        <li>Set up your development environment</li>
+                    </ul>
+                    
+                    <h3>Key Concepts</h3>
+                    <p><strong>DevOps Automation:</strong> The MoodBridge system provides comprehensive automation for code quality, commit management, and cross-project monitoring.</p>
+                    
+                    <p><strong>Quality Gates:</strong> Pre-commit hooks ensure code formatting, linting, compilation, and security checks before any commits are accepted.</p>
+                    
+                    <p><strong>Cross-Project Monitoring:</strong> A single system monitors multiple repositories, providing unified reporting and status tracking.</p>
+                    
+                    <h3>Hands-on Exercise</h3>
+                    <p>1. Navigate to your MoodBridge project directory</p>
+                    <p>2. Run: <code>./devops_commit_checker.sh</code></p>
+                    <p>3. Review the generated reports in <code>devops_reports/</code></p>
+                    
+                    <div class="quiz-container">
+                        <h3>Quick Quiz</h3>
+                        <div class="question">
+                            <h4>What is the main purpose of the DevOps commit checker?</h4>
+                            <div class="options">
+                                <div class="option" onclick="selectOption(this, false)">A) Only check code formatting</div>
+                                <div class="option" onclick="selectOption(this, true)">B) Monitor multiple repositories and generate comprehensive reports</div>
+                                <div class="option" onclick="selectOption(this, false)">C) Replace Git entirely</div>
+                                <div class="option" onclick="selectOption(this, false)">D) Only work with Rust projects</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="completeModule(1)" style="margin-top: 20px;">Complete Module</button>
+                `,
+                2: `
+                    <h2>🔄 Commit Automation</h2>
+                    <p>Advanced commit automation and reporting systems...</p>
+                    <button class="btn btn-success" onclick="completeModule(2)">Complete Module</button>
+                `,
+                3: `
+                    <h2>⚡ Quality Gates & Pre-commit Hooks</h2>
+                    <p>Implement and customize quality enforcement...</p>
+                    <button class="btn btn-success" onclick="completeModule(3)">Complete Module</button>
+                `,
+                4: `
+                    <h2>📊 DevOps Dashboard</h2>
+                    <p>Build beautiful monitoring dashboards...</p>
+                    <button class="btn btn-success" onclick="completeModule(4)">Complete Module</button>
+                `,
+                5: `
+                    <h2>🏢 Enterprise Integration</h2>
+                    <p>Scale for enterprise environments...</p>
+                    <button class="btn btn-success" onclick="completeModule(5)">Complete Module</button>
+                `
+            };
+            return contents[moduleNum] || '<p>Module content not found.</p>';
+        }
+
+        function selectOption(element, isCorrect) {
+            // Remove previous selections
+            element.parentNode.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Show all correct/incorrect answers
+            element.parentNode.querySelectorAll('.option').forEach((opt, index) => {
+                if (index === 1) { // Correct answer is always index 1 in this example
+                    opt.classList.add('correct');
+                } else {
+                    opt.classList.add('incorrect');
+                }
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('moduleModal').style.display = 'none';
+        }
+
+        function viewResources(moduleNum) {
+            alert(`📚 Opening resources for Module ${moduleNum}...`);
+        }
+
+        function openResource(type) {
+            const resourceUrls = {
+                docs: './DEVOPS_IMPLEMENTATION_GUIDE.md',
+                labs: './devops_dashboard.html',
+                practices: './DEVOPS_IMPLEMENTATION_SUMMARY.md',
+                videos: '#'
+            };
+            
+            if (resourceUrls[type] && resourceUrls[type] !== '#') {
+                window.open(resourceUrls[type], '_blank');
+            } else {
+                alert(`🎥 Video tutorials coming soon!`);
+            }
+        }
+
+        // Initialize progress
+        updateProgress();
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('moduleModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
