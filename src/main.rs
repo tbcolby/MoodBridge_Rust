@@ -7,6 +7,7 @@ use crate::db::{create_pool, run_migrations, seed_sample_data};
 pub mod handlers;
 pub mod models;
 pub mod db;
+pub mod ai;
 
 #[tokio::main]
 async fn main() {
@@ -16,7 +17,7 @@ async fn main() {
         .init();
 
     // Read database URL from environment variable
-    let database_url = env::var("DATABASE_URL").unwrap_or_else(|_| "sqlite://data/main.db".into());
+    let database_url = env::var("DATABASE_URL").unwrap_or_else(|_| "sqlite:data/main.db".into());
 
     // Create database pool and run migrations
     let pool = create_pool(&database_url).await.expect("Failed to create database pool");
