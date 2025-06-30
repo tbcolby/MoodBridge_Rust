@@ -17,7 +17,7 @@ async fn main() {
         .init();
 
     // Read database URL from environment variable
-    let database_url = env::var("DATABASE_URL").unwrap_or_else(|_| "sqlite:data/main.db".into());
+    let database_url = env::var("DATABASE_URL").unwrap_or_else(|_| "sqlite:main.db".into());
 
     // Create database pool and run migrations
     let pool = create_pool(&database_url).await.expect("Failed to create database pool");
@@ -26,13 +26,17 @@ async fn main() {
     // Seed sample data
     seed_sample_data(&pool).await.expect("Failed to seed sample data");
 
-    // Build our application with a route
+    // Build our application with routes
     let app = Router::new()
-        .route("/", get(|| async { "🦀 MoodBridge Rust Legal Dashboard is running!" }))
+        .route("/", get(handlers::dashboard))
+        .route("/api/health", get(handlers::health_check))
+        .route("/api/dashboard-data", get(handlers::dashboard_data))
+        .route("/api/ai-prompt", axum::routing::post(handlers::ai_prompt))
+        .with_state(pool.clone())
         .layer(CorsLayer::new().allow_origin(Any));
 
     // Address to serve on
-    let addr = SocketAddr::from(([127, 0, 0, 1], 8000));
+    let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     tracing::info!("Listening on {}", addr);
 
     // Run app with hyper on the configured address
