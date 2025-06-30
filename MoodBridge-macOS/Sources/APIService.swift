@@ -49,30 +49,30 @@ class APIService: ObservableObject {
     }
     
     // MARK: - Tasks
-    func getTasks() async throws -> [Task] {
+    func getTasks() async throws -> [MBTask] {
         return try await AF.request("\(baseURL)/api/tasks")
             .validate()
-            .serializingDecodable([Task].self)
+            .serializingDecodable([MBTask].self)
             .value
     }
     
-    func createTask(_ task: CreateTaskRequest) async throws -> Task {
+    func createTask(_ task: CreateTaskRequest) async throws -> MBTask {
         return try await AF.request("\(baseURL)/api/tasks",
                                    method: .post,
                                    parameters: task,
                                    encoder: JSONParameterEncoder.default)
             .validate()
-            .serializingDecodable(Task.self)
+            .serializingDecodable(MBTask.self)
             .value
     }
     
-    func updateTask(id: String, _ task: UpdateTaskRequest) async throws -> Task {
+    func updateTask(id: String, _ task: UpdateTaskRequest) async throws -> MBTask {
         return try await AF.request("\(baseURL)/api/tasks/\(id)",
                                    method: .put,
                                    parameters: task,
                                    encoder: JSONParameterEncoder.default)
             .validate()
-            .serializingDecodable(Task.self)
+            .serializingDecodable(MBTask.self)
             .value
     }
     

@@ -1,0 +1,59 @@
+{
+  "": {
+    "swift-dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/master.swiftdeps"
+  },
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/APIService.swift": {
+    "dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/APIService.d",
+    "object": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/APIService.swift.o",
+    "swiftmodule": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/APIService~partial.swiftmodule",
+    "swift-dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/APIService.swiftdeps"
+  },
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/AnalyticsView.swift": {
+    "dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/AnalyticsView.d",
+    "object": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/AnalyticsView.swift.o",
+    "swiftmodule": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/AnalyticsView~partial.swiftmodule",
+    "swift-dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/AnalyticsView.swiftdeps"
+  },
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/ContentView.swift": {
+    "dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/ContentView.d",
+    "object": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/ContentView.swift.o",
+    "swiftmodule": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/ContentView.swiftdeps"
+  },
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/DashboardView.swift": {
+    "dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/DashboardView.d",
+    "object": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/DashboardView.swift.o",
+    "swiftmodule": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/DashboardView~partial.swiftmodule",
+    "swift-dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/DashboardView.swiftdeps"
+  },
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/DashboardViewModel.swift": {
+    "dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/DashboardViewModel.d",
+    "object": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/DashboardViewModel.swift.o",
+    "swiftmodule": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/DashboardViewModel~partial.swiftmodule",
+    "swift-dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/DashboardViewModel.swiftdeps"
+  },
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/Models.swift": {
+    "dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/Models.d",
+    "object": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/Models.swift.o",
+    "swiftmodule": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/Models~partial.swiftmodule",
+    "swift-dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/Models.swiftdeps"
+  },
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/ProjectsView.swift": {
+    "dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/ProjectsView.d",
+    "object": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/ProjectsView.swift.o",
+    "swiftmodule": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/ProjectsView~partial.swiftmodule",
+    "swift-dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/ProjectsView.swiftdeps"
+  },
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/TasksView.swift": {
+    "dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/TasksView.d",
+    "object": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/TasksView.swift.o",
+    "swiftmodule": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/TasksView~partial.swiftmodule",
+    "swift-dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/TasksView.swiftdeps"
+  },
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/main.swift": {
+    "dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/main.d",
+    "object": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/main.swift.o",
+    "swiftmodule": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/main~partial.swiftmodule",
+    "swift-dependencies": "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/MoodBridge.build/main.swiftdeps"
+  }
+}

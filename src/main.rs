@@ -9,6 +9,7 @@ pub mod models;
 pub mod db;
 pub mod ai;
 pub mod warp_command;
+pub mod wizard;
 // pub mod integrations;
 
 #[tokio::main]

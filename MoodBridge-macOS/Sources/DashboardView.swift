@@ -75,4 +75,161 @@ struct DashboardView: View {
                     // Quick Actions
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Quick Actions")
-                            .font(.title2.bold())\n                        \n                        VStack(spacing: 12) {\n                            QuickActionButton(\n                                title: \"New Project\",\n                                icon: \"plus.circle.fill\",\n                                color: .blue\n                            ) {\n                                // TODO: Show new project sheet\n                            }\n                            \n                            QuickActionButton(\n                                title: \"New Task\",\n                                icon: \"plus.square.fill\",\n                                color: .green\n                            ) {\n                                // TODO: Show new task sheet\n                            }\n                            \n                            QuickActionButton(\n                                title: \"Start Timer\",\n                                icon: \"play.circle.fill\",\n                                color: .orange\n                            ) {\n                                // TODO: Start work session\n                            }\n                        }\n                    }\n                    .frame(maxWidth: .infinity, alignment: .leading)\n                    .padding()\n                    .background(Color(.controlBackgroundColor))\n                    .cornerRadius(12)\n                }\n                .padding(.horizontal)\n                \n                // Active Work Sessions\n                if !viewModel.activeWorkSessions.isEmpty {\n                    VStack(alignment: .leading, spacing: 16) {\n                        Text(\"Active Work Sessions\")\n                            .font(.title2.bold())\n                        \n                        ForEach(viewModel.activeWorkSessions) { session in\n                            ActiveWorkSessionCard(session: session, viewModel: viewModel)\n                        }\n                    }\n                    .frame(maxWidth: .infinity, alignment: .leading)\n                    .padding(.horizontal)\n                }\n            }\n            .padding(.vertical)\n        }\n        .refreshable {\n            await viewModel.loadInitialData()\n        }\n    }\n}\n\nstruct StatCard: View {\n    let title: String\n    let value: String\n    let icon: String\n    let color: Color\n    \n    var body: some View {\n        VStack(spacing: 12) {\n            Image(systemName: icon)\n                .font(.system(size: 30))\n                .foregroundColor(color)\n            \n            VStack(spacing: 4) {\n                Text(value)\n                    .font(.title.bold())\n                Text(title)\n                    .font(.caption)\n                    .foregroundColor(.secondary)\n            }\n        }\n        .frame(maxWidth: .infinity)\n        .padding()\n        .background(Color(.controlBackgroundColor))\n        .cornerRadius(12)\n    }\n}\n\nstruct ActivityRow: View {\n    let activity: ActivityItem\n    \n    var body: some View {\n        HStack(spacing: 12) {\n            Circle()\n                .fill(Color.blue)\n                .frame(width: 8, height: 8)\n            \n            VStack(alignment: .leading, spacing: 2) {\n                Text(activity.description)\n                    .font(.system(size: 14))\n                Text(activity.timestamp)\n                    .font(.caption)\n                    .foregroundColor(.secondary)\n            }\n            \n            Spacer()\n        }\n        .padding(.vertical, 4)\n    }\n}\n\nstruct QuickActionButton: View {\n    let title: String\n    let icon: String\n    let color: Color\n    let action: () -> Void\n    \n    var body: some View {\n        Button(action: action) {\n            HStack {\n                Image(systemName: icon)\n                    .foregroundColor(color)\n                Text(title)\n                    .font(.system(size: 14, weight: .medium))\n                Spacer()\n            }\n            .padding()\n            .background(Color(.controlBackgroundColor))\n            .cornerRadius(8)\n        }\n        .buttonStyle(.plain)\n    }\n}\n\nstruct ActiveWorkSessionCard: View {\n    let session: WorkSession\n    @ObservedObject var viewModel: DashboardViewModel\n    \n    var body: some View {\n        HStack {\n            VStack(alignment: .leading, spacing: 4) {\n                Text(\"Task ID: \\(session.taskId)\")\n                    .font(.headline)\n                Text(\"Started: \\(session.startTime)\")\n                    .font(.caption)\n                    .foregroundColor(.secondary)\n            }\n            \n            Spacer()\n            \n            Button(\"End Session\") {\n                Task {\n                    await viewModel.endWorkSession(sessionId: session.id)\n                }\n            }\n            .buttonStyle(.borderedProminent)\n        }\n        .padding()\n        .background(Color(.controlBackgroundColor))\n        .cornerRadius(8)\n    }\n}
+                            .font(.title2.bold())
+                        
+                        VStack(spacing: 12) {
+                            QuickActionButton(
+                                title: "New Project",
+                                icon: "plus.circle.fill",
+                                color: .blue
+                            ) {
+                                // TODO: Show new project sheet
+                            }
+                            
+                            QuickActionButton(
+                                title: "New Task",
+                                icon: "plus.square.fill",
+                                color: .green
+                            ) {
+                                // TODO: Show new task sheet
+                            }
+                            
+                            QuickActionButton(
+                                title: "Start Timer",
+                                icon: "play.circle.fill",
+                                color: .orange
+                            ) {
+                                // TODO: Start work session
+                            }
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .background(Color(.controlBackgroundColor))
+                    .cornerRadius(12)
+                }
+                .padding(.horizontal)
+                
+                // Active Work Sessions
+                if !viewModel.activeWorkSessions.isEmpty {
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Active Work Sessions")
+                            .font(.title2.bold())
+                        
+                        ForEach(viewModel.activeWorkSessions) { session in
+                            ActiveWorkSessionCard(session: session, viewModel: viewModel)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                }
+            }
+            .padding(.vertical)
+        }
+        .refreshable {
+            await viewModel.loadInitialData()
+        }
+    }
+}
+
+struct StatCard: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 30))
+                .foregroundColor(color)
+            
+            VStack(spacing: 4) {
+                Text(value)
+                    .font(.title.bold())
+                Text(title)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color(.controlBackgroundColor))
+        .cornerRadius(12)
+    }
+}
+
+struct ActivityRow: View {
+    let activity: ActivityItem
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Circle()
+                .fill(Color.blue)
+                .frame(width: 8, height: 8)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(activity.description)
+                    .font(.system(size: 14))
+                Text(activity.timestamp)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+        }
+        .padding(.vertical, 4)
+    }
+}
+
+struct QuickActionButton: View {
+    let title: String
+    let icon: String
+    let color: Color
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundColor(color)
+                Text(title)
+                    .font(.system(size: 14, weight: .medium))
+                Spacer()
+            }
+            .padding()
+            .background(Color(.controlBackgroundColor))
+            .cornerRadius(8)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct ActiveWorkSessionCard: View {
+    let session: WorkSession
+    @ObservedObject var viewModel: DashboardViewModel
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Task ID: \(session.taskId)")
+                    .font(.headline)
+                Text("Started: \(session.startTime)")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            Button("End Session") {
+                Task {
+                    await viewModel.endWorkSession(sessionId: session.id)
+                }
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .padding()
+        .background(Color(.controlBackgroundColor))
+        .cornerRadius(8)
+    }
+}

@@ -97,10 +97,8 @@ struct ContentView: View {
             }
             .frame(minWidth: 600, minHeight: 400)
         }
-        .onAppear {
-            Task {
-                await viewModel.loadInitialData()
-            }
+        .task {
+            await viewModel.loadInitialData()
         }
     }
 }

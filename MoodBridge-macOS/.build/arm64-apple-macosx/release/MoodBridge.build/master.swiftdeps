@@ -1,0 +1,15 @@
+version: "Apple Swift version 6.1.2 (swiftlang-6.1.2.1.2 clang-1700.0.13.5)"
+options: "e20375a7f3b00fca217bbe8c4c9dfb8a50c533fa1d94877dd01851cbf0cd1cc7"
+build_start_time: [1751287580, 209854000]
+build_end_time: [1751287602, 749519000]
+inputs:
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/APIService.swift": !dirty [1751286918, 496998537]
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/AnalyticsView.swift": !dirty [1751287407, 469411239]
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/ContentView.swift": !dirty [1751287005, 687923109]
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/DashboardView.swift": !dirty [1751287257, 232784451]
+  ? "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/DashboardViewModel.swift"
+  : !dirty [1751287092, 737339016]
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/Models.swift": !dirty [1751286945, 717873937]
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/ProjectsView.swift": !dirty [1751287325, 191713995]
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/TasksView.swift": !dirty [1751287363, 238267642]
+  "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/Sources/main.swift": !dirty [1751286895, 245189675]

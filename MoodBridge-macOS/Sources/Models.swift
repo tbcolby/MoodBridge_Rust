@@ -69,7 +69,7 @@ enum Priority: String, Codable, CaseIterable {
 }
 
 // MARK: - Task Models
-struct Task: Codable, Identifiable {
+struct MBTask: Codable, Identifiable {
     let id: String
     let projectId: String
     let title: String
@@ -116,6 +116,7 @@ struct UpdateTaskRequest: Codable {
     let priority: Priority?
     let estimatedHours: Double?
     let dueDate: String?
+    
     
     enum CodingKeys: String, CodingKey {
         case title, description, status, priority
@@ -181,7 +182,7 @@ struct ProductivityPoint: Codable, Identifiable {
 
 struct ProjectDashboard: Codable {
     let projects: [ProjectSummary]
-    let recentTasks: [Task]
+    let recentTasks: [MBTask]
     let activeWorkSessions: [WorkSession]
 }
 

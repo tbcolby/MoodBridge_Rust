@@ -1,0 +1,4 @@
+module Alamofire {
+    header "/Users/tyler/Library/Mobile Documents/com~apple~CloudDocs/Legal/MoodBridge_Rust/MoodBridge-macOS/.build/arm64-apple-macosx/debug/Alamofire.build/Alamofire-Swift.h"
+    requires objc
+}

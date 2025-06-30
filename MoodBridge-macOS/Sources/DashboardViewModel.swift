@@ -15,8 +15,8 @@ class DashboardViewModel: ObservableObject {
     @Published var selectedProject: Project?
     
     // Tasks
-    @Published var tasks: [Task] = []
-    @Published var selectedTask: Task?
+    @Published var tasks: [MBTask] = []
+    @Published var selectedTask: MBTask?
     
     // Work Sessions
     @Published var activeWorkSessions: [WorkSession] = []
@@ -148,7 +148,7 @@ class DashboardViewModel: ObservableObject {
     
     func endWorkSession(sessionId: String) async {
         do {
-            let session = try await apiService.endWorkSession(sessionId: sessionId)
+            _ = try await apiService.endWorkSession(sessionId: sessionId)
             activeWorkSessions.removeAll { $0.id == sessionId }
         } catch {
             errorMessage = "Failed to end work session: \(error.localizedDescription)"
@@ -194,3 +194,4 @@ class DashboardViewModel: ObservableObject {
             return .red
         }
     }
+}
