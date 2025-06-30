@@ -269,7 +269,7 @@ async fn list_tasks(pool: &Pool<Sqlite>, project_id: i64) -> Result<(), sqlx::Er
 
     for task in tasks {
         println!("{:<4} {:<30} {:<12} {:<10} {:<12} {:<15}", 
-            task.id,
+            task.id.unwrap_or(0),
             truncate(&task.title, 29),
             task.status,
             task.priority,
