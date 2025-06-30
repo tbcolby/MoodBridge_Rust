@@ -89,7 +89,10 @@ async fn startup() -> Result<(), Box<dyn std::error::Error>> {
         .route("/api/ai-monitor", get(handlers::ai_monitor))
         .route("/api/ai-voice", axum::routing::post(handlers::ai_voice))
         .route("/api/diff-data", get(handlers::diff_data))
-        .route("/api/commit-changes", axum::routing::post(handlers::commit_changes))
+        .route(
+            "/api/commit-changes",
+            axum::routing::post(handlers::commit_changes),
+        )
         .with_state(pool.clone())
         .layer(TraceLayer::new_for_http())
         .layer(CorsLayer::new().allow_origin(Any))

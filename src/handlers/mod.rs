@@ -5,10 +5,10 @@ use axum::{
     Json as AxumJson,
 };
 
+use serde::Deserialize;
 use serde_json::{json, Value};
 use sqlx::Row;
 use std::collections::HashMap;
-use serde::Deserialize;
 
 // Re-export models
 use crate::ai::{
@@ -393,22 +393,27 @@ fn determine_frontend_action(
 
 // Diff viewer HTML page
 pub async fn diff_viewer() -> Html<String> {
-    let html = std::fs::read_to_string("templates/diff_viewer.html").unwrap_or_else(|_| {
-        "<h1>Error loading diff viewer template</h1>".to_string()
-    });
+    let html = std::fs::read_to_string("templates/diff_viewer.html")
+        .unwrap_or_else(|_| "<h1>Error loading diff viewer template</h1>".to_string());
     Html(html)
 }
 
 #[derive(Deserialize)]
-struct DiffQuery {
-    file1: Option<String>,
-    file2: Option<String>,
+pub struct DiffQuery {
+    pub file1: Option<String>,
+    pub file2: Option<String>,
 }
 
 // Diff data API endpoint
 pub async fn diff_data(Query(params): Query<DiffQuery>) -> Result<Json<Value>, StatusCode> {
-    let file1_path = params.file1.as_deref().unwrap_or("/Users/tyler/Documents/mallory-legal-20250629/LegalReviewofVersion5.md");
-    let file2_path = params.file2.as_deref().unwrap_or("/Users/tyler/Documents/mallory-legal-20250629/Affidavit - Version 5.md");
+    let file1_path = params
+        .file1
+        .as_deref()
+        .unwrap_or("/Users/tyler/Documents/mallory-legal-20250629/LegalReviewofVersion5.md");
+    let file2_path = params
+        .file2
+        .as_deref()
+        .unwrap_or("/Users/tyler/Documents/mallory-legal-20250629/Affidavit - Version 5.md");
 
     let file1_content = match std::fs::read_to_string(file1_path) {
         Ok(content) => content,
@@ -446,38 +451,43 @@ pub async fn diff_data(Query(params): Query<DiffQuery>) -> Result<Json<Value>, S
 }
 
 #[derive(Deserialize)]
-struct CommitRequest {
-    content: String,
-    target_file: Option<String>,
+pub struct CommitRequest {
+    pub content: String,
+    pub target_file: Option<String>,
 }
 
 // Commit changes endpoint
-pub async fn commit_changes(AxumJson(payload): AxumJson<CommitRequest>) -> Result<Json<Value>, StatusCode> {
-    let target_file = payload.target_file.as_deref().unwrap_or("/Users/tyler/Documents/mallory-legal-20250629/Affidavit - Version 6.md");
-    
+pub async fn commit_changes(
+    AxumJson(payload): AxumJson<CommitRequest>,
+) -> Result<Json<Value>, StatusCode> {
+    let target_file = payload
+        .target_file
+        .as_deref()
+        .unwrap_or("/Users/tyler/Documents/mallory-legal-20250629/Affidavit - Version 6.md");
+
     match std::fs::write(target_file, &payload.content) {
         Ok(_) => {
             tracing::info!("Successfully wrote changes to {}", target_file);
-            
+
             // Try to commit to git if it's a git repository
             let git_status = std::process::Command::new("git")
                 .args(&["add", target_file])
                 .current_dir("/Users/tyler/Documents/mallory-legal-20250629")
                 .output();
-            
+
             let mut git_committed = false;
             if git_status.is_ok() {
                 let git_commit = std::process::Command::new("git")
                     .args(&["commit", "-m", &format!("Update {}", target_file)])
                     .current_dir("/Users/tyler/Documents/mallory-legal-20250629")
                     .output();
-                
+
                 if git_commit.is_ok() {
                     git_committed = true;
                     tracing::info!("Changes committed to git repository");
                 }
             }
-            
+
             Ok(Json(json!({
                 "success": true,
                 "message": "Changes successfully saved",
@@ -496,11 +506,11 @@ pub async fn commit_changes(AxumJson(payload): AxumJson<CommitRequest>) -> Resul
 fn calculate_diff(content1: &str, content2: &str) -> Vec<Value> {
     let lines1: Vec<&str> = content1.lines().collect();
     let lines2: Vec<&str> = content2.lines().collect();
-    
+
     let mut diff_lines = Vec::new();
     let mut i = 0;
     let mut j = 0;
-    
+
     while i < lines1.len() || j < lines2.len() {
         if i >= lines1.len() {
             // Addition
@@ -539,7 +549,7 @@ fn calculate_diff(content1: &str, content2: &str) -> Vec<Value> {
             j += 1;
         }
     }
-    
+
     diff_lines
 }
 
