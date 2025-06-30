@@ -156,7 +156,9 @@ impl AppError {
             AppError::NotFound { .. } => "The requested resource was not found.",
             AppError::Conflict { .. } => "This operation conflicts with existing data.",
             AppError::RateLimit { .. } => "Too many requests. Please try again later.",
-            AppError::ServiceUnavailable { .. } => "The service is temporarily unavailable. Please try again later.",
+            AppError::ServiceUnavailable { .. } => {
+                "The service is temporarily unavailable. Please try again later."
+            }
             _ => "An internal error occurred. Please try again or contact support.",
         }
     }
@@ -164,30 +166,30 @@ impl AppError {
     /// Log error with appropriate level and context
     pub fn log_error(&self, context: &ErrorContext) {
         let error_details = json!({
-            \"error_id\": context.error_id,
-            \"severity\": format!(\"{:?}\", context.severity),
-            \"user_id\": context.user_id,
-            \"tenant_id\": context.tenant_id,
-            \"request_id\": context.request_id,
-            \"operation\": context.operation,
-            \"error_type\": self.to_string(),
-            \"additional_context\": context.additional_context
+            "error_id": context.error_id,
+            "severity": format!("{:?}", context.severity),
+            "user_id": context.user_id,
+            "tenant_id": context.tenant_id,
+            "request_id": context.request_id,
+            "operation": context.operation,
+            "error_type": self.to_string(),
+            "additional_context": context.additional_context
         });
 
         match context.severity {
             ErrorSeverity::Low => {
-                tracing::info!(error = %self, context = %error_details, \"Application error occurred\");
+                tracing::info!(error = %self, context = %error_details, "Application error occurred");
             }
             ErrorSeverity::Medium => {
-                warn!(error = %self, context = %error_details, \"User error occurred\");
+                warn!(error = %self, context = %error_details, "User error occurred");
             }
             ErrorSeverity::High => {
-                error!(error = %self, context = %error_details, \"Service error occurred\");
+                error!(error = %self, context = %error_details, "Service error occurred");
             }
             ErrorSeverity::Critical => {
-                error!(error = %self, context = %error_details, \"Critical system error occurred\");
+                error!(error = %self, context = %error_details, "Critical system error occurred");
                 // In production, this would trigger alerts
-                #[cfg(feature = \"sentry\")]
+                #[cfg(feature = "sentry")]
                 {
                     sentry::capture_error(self);
                 }
@@ -250,13 +252,13 @@ impl IntoResponse for AppError {
 
         let status = self.status_code();
         let error_response = json!({
-            \"error\": {
-                \"id\": context.error_id,
-                \"type\": \"application_error\",
-                \"status\": status.as_u16(),
-                \"title\": status.canonical_reason().unwrap_or(\"Unknown Error\"),
-                \"detail\": self.user_message(),
-                \"timestamp\": chrono::Utc::now().to_rfc3339()
+            "error": {
+                "id": context.error_id,
+                "type": "application_error",
+                "status": status.as_u16(),
+                "title": status.canonical_reason().unwrap_or("Unknown Error"),
+                "detail": self.user_message(),
+                "timestamp": chrono::Utc::now().to_rfc3339()
             }
         });
 
@@ -269,26 +271,30 @@ impl From<sqlx::Error> for AppError {
     fn from(err: sqlx::Error) -> Self {
         match err {
             sqlx::Error::RowNotFound => AppError::NotFound {
-                resource: \"record\".to_string(),
-                id: \"unknown\".to_string(),
+                resource: "record".to_string(),
+                id: "unknown".to_string(),
             },
-            sqlx::Error::Database(db_err) => {
+            sqlx::Error::Database(ref db_err) => {
                 if let Some(constraint) = db_err.constraint() {
                     AppError::Conflict {
-                        message: format!(\"Database constraint violation: {}\", constraint),
+                        message: format!("Database constraint violation: {}", constraint),
                     }
                 } else {
-                    AppError::database(db_err.message(), Some(err))
+                    let msg = db_err.message().to_string();
+                    AppError::database(msg, Some(err))
                 }
             }
-            _ => AppError::database(err.to_string(), Some(err)),
+            other => {
+                let err_msg = other.to_string();
+                AppError::database(err_msg, Some(other))
+            }
         }
     }
 }
 
 impl From<serde_json::Error> for AppError {
     fn from(err: serde_json::Error) -> Self {
-        AppError::validation(\"json\", err.to_string())
+        AppError::validation("json", err.to_string())
     }
 }
 
@@ -299,8 +305,8 @@ impl From<validator::ValidationErrors> for AppError {
             .keys()
             .next()
             .map(|s| s.to_string())
-            .unwrap_or_else(|| \"unknown\".to_string());
-        
+            .unwrap_or_else(|| "unknown".to_string());
+
         let message = err
             .field_errors()
             .values()
@@ -308,7 +314,7 @@ impl From<validator::ValidationErrors> for AppError {
             .and_then(|errors| errors.first())
             .and_then(|error| error.message.as_ref())
             .map(|msg| msg.to_string())
-            .unwrap_or_else(|| \"Validation failed\".to_string());
+            .unwrap_or_else(|| "Validation failed".to_string());
 
         AppError::validation(field, message)
     }
@@ -343,15 +349,15 @@ mod tests {
     #[test]
     fn test_error_status_codes() {
         assert_eq!(
-            AppError::authentication(\"test\").status_code(),
+            AppError::authentication("test").status_code(),
             StatusCode::UNAUTHORIZED
         );
         assert_eq!(
-            AppError::authorization(\"test\").status_code(),
+            AppError::authorization("test").status_code(),
             StatusCode::FORBIDDEN
         );
         assert_eq!(
-            AppError::validation(\"field\", \"message\").status_code(),
+            AppError::validation("field", "message").status_code(),
             StatusCode::BAD_REQUEST
         );
     }
@@ -359,11 +365,11 @@ mod tests {
     #[test]
     fn test_error_severity() {
         assert!(matches!(
-            AppError::validation(\"field\", \"message\").severity(),
+            AppError::validation("field", "message").severity(),
             ErrorSeverity::Low
         ));
         assert!(matches!(
-            AppError::database(\"test\", None).severity(),
+            AppError::database("test", None).severity(),
             ErrorSeverity::Critical
         ));
     }
@@ -371,10 +377,10 @@ mod tests {
     #[test]
     fn test_error_context() {
         let context = ErrorContext::new()
-            .with_user_id(\"user123\")
-            .with_operation(\"create_case\");
-        
-        assert_eq!(context.user_id, Some(\"user123\".to_string()));
-        assert_eq!(context.operation, Some(\"create_case\".to_string()));
+            .with_user_id("user123")
+            .with_operation("create_case");
+
+        assert_eq!(context.user_id, Some("user123".to_string()));
+        assert_eq!(context.operation, Some("create_case".to_string()));
     }
 }

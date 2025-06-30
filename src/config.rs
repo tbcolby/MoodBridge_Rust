@@ -1,4 +1,4 @@
-use config::{Config, ConfigError, Environment, File};
+use config::{Config, ConfigError, Environment as ConfigEnvironment, File};
 use serde::{Deserialize, Serialize};
 use std::env;
 use tracing::info;
@@ -237,7 +237,7 @@ impl AppConfig {
 
         // Add environment variables with MOODBRIDGE_ prefix
         settings = settings.add_source(
-            Environment::with_prefix("MOODBRIDGE")
+            ConfigEnvironment::with_prefix("MOODBRIDGE")
                 .separator("_")
                 .try_parsing(true),
         );
@@ -266,7 +266,9 @@ impl AppConfig {
 
         // Validate database configuration
         if self.database.url.is_empty() {
-            return Err(ConfigError::Message("Database URL cannot be empty".to_string()));
+            return Err(ConfigError::Message(
+                "Database URL cannot be empty".to_string(),
+            ));
         }
 
         if self.database.max_connections == 0 {
@@ -337,9 +339,15 @@ impl AppConfig {
     /// Get database connection string with encryption
     pub fn database_url(&self) -> String {
         if self.database.url.contains("?") {
-            format!("{}&encryption_key={}", self.database.url, self.database.encryption_key)
+            format!(
+                "{}&encryption_key={}",
+                self.database.url, self.database.encryption_key
+            )
         } else {
-            format!("{}?encryption_key={}", self.database.url, self.database.encryption_key)
+            format!(
+                "{}?encryption_key={}",
+                self.database.url, self.database.encryption_key
+            )
         }
     }
 
@@ -388,7 +396,7 @@ impl std::fmt::Display for Environment {
 /// Generate a secure default key for development
 fn generate_default_key() -> String {
     use rand::Rng;
-    
+
     // In production, this should be loaded from secure storage
     if env::var("ENVIRONMENT").unwrap_or_default() == "production" {
         panic!("Default keys are not allowed in production. Set proper environment variables.");
@@ -421,13 +429,13 @@ mod tests {
     #[test]
     fn test_environment_detection() {
         let config = AppConfig::default();
-        
+
         env::set_var("ENVIRONMENT", "production");
         assert!(config.is_production());
-        
+
         env::set_var("ENVIRONMENT", "development");
         assert!(config.is_development());
-        
+
         env::remove_var("ENVIRONMENT");
     }
 

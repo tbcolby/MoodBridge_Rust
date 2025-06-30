@@ -13,9 +13,9 @@ readme = "README.md"
 
 [dependencies]
 # Web Framework & HTTP
-axum = { version = "0.7", features = ["headers", "multipart", "ws"] }
+axum = { version = "0.7", features = ["multipart", "ws"] }
 tower = { version = "0.4", features = ["util", "timeout", "limit"] }
-tower-http = { version = "0.5", features = ["cors", "compression", "auth", "trace", "fs", "add-extension", "set-header"] }
+tower-http = { version = "0.5", features = ["cors", "trace", "fs", "add-extension", "set-header", "limit", "timeout"] }
 hyper = { version = "1.0", features = ["full"] }
 
 # Database & Persistence
@@ -66,7 +66,7 @@ metrics = "0.23"
 metrics-prometheus = "0.7"
 
 # Rate Limiting & Security
-tower-governor = "0.3"
+tower_governor = "0.3"
 headers = "0.3"
 
 # Testing (dev dependencies)
@@ -78,6 +78,3 @@ proptest = "1.0"
 insta = "1.0"
 criterion = { version = "0.5", features = ["html_reports"] }
 
-[[bench]]
-name = "benchmarks"
-harness = false

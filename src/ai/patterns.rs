@@ -1,7 +1,7 @@
 use crate::ai::{AiError, AiInsight, InsightType, PatternConfig};
+use chrono::Utc;
 use serde_json::Value;
 use std::collections::HashMap;
-use chrono::Utc;
 
 /// Legal pattern detection service
 pub struct PatternDetector {
@@ -21,9 +21,12 @@ impl PatternDetector {
     }
 
     /// Detect patterns in placement denials
-    pub fn detect_placement_denial_patterns(&self, denials: &[Value]) -> Result<Vec<AiInsight>, AiError> {
+    pub fn detect_placement_denial_patterns(
+        &self,
+        denials: &[Value],
+    ) -> Result<Vec<AiInsight>, AiError> {
         let mut insights = Vec::new();
-        
+
         for pattern in &self.patterns {
             if pattern.pattern_type == "violation" && pattern.active {
                 if let Ok(insight) = self.apply_pattern_to_denials(pattern, denials) {
@@ -36,9 +39,12 @@ impl PatternDetector {
     }
 
     /// Detect communication patterns
-    pub fn detect_communication_patterns(&self, communications: &[Value]) -> Result<Vec<AiInsight>, AiError> {
+    pub fn detect_communication_patterns(
+        &self,
+        communications: &[Value],
+    ) -> Result<Vec<AiInsight>, AiError> {
         let mut insights = Vec::new();
-        
+
         for pattern in &self.patterns {
             if pattern.pattern_type == "communication" && pattern.active {
                 if let Ok(insight) = self.apply_pattern_to_communications(pattern, communications) {
@@ -53,7 +59,7 @@ impl PatternDetector {
     /// Detect timeline correlation patterns
     pub fn detect_timeline_patterns(&self, events: &[Value]) -> Result<Vec<AiInsight>, AiError> {
         let mut insights = Vec::new();
-        
+
         for pattern in &self.patterns {
             if pattern.pattern_type == "timeline" && pattern.active {
                 if let Ok(insight) = self.apply_pattern_to_timeline(pattern, events) {
@@ -65,21 +71,35 @@ impl PatternDetector {
         Ok(insights)
     }
 
-    fn apply_pattern_to_denials(&self, pattern: &PatternConfig, denials: &[Value]) -> Result<AiInsight, AiError> {
+    fn apply_pattern_to_denials(
+        &self,
+        pattern: &PatternConfig,
+        denials: &[Value],
+    ) -> Result<AiInsight, AiError> {
         match pattern.pattern_name.as_str() {
             "Recurring Denial Pattern" => self.detect_recurring_denials(denials),
             _ => Err(AiError::ModelError("Unknown denial pattern".to_string())),
         }
     }
 
-    fn apply_pattern_to_communications(&self, pattern: &PatternConfig, communications: &[Value]) -> Result<AiInsight, AiError> {
+    fn apply_pattern_to_communications(
+        &self,
+        pattern: &PatternConfig,
+        communications: &[Value],
+    ) -> Result<AiInsight, AiError> {
         match pattern.pattern_name.as_str() {
             "Communication Gap" => self.detect_communication_gaps(communications),
-            _ => Err(AiError::ModelError("Unknown communication pattern".to_string())),
+            _ => Err(AiError::ModelError(
+                "Unknown communication pattern".to_string(),
+            )),
         }
     }
 
-    fn apply_pattern_to_timeline(&self, pattern: &PatternConfig, events: &[Value]) -> Result<AiInsight, AiError> {
+    fn apply_pattern_to_timeline(
+        &self,
+        pattern: &PatternConfig,
+        events: &[Value],
+    ) -> Result<AiInsight, AiError> {
         match pattern.pattern_name.as_str() {
             "Evidence Correlation" => self.detect_evidence_correlations(events),
             _ => Err(AiError::ModelError("Unknown timeline pattern".to_string())),
@@ -89,7 +109,9 @@ impl PatternDetector {
     /// Detect recurring denial patterns
     fn detect_recurring_denials(&self, denials: &[Value]) -> Result<AiInsight, AiError> {
         if denials.len() < 3 {
-            return Err(AiError::ModelError("Insufficient data for pattern detection".to_string()));
+            return Err(AiError::ModelError(
+                "Insufficient data for pattern detection".to_string(),
+            ));
         }
 
         // Group denials by date proximity
@@ -108,7 +130,9 @@ impl PatternDetector {
                 // Find other denials within 30 days
                 for (j, other_denial) in denials.iter().enumerate() {
                     if i != j && !processed_indices.contains(&j) {
-                        if let Some(other_date_str) = other_denial.get("denied_date").and_then(|d| d.as_str()) {
+                        if let Some(other_date_str) =
+                            other_denial.get("denied_date").and_then(|d| d.as_str())
+                        {
                             // Simple date comparison (would need proper date parsing in production)
                             if Self::dates_within_days(date_str, other_date_str, 30) {
                                 cluster.push(other_denial);
@@ -133,10 +157,10 @@ impl PatternDetector {
             "clusters_found": date_clusters.len(),
             "largest_cluster_size": date_clusters.iter().map(|c| c.len()).max().unwrap_or(0),
             "severity": if date_clusters.len() > 1 { "HIGH" } else { "MEDIUM" },
-            "recommendation": if pattern_detected { 
-                "Multiple recurring denial patterns detected. Consider legal review for potential procedural violations." 
-            } else { 
-                "No significant recurring patterns detected." 
+            "recommendation": if pattern_detected {
+                "Multiple recurring denial patterns detected. Consider legal review for potential procedural violations."
+            } else {
+                "No significant recurring patterns detected."
             }
         });
 
@@ -152,16 +176,24 @@ impl PatternDetector {
     /// Detect communication gaps
     fn detect_communication_gaps(&self, communications: &[Value]) -> Result<AiInsight, AiError> {
         if communications.len() < 2 {
-            return Err(AiError::ModelError("Insufficient communication data".to_string()));
+            return Err(AiError::ModelError(
+                "Insufficient communication data".to_string(),
+            ));
         }
 
         let mut gaps_detected = Vec::new();
         let mut sorted_comms: Vec<&Value> = communications.iter().collect();
-        
+
         // Sort by date (simplified - would need proper date parsing)
         sorted_comms.sort_by(|a, b| {
-            let date_a = a.get("communication_date").and_then(|d| d.as_str()).unwrap_or("");
-            let date_b = b.get("communication_date").and_then(|d| d.as_str()).unwrap_or("");
+            let date_a = a
+                .get("communication_date")
+                .and_then(|d| d.as_str())
+                .unwrap_or("");
+            let date_b = b
+                .get("communication_date")
+                .and_then(|d| d.as_str())
+                .unwrap_or("");
             date_a.cmp(date_b)
         });
 
@@ -169,7 +201,7 @@ impl PatternDetector {
         for window in sorted_comms.windows(2) {
             if let (Some(date1), Some(date2)) = (
                 window[0].get("communication_date").and_then(|d| d.as_str()),
-                window[1].get("communication_date").and_then(|d| d.as_str())
+                window[1].get("communication_date").and_then(|d| d.as_str()),
             ) {
                 if Self::days_between_dates(date1, date2) > 7 {
                     gaps_detected.push(serde_json::json!({
@@ -190,10 +222,10 @@ impl PatternDetector {
             "gaps_found": gaps_detected.len(),
             "gaps_details": gaps_detected,
             "severity": if gaps_detected.len() > 3 { "HIGH" } else { "MEDIUM" },
-            "recommendation": if pattern_detected { 
-                "Significant communication gaps detected. Consider establishing regular communication protocols." 
-            } else { 
-                "Communication frequency appears adequate." 
+            "recommendation": if pattern_detected {
+                "Significant communication gaps detected. Consider establishing regular communication protocols."
+            } else {
+                "Communication frequency appears adequate."
             }
         });
 
@@ -209,22 +241,28 @@ impl PatternDetector {
     /// Detect evidence correlations in timeline
     fn detect_evidence_correlations(&self, events: &[Value]) -> Result<AiInsight, AiError> {
         if events.is_empty() {
-            return Err(AiError::ModelError("No timeline events to analyze".to_string()));
+            return Err(AiError::ModelError(
+                "No timeline events to analyze".to_string(),
+            ));
         }
 
         let mut correlations = Vec::new();
-        let evidence_events: Vec<&Value> = events.iter()
+        let evidence_events: Vec<&Value> = events
+            .iter()
             .filter(|event| {
-                event.get("event_type")
+                event
+                    .get("event_type")
                     .and_then(|t| t.as_str())
                     .map(|t| t.contains("evidence") || t.contains("document"))
                     .unwrap_or(false)
             })
             .collect();
 
-        let denial_events: Vec<&Value> = events.iter()
+        let denial_events: Vec<&Value> = events
+            .iter()
             .filter(|event| {
-                event.get("event_type")
+                event
+                    .get("event_type")
                     .and_then(|t| t.as_str())
                     .map(|t| t.contains("denial") || t.contains("placement"))
                     .unwrap_or(false)
@@ -236,7 +274,7 @@ impl PatternDetector {
             for denial in &denial_events {
                 if let (Some(ev_date), Some(den_date)) = (
                     evidence.get("event_date").and_then(|d| d.as_str()),
-                    denial.get("event_date").and_then(|d| d.as_str())
+                    denial.get("event_date").and_then(|d| d.as_str()),
                 ) {
                     if Self::days_between_dates(ev_date, den_date).abs() <= 7 {
                         correlations.push(serde_json::json!({
@@ -261,10 +299,10 @@ impl PatternDetector {
             "correlations": correlations,
             "evidence_events_count": evidence_events.len(),
             "denial_events_count": denial_events.len(),
-            "recommendation": if pattern_detected { 
-                "Strong correlations found between evidence and denial events. Review for causal relationships." 
-            } else { 
-                "No significant evidence-denial correlations detected." 
+            "recommendation": if pattern_detected {
+                "Strong correlations found between evidence and denial events. Review for causal relationships."
+            } else {
+                "No significant evidence-denial correlations detected."
             }
         });
 
@@ -298,7 +336,10 @@ impl PatternDetector {
                 detection_criteria: {
                     let mut criteria = HashMap::new();
                     criteria.insert("max_gap_days".to_string(), serde_json::json!(7));
-                    criteria.insert("critical_periods".to_string(), serde_json::json!(["pre_placement", "post_denial"]));
+                    criteria.insert(
+                        "critical_periods".to_string(),
+                        serde_json::json!(["pre_placement", "post_denial"]),
+                    );
                     criteria
                 },
                 severity_weight: 0.6,
@@ -309,7 +350,10 @@ impl PatternDetector {
                 pattern_type: "timeline".to_string(),
                 detection_criteria: {
                     let mut criteria = HashMap::new();
-                    criteria.insert("evidence_types".to_string(), serde_json::json!(["document", "communication"]));
+                    criteria.insert(
+                        "evidence_types".to_string(),
+                        serde_json::json!(["document", "communication"]),
+                    );
                     criteria.insert("correlation_threshold".to_string(), serde_json::json!(0.8));
                     criteria
                 },

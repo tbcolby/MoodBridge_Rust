@@ -1,7 +1,7 @@
 use crate::ai::{AiError, AiInsight, InsightType};
+use chrono::Utc;
 use serde_json::Value;
 use std::collections::HashMap;
-use chrono::Utc;
 
 /// Legal analytics service for statistical analysis
 pub struct LegalAnalytics;
@@ -10,7 +10,7 @@ impl LegalAnalytics {
     /// Analyze placement denial patterns
     pub fn analyze_placement_patterns(denials: &[Value]) -> Result<Vec<AiInsight>, AiError> {
         let mut insights = Vec::new();
-        
+
         if denials.is_empty() {
             return Ok(insights);
         }
@@ -33,16 +33,18 @@ impl LegalAnalytics {
     }
 
     /// Analyze communication patterns
-    pub fn analyze_communication_patterns(communications: &[Value]) -> Result<Vec<AiInsight>, AiError> {
+    pub fn analyze_communication_patterns(
+        communications: &[Value],
+    ) -> Result<Vec<AiInsight>, AiError> {
         let mut insights = Vec::new();
-        
+
         if communications.is_empty() {
             return Ok(insights);
         }
 
         // Analyze communication frequency
         let frequency_data = Self::calculate_communication_frequency(communications);
-        
+
         let insight = AiInsight {
             insight_type: InsightType::Pattern,
             confidence_score: 0.8,
@@ -64,22 +66,25 @@ impl LegalAnalytics {
     pub fn generate_case_statistics(
         denials: &[Value],
         communications: &[Value],
-        timeline_events: &[Value]
+        timeline_events: &[Value],
     ) -> Result<AiInsight, AiError> {
         let total_denials = denials.len();
         let total_communications = communications.len();
         let total_events = timeline_events.len();
 
         // Calculate total lost hours
-        let total_lost_hours: f64 = denials.iter()
+        let total_lost_hours: f64 = denials
+            .iter()
             .filter_map(|denial| denial.get("duration_hours"))
             .filter_map(|hours| hours.as_f64())
             .sum();
 
         // Calculate risk metrics
-        let high_risk_denials = denials.iter()
+        let high_risk_denials = denials
+            .iter()
             .filter(|denial| {
-                denial.get("ai_risk_score")
+                denial
+                    .get("ai_risk_score")
                     .and_then(|score| score.as_f64())
                     .map(|score| score > 0.7)
                     .unwrap_or(false)
@@ -115,7 +120,7 @@ impl LegalAnalytics {
 
     fn analyze_denial_frequency(denials: &[Value]) -> Result<AiInsight, AiError> {
         let mut monthly_counts: HashMap<String, usize> = HashMap::new();
-        
+
         for denial in denials {
             if let Some(date_str) = denial.get("denied_date").and_then(|d| d.as_str()) {
                 // Extract year-month from date string
@@ -129,8 +134,8 @@ impl LegalAnalytics {
             "monthly_breakdown": monthly_counts,
             "total_denials": denials.len(),
             "peak_month": monthly_counts.iter().max_by_key(|(_, &count)| count).map(|(month, _)| month),
-            "average_per_month": if !monthly_counts.is_empty() { 
-                denials.len() as f64 / monthly_counts.len() as f64 
+            "average_per_month": if !monthly_counts.is_empty() {
+                denials.len() as f64 / monthly_counts.len() as f64
             } else { 0.0 }
         });
 
@@ -144,13 +149,16 @@ impl LegalAnalytics {
     }
 
     fn analyze_duration_patterns(denials: &[Value]) -> Result<AiInsight, AiError> {
-        let durations: Vec<f64> = denials.iter()
+        let durations: Vec<f64> = denials
+            .iter()
             .filter_map(|denial| denial.get("duration_hours"))
             .filter_map(|hours| hours.as_f64())
             .collect();
 
         if durations.is_empty() {
-            return Err(AiError::ModelError("No duration data available".to_string()));
+            return Err(AiError::ModelError(
+                "No duration data available".to_string(),
+            ));
         }
 
         let total_duration: f64 = durations.iter().sum();
@@ -178,7 +186,7 @@ impl LegalAnalytics {
 
     fn analyze_denial_reasons(denials: &[Value]) -> Result<AiInsight, AiError> {
         let mut reason_counts: HashMap<String, usize> = HashMap::new();
-        
+
         for denial in denials {
             if let Some(reason) = denial.get("denial_reason").and_then(|r| r.as_str()) {
                 *reason_counts.entry(reason.to_string()).or_insert(0) += 1;
@@ -203,14 +211,14 @@ impl LegalAnalytics {
 
     fn calculate_communication_frequency(communications: &[Value]) -> HashMap<String, usize> {
         let mut frequency_map: HashMap<String, usize> = HashMap::new();
-        
+
         for comm in communications {
             if let Some(date_str) = comm.get("communication_date").and_then(|d| d.as_str()) {
                 let month_key = date_str.split('-').take(2).collect::<Vec<_>>().join("-");
                 *frequency_map.entry(month_key).or_insert(0) += 1;
             }
         }
-        
+
         frequency_map
     }
 }

@@ -1,12 +1,12 @@
+pub mod analytics;
+pub mod core_engine;
+pub mod fabric_integration;
 pub mod llm;
 pub mod patterns;
-pub mod analytics;
-pub mod fabric_integration;
-pub mod core_engine;
 
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use chrono::{DateTime, Utc};
 
 /// AI Insight types for legal analysis
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -61,9 +61,16 @@ pub struct AnalysisResponse {
 /// Main AI service trait
 #[async_trait::async_trait]
 pub trait AiService {
-    async fn analyze_document(&self, content: &str, document_type: &str) -> Result<AnalysisResponse, AiError>;
+    async fn analyze_document(
+        &self,
+        content: &str,
+        document_type: &str,
+    ) -> Result<AnalysisResponse, AiError>;
     async fn detect_patterns(&self, data: &serde_json::Value) -> Result<Vec<AiInsight>, AiError>;
-    async fn generate_timeline_events(&self, context: &str) -> Result<Vec<serde_json::Value>, AiError>;
+    async fn generate_timeline_events(
+        &self,
+        context: &str,
+    ) -> Result<Vec<serde_json::Value>, AiError>;
     async fn assess_risk(&self, placement_denial: &serde_json::Value) -> Result<f64, AiError>;
     async fn analyze_communication_sentiment(&self, message: &str) -> Result<f64, AiError>;
 }

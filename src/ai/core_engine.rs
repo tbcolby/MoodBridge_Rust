@@ -1,10 +1,10 @@
-use crate::ai::{AiConfig, AiError, AiInsight, InsightType, AnalysisResponse};
+use crate::ai::{AiConfig, AiError, AiInsight, AnalysisResponse, InsightType};
+use chrono::Utc;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, VecDeque};
 use std::sync::{Arc, Mutex};
-use chrono::Utc;
-use tokio::time::{Duration, timeout};
+use tokio::time::{timeout, Duration};
 
 /// Advanced AI Core Engine with multi-modal capabilities
 pub struct AiCoreEngine {
@@ -165,7 +165,9 @@ impl AiCoreEngine {
             .build()
             .expect("Failed to create HTTP client");
 
-        let context_memory = Arc::new(Mutex::new(VecDeque::with_capacity(config.context_memory_size)));
+        let context_memory = Arc::new(Mutex::new(VecDeque::with_capacity(
+            config.context_memory_size,
+        )));
         let session_state = Arc::new(Mutex::new(SessionState::default()));
         let predictive_models = PredictiveModels::new();
 
@@ -179,56 +181,73 @@ impl AiCoreEngine {
     }
 
     /// Process advanced AI prompt with multi-modal capabilities
-    pub async fn process_advanced_prompt(&self, request: AdvancedPromptRequest) -> Result<AdvancedAiResponse, AiError> {
+    pub async fn process_advanced_prompt(
+        &self,
+        request: AdvancedPromptRequest,
+    ) -> Result<AdvancedAiResponse, AiError> {
         let start_time = std::time::Instant::now();
-        
+
         // 1. Intent Detection and Context Analysis
-        let detected_intent = self.detect_intent(&request.input, &request.input_type).await?;
+        let detected_intent = self
+            .detect_intent(&request.input, &request.input_type)
+            .await?;
         let enriched_context = self.enrich_context(&request, &detected_intent).await?;
-        
+
         // 2. Generate embeddings for context understanding
         let embedding = if self.config.enable_predictive_analytics {
             Some(self.generate_embeddings(&request.input).await?)
         } else {
             None
         };
-        
+
         // 3. Retrieve relevant context from memory
-        let relevant_context = self.retrieve_relevant_context(&request.input, embedding.as_ref()).await?;
-        
+        let relevant_context = self
+            .retrieve_relevant_context(&request.input, embedding.as_ref())
+            .await?;
+
         // 4. Generate primary response
-        let primary_response = self.generate_contextual_response(&request, &enriched_context, &relevant_context).await?;
-        
+        let primary_response = self
+            .generate_contextual_response(&request, &enriched_context, &relevant_context)
+            .await?;
+
         // 5. Generate suggested actions
-        let suggested_actions = self.generate_suggested_actions(&detected_intent, &enriched_context).await?;
-        
+        let suggested_actions = self
+            .generate_suggested_actions(&detected_intent, &enriched_context)
+            .await?;
+
         // 6. Perform risk analysis
         let risk_alerts = self.analyze_risks(&enriched_context).await?;
-        
+
         // 7. Generate contextual insights
         let contextual_insights = self.generate_contextual_insights(&enriched_context).await?;
-        
+
         // 8. Generate follow-up questions
-        let follow_up_questions = self.generate_follow_up_questions(&detected_intent, &primary_response).await?;
-        
+        let follow_up_questions = self
+            .generate_follow_up_questions(&detected_intent, &primary_response)
+            .await?;
+
         // 9. Extract citations if required
         let citations = if request.require_citations {
-            self.extract_citations(&primary_response, &enriched_context).await?
+            self.extract_citations(&primary_response, &enriched_context)
+                .await?
         } else {
             Vec::new()
         };
-        
+
         // 10. Calculate confidence score
-        let confidence = self.calculate_response_confidence(&primary_response, &suggested_actions, &risk_alerts);
-        
+        let confidence =
+            self.calculate_response_confidence(&primary_response, &suggested_actions, &risk_alerts);
+
         // 11. Store interaction in memory
-        self.store_interaction_context(&request, &primary_response, confidence, embedding).await?;
-        
+        self.store_interaction_context(&request, &primary_response, confidence, embedding)
+            .await?;
+
         // 12. Update user patterns
-        self.update_interaction_patterns(&detected_intent, confidence).await?;
-        
+        self.update_interaction_patterns(&detected_intent, confidence)
+            .await?;
+
         let processing_time = start_time.elapsed().as_millis();
-        
+
         Ok(AdvancedAiResponse {
             primary_response,
             confidence,
@@ -254,7 +273,10 @@ impl AiCoreEngine {
     }
 
     /// Real-time monitoring and proactive assistance
-    pub async fn monitor_and_assist(&self, current_context: &HashMap<String, serde_json::Value>) -> Result<Vec<SuggestedAction>, AiError> {
+    pub async fn monitor_and_assist(
+        &self,
+        current_context: &HashMap<String, serde_json::Value>,
+    ) -> Result<Vec<SuggestedAction>, AiError> {
         if !self.config.enable_real_time_monitoring {
             return Ok(Vec::new());
         }
@@ -262,17 +284,32 @@ impl AiCoreEngine {
         let mut suggestions = Vec::new();
 
         // Monitor for risk patterns
-        if let Some(risk_suggestions) = self.predictive_models.risk_predictor.analyze_current_state(current_context).await? {
+        if let Some(risk_suggestions) = self
+            .predictive_models
+            .risk_predictor
+            .analyze_current_state(current_context)
+            .await?
+        {
             suggestions.extend(risk_suggestions);
         }
 
         // Monitor for trend opportunities
-        if let Some(trend_suggestions) = self.predictive_models.trend_analyzer.identify_opportunities(current_context).await? {
+        if let Some(trend_suggestions) = self
+            .predictive_models
+            .trend_analyzer
+            .identify_opportunities(current_context)
+            .await?
+        {
             suggestions.extend(trend_suggestions);
         }
 
         // Generate proactive recommendations
-        if let Some(proactive_recommendations) = self.predictive_models.recommendation_engine.generate_proactive(current_context).await? {
+        if let Some(proactive_recommendations) = self
+            .predictive_models
+            .recommendation_engine
+            .generate_proactive(current_context)
+            .await?
+        {
             suggestions.extend(proactive_recommendations);
         }
 
@@ -280,15 +317,20 @@ impl AiCoreEngine {
     }
 
     /// Voice processing capability
-    pub async fn process_voice_input(&self, audio_data: &[u8]) -> Result<AdvancedAiResponse, AiError> {
+    pub async fn process_voice_input(
+        &self,
+        audio_data: &[u8],
+    ) -> Result<AdvancedAiResponse, AiError> {
         if !self.config.enable_voice_processing {
-            return Err(AiError::ConfigError("Voice processing not enabled".to_string()));
+            return Err(AiError::ConfigError(
+                "Voice processing not enabled".to_string(),
+            ));
         }
 
         // Placeholder for voice-to-text processing
         // In a real implementation, this would use a speech recognition service
         let transcribed_text = self.transcribe_audio(audio_data).await?;
-        
+
         let request = AdvancedPromptRequest {
             input: transcribed_text,
             input_type: InputType::Voice,
@@ -310,21 +352,36 @@ impl AiCoreEngine {
             input_type, input
         );
 
-        let response = self.call_llm(&intent_prompt, &self.config.default_model).await?;
+        let response = self
+            .call_llm(&intent_prompt, &self.config.default_model)
+            .await?;
         Ok(response.trim().to_lowercase())
     }
 
-    async fn enrich_context(&self, request: &AdvancedPromptRequest, intent: &str) -> Result<HashMap<String, serde_json::Value>, AiError> {
+    async fn enrich_context(
+        &self,
+        request: &AdvancedPromptRequest,
+        intent: &str,
+    ) -> Result<HashMap<String, serde_json::Value>, AiError> {
         let mut context = request.context.clone().unwrap_or_default();
-        
+
         // Add intent information
-        context.insert("detected_intent".to_string(), serde_json::Value::String(intent.to_string()));
-        
+        context.insert(
+            "detected_intent".to_string(),
+            serde_json::Value::String(intent.to_string()),
+        );
+
         // Add session information
         let session = self.session_state.lock().unwrap();
-        context.insert("user_expertise".to_string(), serde_json::to_value(&session.expertise_level)?);
-        context.insert("risk_tolerance".to_string(), serde_json::Value::from(session.risk_tolerance));
-        
+        context.insert(
+            "user_expertise".to_string(),
+            serde_json::to_value(&session.expertise_level)?,
+        );
+        context.insert(
+            "risk_tolerance".to_string(),
+            serde_json::Value::from(session.risk_tolerance),
+        );
+
         Ok(context)
     }
 
@@ -334,35 +391,54 @@ impl AiCoreEngine {
         Ok(vec![0.0; 1536]) // Standard embedding dimension
     }
 
-    async fn retrieve_relevant_context(&self, input: &str, embedding: Option<&Vec<f32>>) -> Result<Vec<ConversationContext>, AiError> {
+    async fn retrieve_relevant_context(
+        &self,
+        input: &str,
+        embedding: Option<&Vec<f32>>,
+    ) -> Result<Vec<ConversationContext>, AiError> {
         let memory = self.context_memory.lock().unwrap();
-        
+
         // Simple text-based similarity for now
         let relevant: Vec<ConversationContext> = memory
             .iter()
             .filter(|ctx| {
-                ctx.user_input.to_lowercase().contains(&input.to_lowercase()) ||
-                input.to_lowercase().contains(&ctx.user_input.to_lowercase())
+                ctx.user_input
+                    .to_lowercase()
+                    .contains(&input.to_lowercase())
+                    || input
+                        .to_lowercase()
+                        .contains(&ctx.user_input.to_lowercase())
             })
             .take(5)
             .cloned()
             .collect();
-        
+
         Ok(relevant)
     }
 
-    async fn generate_contextual_response(&self, request: &AdvancedPromptRequest, context: &HashMap<String, serde_json::Value>, relevant_context: &[ConversationContext]) -> Result<String, AiError> {
+    async fn generate_contextual_response(
+        &self,
+        request: &AdvancedPromptRequest,
+        context: &HashMap<String, serde_json::Value>,
+        relevant_context: &[ConversationContext],
+    ) -> Result<String, AiError> {
         let context_str = if !relevant_context.is_empty() {
-            format!("Previous relevant interactions:\n{}\n\n", 
-                relevant_context.iter()
+            format!(
+                "Previous relevant interactions:\n{}\n\n",
+                relevant_context
+                    .iter()
                     .map(|ctx| format!("User: {}\nAssistant: {}", ctx.user_input, ctx.ai_response))
                     .collect::<Vec<_>>()
-                    .join("\n"))
+                    .join("\n")
+            )
         } else {
             String::new()
         };
 
-        let style = request.style_preference.as_deref().unwrap_or("professional");
+        let style = request
+            .style_preference
+            .as_deref()
+            .unwrap_or("professional");
         let max_length = request.max_response_length.unwrap_or(1000);
 
         let prompt = format!(
@@ -373,7 +449,11 @@ impl AiCoreEngine {
         self.call_llm(&prompt, &self.config.advanced_model).await
     }
 
-    async fn generate_suggested_actions(&self, intent: &str, context: &HashMap<String, serde_json::Value>) -> Result<Vec<SuggestedAction>, AiError> {
+    async fn generate_suggested_actions(
+        &self,
+        intent: &str,
+        context: &HashMap<String, serde_json::Value>,
+    ) -> Result<Vec<SuggestedAction>, AiError> {
         let mut actions = Vec::new();
 
         match intent {
@@ -390,7 +470,7 @@ impl AiCoreEngine {
                         "Generate insights report".to_string(),
                     ],
                 });
-            },
+            }
             "query" => {
                 actions.push(SuggestedAction {
                     action_type: "provide_information".to_string(),
@@ -404,7 +484,7 @@ impl AiCoreEngine {
                         "Format results".to_string(),
                     ],
                 });
-            },
+            }
             _ => {
                 actions.push(SuggestedAction {
                     action_type: "general_assistance".to_string(),
@@ -420,12 +500,18 @@ impl AiCoreEngine {
         Ok(actions)
     }
 
-    async fn analyze_risks(&self, context: &HashMap<String, serde_json::Value>) -> Result<Vec<RiskAlert>, AiError> {
+    async fn analyze_risks(
+        &self,
+        context: &HashMap<String, serde_json::Value>,
+    ) -> Result<Vec<RiskAlert>, AiError> {
         // Placeholder for advanced risk analysis
         Ok(Vec::new())
     }
 
-    async fn generate_contextual_insights(&self, context: &HashMap<String, serde_json::Value>) -> Result<Vec<AiInsight>, AiError> {
+    async fn generate_contextual_insights(
+        &self,
+        context: &HashMap<String, serde_json::Value>,
+    ) -> Result<Vec<AiInsight>, AiError> {
         let insight = AiInsight {
             insight_type: InsightType::Recommendation,
             confidence_score: 0.85,
@@ -440,7 +526,11 @@ impl AiCoreEngine {
         Ok(vec![insight])
     }
 
-    async fn generate_follow_up_questions(&self, intent: &str, response: &str) -> Result<Vec<String>, AiError> {
+    async fn generate_follow_up_questions(
+        &self,
+        intent: &str,
+        response: &str,
+    ) -> Result<Vec<String>, AiError> {
         let questions = match intent {
             "analysis_request" => vec![
                 "Would you like me to drill down into any specific aspect?".to_string(),
@@ -460,12 +550,21 @@ impl AiCoreEngine {
         Ok(questions)
     }
 
-    async fn extract_citations(&self, response: &str, context: &HashMap<String, serde_json::Value>) -> Result<Vec<Citation>, AiError> {
+    async fn extract_citations(
+        &self,
+        response: &str,
+        context: &HashMap<String, serde_json::Value>,
+    ) -> Result<Vec<Citation>, AiError> {
         // Placeholder for citation extraction
         Ok(Vec::new())
     }
 
-    fn calculate_response_confidence(&self, response: &str, actions: &[SuggestedAction], alerts: &[RiskAlert]) -> f64 {
+    fn calculate_response_confidence(
+        &self,
+        response: &str,
+        actions: &[SuggestedAction],
+        alerts: &[RiskAlert],
+    ) -> f64 {
         let base_confidence = 0.7;
         let length_factor = (response.len() as f64 / 500.0).min(1.0) * 0.1;
         let action_factor = (actions.len() as f64 * 0.05).min(0.15);
@@ -474,7 +573,13 @@ impl AiCoreEngine {
         (base_confidence + length_factor + action_factor + alert_factor).min(1.0)
     }
 
-    async fn store_interaction_context(&self, request: &AdvancedPromptRequest, response: &str, confidence: f64, embedding: Option<Vec<f32>>) -> Result<(), AiError> {
+    async fn store_interaction_context(
+        &self,
+        request: &AdvancedPromptRequest,
+        response: &str,
+        confidence: f64,
+        embedding: Option<Vec<f32>>,
+    ) -> Result<(), AiError> {
         let context = ConversationContext {
             timestamp: Utc::now(),
             user_input: request.input.clone(),
@@ -487,7 +592,7 @@ impl AiCoreEngine {
 
         let mut memory = self.context_memory.lock().unwrap();
         memory.push_back(context);
-        
+
         if memory.len() > self.config.context_memory_size {
             memory.pop_front();
         }
@@ -495,11 +600,19 @@ impl AiCoreEngine {
         Ok(())
     }
 
-    async fn update_interaction_patterns(&self, intent: &str, confidence: f64) -> Result<(), AiError> {
+    async fn update_interaction_patterns(
+        &self,
+        intent: &str,
+        confidence: f64,
+    ) -> Result<(), AiError> {
         let mut session = self.session_state.lock().unwrap();
-        
+
         // Update or create interaction pattern
-        if let Some(pattern) = session.interaction_patterns.iter_mut().find(|p| p.pattern_type == intent) {
+        if let Some(pattern) = session
+            .interaction_patterns
+            .iter_mut()
+            .find(|p| p.pattern_type == intent)
+        {
             pattern.frequency += 1;
             pattern.effectiveness = (pattern.effectiveness + confidence) / 2.0;
             pattern.last_used = Utc::now();
@@ -521,7 +634,9 @@ impl AiCoreEngine {
     }
 
     async fn call_llm(&self, prompt: &str, model: &str) -> Result<String, AiError> {
-        let api_key = self.config.openai_api_key
+        let api_key = self
+            .config
+            .openai_api_key
             .as_ref()
             .ok_or_else(|| AiError::ConfigError("OpenAI API key not configured".to_string()))?;
 
@@ -541,17 +656,21 @@ impl AiCoreEngine {
                 .header("Authorization", format!("Bearer {}", api_key))
                 .header("Content-Type", "application/json")
                 .json(&request_body)
-                .send()
-        ).await
+                .send(),
+        )
+        .await
         .map_err(|_| AiError::TimeoutError)?
         .map_err(AiError::ApiError)?;
 
         if !response.status().is_success() {
-            return Err(AiError::ModelError(format!("API error: {}", response.status())));
+            return Err(AiError::ModelError(format!(
+                "API error: {}",
+                response.status()
+            )));
         }
 
         let response_json: serde_json::Value = response.json().await.map_err(AiError::ApiError)?;
-        
+
         Ok(response_json["choices"][0]["message"]["content"]
             .as_str()
             .unwrap_or("No response")
@@ -587,25 +706,40 @@ pub struct TrendAnalyzer;
 pub struct RecommendationEngine;
 
 impl RiskPredictor {
-    fn new() -> Self { Self }
-    
-    async fn analyze_current_state(&self, _context: &HashMap<String, serde_json::Value>) -> Result<Option<Vec<SuggestedAction>>, AiError> {
+    fn new() -> Self {
+        Self
+    }
+
+    async fn analyze_current_state(
+        &self,
+        _context: &HashMap<String, serde_json::Value>,
+    ) -> Result<Option<Vec<SuggestedAction>>, AiError> {
         Ok(None)
     }
 }
 
 impl TrendAnalyzer {
-    fn new() -> Self { Self }
-    
-    async fn identify_opportunities(&self, _context: &HashMap<String, serde_json::Value>) -> Result<Option<Vec<SuggestedAction>>, AiError> {
+    fn new() -> Self {
+        Self
+    }
+
+    async fn identify_opportunities(
+        &self,
+        _context: &HashMap<String, serde_json::Value>,
+    ) -> Result<Option<Vec<SuggestedAction>>, AiError> {
         Ok(None)
     }
 }
 
 impl RecommendationEngine {
-    fn new() -> Self { Self }
-    
-    async fn generate_proactive(&self, _context: &HashMap<String, serde_json::Value>) -> Result<Option<Vec<SuggestedAction>>, AiError> {
+    fn new() -> Self {
+        Self
+    }
+
+    async fn generate_proactive(
+        &self,
+        _context: &HashMap<String, serde_json::Value>,
+    ) -> Result<Option<Vec<SuggestedAction>>, AiError> {
         Ok(None)
     }
 }

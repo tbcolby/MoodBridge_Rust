@@ -1,8 +1,10 @@
-use crate::ai::{AiConfig, AiError, AiService, AnalysisRequest, AnalysisResponse, AiInsight, InsightType};
+use crate::ai::{
+    AiConfig, AiError, AiInsight, AiService, AnalysisRequest, AnalysisResponse, InsightType,
+};
+use chrono::Utc;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::time::Instant;
-use chrono::Utc;
 
 /// OpenAI API service implementation
 pub struct OpenAiService {
@@ -18,7 +20,9 @@ impl OpenAiService {
 
     /// Create a completion request to OpenAI API
     async fn create_completion(&self, messages: Vec<OpenAiMessage>) -> Result<String, AiError> {
-        let api_key = self.config.openai_api_key
+        let api_key = self
+            .config
+            .openai_api_key
             .as_ref()
             .ok_or_else(|| AiError::ConfigError("OpenAI API key not configured".to_string()))?;
 
@@ -29,7 +33,8 @@ impl OpenAiService {
             max_tokens: Some(1000),
         };
 
-        let response = self.client
+        let response = self
+            .client
             .post(&format!("{}/chat/completions", self.config.openai_base_url))
             .header("Authorization", format!("Bearer {}", api_key))
             .header("Content-Type", "application/json")
@@ -38,13 +43,17 @@ impl OpenAiService {
             .await?;
 
         if !response.status().is_success() {
-            let error_text = response.text().await.unwrap_or_else(|_| "Unknown error".to_string());
+            let error_text = response
+                .text()
+                .await
+                .unwrap_or_else(|_| "Unknown error".to_string());
             return Err(AiError::ConfigError(format!("API error: {}", error_text)));
         }
 
         let openai_response: OpenAiResponse = response.json().await?;
-        
-        Ok(openai_response.choices
+
+        Ok(openai_response
+            .choices
             .first()
             .ok_or_else(|| AiError::ModelError("No response from model".to_string()))?
             .message
@@ -55,9 +64,13 @@ impl OpenAiService {
 
 #[async_trait::async_trait]
 impl AiService for OpenAiService {
-    async fn analyze_document(&self, content: &str, document_type: &str) -> Result<AnalysisResponse, AiError> {
+    async fn analyze_document(
+        &self,
+        content: &str,
+        document_type: &str,
+    ) -> Result<AnalysisResponse, AiError> {
         let start_time = Instant::now();
-        
+
         let system_message = OpenAiMessage {
             role: "system".to_string(),
             content: format!(
@@ -71,24 +84,24 @@ impl AiService for OpenAiService {
             content: content.to_string(),
         };
 
-        let response_content = self.create_completion(vec![system_message, user_message]).await?;
-        
+        let response_content = self
+            .create_completion(vec![system_message, user_message])
+            .await?;
+
         let processing_time = start_time.elapsed().as_millis();
 
         // Create insights from the response
-        let insights = vec![
-            AiInsight {
-                insight_type: InsightType::DocumentAnalysis,
-                confidence_score: 0.8,
-                data: serde_json::json!({
-                    "analysis": response_content,
-                    "document_type": document_type,
-                    "content_length": content.len()
-                }),
-                generated_by: "openai_gpt".to_string(),
-                created_at: Utc::now(),
-            }
-        ];
+        let insights = vec![AiInsight {
+            insight_type: InsightType::DocumentAnalysis,
+            confidence_score: 0.8,
+            data: serde_json::json!({
+                "analysis": response_content,
+                "document_type": document_type,
+                "content_length": content.len()
+            }),
+            generated_by: "openai_gpt".to_string(),
+            created_at: Utc::now(),
+        }];
 
         Ok(AnalysisResponse {
             success: true,
@@ -102,7 +115,7 @@ impl AiService for OpenAiService {
 
     async fn detect_patterns(&self, data: &serde_json::Value) -> Result<Vec<AiInsight>, AiError> {
         let start_time = Instant::now();
-        
+
         let system_message = OpenAiMessage {
             role: "system".to_string(),
             content: "You are a legal pattern detection expert. Analyze the provided data for patterns related to placement denials, violations, and other legal anomalies. Provide structured insights about any patterns detected.".to_string(),
@@ -113,25 +126,28 @@ impl AiService for OpenAiService {
             content: serde_json::to_string_pretty(data)?,
         };
 
-        let response_content = self.create_completion(vec![system_message, user_message]).await?;
+        let response_content = self
+            .create_completion(vec![system_message, user_message])
+            .await?;
 
-        let insights = vec![
-            AiInsight {
-                insight_type: InsightType::Pattern,
-                confidence_score: 0.75,
-                data: serde_json::json!({
-                    "pattern_analysis": response_content,
-                    "data_processed": true
-                }),
-                generated_by: "openai_pattern_detector".to_string(),
-                created_at: Utc::now(),
-            }
-        ];
+        let insights = vec![AiInsight {
+            insight_type: InsightType::Pattern,
+            confidence_score: 0.75,
+            data: serde_json::json!({
+                "pattern_analysis": response_content,
+                "data_processed": true
+            }),
+            generated_by: "openai_pattern_detector".to_string(),
+            created_at: Utc::now(),
+        }];
 
         Ok(insights)
     }
 
-    async fn generate_timeline_events(&self, context: &str) -> Result<Vec<serde_json::Value>, AiError> {
+    async fn generate_timeline_events(
+        &self,
+        context: &str,
+    ) -> Result<Vec<serde_json::Value>, AiError> {
         let system_message = OpenAiMessage {
             role: "system".to_string(),
             content: "You are a legal timeline expert. Based on the provided context, generate relevant timeline events that should be tracked for this legal case. Return a JSON array of timeline events with date, type, title, description, and importance level.".to_string(),
@@ -142,8 +158,10 @@ impl AiService for OpenAiService {
             content: context.to_string(),
         };
 
-        let response_content = self.create_completion(vec![system_message, user_message]).await?;
-        
+        let response_content = self
+            .create_completion(vec![system_message, user_message])
+            .await?;
+
         // Parse the response as JSON array of timeline events
         match serde_json::from_str::<Vec<serde_json::Value>>(&response_content) {
             Ok(events) => Ok(events),
@@ -171,8 +189,10 @@ impl AiService for OpenAiService {
             content: serde_json::to_string_pretty(placement_denial)?,
         };
 
-        let response_content = self.create_completion(vec![system_message, user_message]).await?;
-        
+        let response_content = self
+            .create_completion(vec![system_message, user_message])
+            .await?;
+
         // Try to parse a numeric risk score from the response
         let risk_score = response_content
             .split_whitespace()
@@ -193,8 +213,10 @@ impl AiService for OpenAiService {
             content: message.to_string(),
         };
 
-        let response_content = self.create_completion(vec![system_message, user_message]).await?;
-        
+        let response_content = self
+            .create_completion(vec![system_message, user_message])
+            .await?;
+
         // Try to parse a numeric sentiment score from the response
         let sentiment_score = response_content
             .split_whitespace()

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodBridge Diff Viewer</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.31.1/min/vs/editor/editor.main.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.31.1/min/vs/loader.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+        #editorContainer {
+            flex: 1;
+            display: flex;
+            border: 1px solid #ddd;
+        }
+        .editor {
+            flex: 1;
+        }
+        #controls {
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+<div id="controls">
+    <button onclick="commitChanges()">Commit Changes</button>
+</div>
+<div id="editorContainer">
+    <div id="originalEditor" class="editor"></div>
+    <div id="modifiedEditor" class="editor"></div>
+</div>
+<script>
+    require.config({ paths: { "vs": "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.31.1/min/vs" }});
+    require(["vs/editor/editor.main"], function() {
+        const originalEditor = monaco.editor.create(document.getElementById('originalEditor'), {
+            value: `Original file content will be loaded here`,
+            language: 'markdown',
+            readOnly: true
+        });
+        const modifiedEditor = monaco.editor.create(document.getElementById('modifiedEditor'), {
+            value: `Modified file content will be loaded here`,
+            language: 'markdown'
+        });
+
+        window.commitChanges = function() {
+            const modifiedContent = modifiedEditor.getValue();
+            fetch('/api/commit-changes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: modifiedContent })
+            }).then(response => {
+                if (response.ok) {
+                    alert('Changes successfully committed!');
+                } else {
+                    alert('Failed to commit changes.');
+                }
+            });
+        };
+    });
+</script>
+</body>
+</html>
