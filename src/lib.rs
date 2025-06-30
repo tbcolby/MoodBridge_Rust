@@ -6,5 +6,5 @@ pub mod demo_app;
 // pub mod algorithms;
 pub mod warp_command;
 pub mod trailhead;
-pub mod integrations;
+// pub mod integrations;
 pub mod bicycle;
