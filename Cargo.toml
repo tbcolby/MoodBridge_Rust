@@ -74,6 +74,24 @@ metrics-prometheus = "0.7"
 tower_governor = "0.3"
 headers = "0.3"
 
+# Email and Communication
+lettre = "0.11"
+handlebars = "4.0"
+
+# PDF Generation
+wkhtmltopdf = "0.3"
+
+# Excel/CSV Export
+csv = "1.0"
+rust_xlsxwriter = "0.64"
+
+# Payment Processing
+async-stripe = "1.0.0-alpha.2"
+
+# File Upload and Storage
+multipart = "0.18"
+aws-sdk-s3 = "1.0"
+
 # Testing (dev dependencies)
 [dev-dependencies]
 tokio-test = "0.4"

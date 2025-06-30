@@ -611,3 +611,8 @@ async fn generate_fallback_response(prompt: &str, pool: &DbPool) -> Result<Value
 
     Ok(response)
 }
+
+// Fallback handler for unmatched routes
+pub async fn handle_fallback() -> Html<String> {
+    Html("<h1>404 - Page Not Found</h1><p>The requested resource was not found.</p>".to_string())
+}

@@ -5,9 +5,12 @@ use crate::{
     db::{create_pool, run_migrations, seed_sample_data},
     error::AppError,
 };
+use axum::routing::{delete, post, put};
 use axum::{routing::get, Router};
+use sqlx::{Pool, Sqlite};
 use std::{env, net::SocketAddr, time::Duration};
 use tower::ServiceBuilder;
+use tower_http::services::ServeDir;
 use tower_http::{
     cors::{Any, CorsLayer},
     limit::RequestBodyLimitLayer,
@@ -80,23 +83,7 @@ async fn startup() -> Result<(), Box<dyn std::error::Error>> {
 
     // Step 5: Build application routes
     tracing::info!("🛠️  Building application routes...");
-    let app = Router::new()
-        .route("/", get(handlers::dashboard))
-        .route("/diff", get(handlers::diff_viewer))
-        .route("/api/health", get(handlers::health_check))
-        .route("/api/dashboard-data", get(handlers::dashboard_data))
-        .route("/api/ai-prompt", axum::routing::post(handlers::ai_prompt))
-        .route("/api/ai-monitor", get(handlers::ai_monitor))
-        .route("/api/ai-voice", axum::routing::post(handlers::ai_voice))
-        .route("/api/diff-data", get(handlers::diff_data))
-        .route(
-            "/api/commit-changes",
-            axum::routing::post(handlers::commit_changes),
-        )
-        .with_state(pool.clone())
-        .layer(TraceLayer::new_for_http())
-        .layer(CorsLayer::new().allow_origin(Any))
-        .layer(TimeoutLayer::new(Duration::from_secs(30)));
+    let app = create_app(pool.clone()).await;
     tracing::info!("✅ Routes configured");
 
     // Step 6: Start server
@@ -123,6 +110,24 @@ async fn startup() -> Result<(), Box<dyn std::error::Error>> {
 
     tracing::info!("👋 MoodBridge shutdown complete");
     Ok(())
+}
+
+// Create the Axum application with all routes
+pub async fn create_app(pool: Pool<Sqlite>) -> Router {
+    Router::new()
+        .route("/api/health", get(handlers::health_check))
+        .route("/api/dashboard", get(handlers::dashboard_data))
+        .route("/api/ai/prompt", post(handlers::ai_prompt))
+        .route("/api/ai/voice", post(handlers::ai_voice))
+        .route("/api/data/diff", get(handlers::diff_data))
+        .route("/api/data/commit", post(handlers::commit_changes))
+        .nest_service("/", ServeDir::new("frontend/dist"))
+        .fallback(handlers::handle_fallback)
+        .with_state(pool)
+        .layer(TraceLayer::new_for_http())
+        .layer(CorsLayer::permissive())
+        .layer(TimeoutLayer::new(Duration::from_secs(30)))
+        .layer(RequestBodyLimitLayer::new(10 * 1024 * 1024))
 }
 
 // Graceful shutdown signal handler
