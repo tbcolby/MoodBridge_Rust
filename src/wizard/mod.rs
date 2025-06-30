@@ -9,6 +9,7 @@ pub mod handlers;
 pub mod case_wizard;
 pub mod project_wizard;
 pub mod integration_wizard;
+pub mod financial_services_wizard;
 
 /// Represents the current state of a wizard
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -33,6 +34,7 @@ pub enum WizardType {
     SalesforceIntegration,
     ReportBuilder,
     WorkflowAutomation,
+    FinancialServices,
 }
 
 /// Represents a single step in a wizard

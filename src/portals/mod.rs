@@ -132,6 +132,12 @@ pub enum WidgetType {
     TaskQueue,
     PerformanceGraph,
     ConfigurationPanel,
+    DonutChart,
+    BarChart,
+    Calendar,
+    KpiCard,
+    Heatmap,
+    GaugeChart,
 }
 
 /// Widget positioning
@@ -322,6 +328,20 @@ impl PortalRegistry {
             user_preferences: HashMap::new(),
             access_logs: Vec::new(),
         }
+    }
+
+    /// Initialize registry with all available portals
+    pub fn with_default_portals() -> Self {
+        let mut registry = Self::new();
+        
+        // Register all available portals
+        registry.register_portal(salesforce_cta_portal::create_salesforce_cta_portal());
+        registry.register_portal(document_management_portal::create_document_management_portal());
+        registry.register_portal(deadline_management_portal::create_deadline_management_portal());
+        registry.register_portal(email_notification_portal::create_email_notification_portal());
+        registry.register_portal(analytics_reporting_portal::create_analytics_reporting_portal());
+        
+        registry
     }
 
     /// Register a new portal

@@ -85,6 +85,9 @@ pub enum BotSpecialty {
     CollaborationBot,
     ProjectManagement,
     KnowledgeBase,
+    
+    // Mental Health Care
+    BipolarCare,
 }
 
 /// Bot capability trait

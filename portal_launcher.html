@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodBridge Legal AI Portal Launcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .portal-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .portal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .portal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .portal-icon {
+            font-size: 2.5rem;
+            margin-right: 16px;
+        }
+        
+        .portal-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        .portal-description {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .portal-features {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+        
+        .portal-features li {
+            padding: 4px 0;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        
+        .portal-features li:before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .portal-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        
+        .launch-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .quick-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .quick-actions h3 {
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            background: #f3f4f6;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        .action-btn:hover {
+            background: #e5e7eb;
+            transform: translateY(-1px);
+        }
+        
+        .action-btn.primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .action-btn.primary:hover {
+            background: #2563eb;
+        }
+        
+        /* Portal-specific themes */
+        .document-management {
+            border-left: 4px solid #2563eb;
+        }
+        
+        .deadline-management {
+            border-left: 4px solid #dc2626;
+        }
+        
+        .email-notification {
+            border-left: 4px solid #2563eb;
+        }
+        
+        .analytics-reporting {
+            border-left: 4px solid #7c3aed;
+        }
+        
+        .salesforce-cta {
+            border-left: 4px solid #0066cc;
+        }
+        
+        .status-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-setup {
+            background: #fef3c7;
+            color: #92400e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 MoodBridge Legal AI Portal Launcher</h1>
+            <p>Access specialized AI assistants for every aspect of your legal practice</p>
+        </div>
+        
+        <div class="portal-grid">
+            <!-- Document Management Portal -->
+            <div class="portal-card document-management" onclick="openPortal('document-management')">
+                <div class="status-badge status-active">Active</div>
+                <div class="portal-header">
+                    <div class="portal-icon">📄</div>
+                    <div class="portal-title">Document Management Portal</div>
+                </div>
+                <div class="portal-description">
+                    Automated document processing, categorization, and version control with intelligent workflow optimization.
+                </div>
+                <ul class="portal-features">
+                    <li>Smart document categorization</li>
+                    <li>Version control and audit trails</li>
+                    <li>Automated workflow processing</li>
+                    <li>Advanced search capabilities</li>
+                </ul>
+                <div class="portal-stats">
+                    <span>Setup: ~45 mins</span>
+                    <span>5 wizard steps</span>
+                </div>
+                <button class="launch-btn">Launch Portal</button>
+            </div>
+            
+            <!-- Deadline Management Portal -->
+            <div class="portal-card deadline-management" onclick="openPortal('deadline-management')">
+                <div class="status-badge status-active">Active</div>
+                <div class="portal-header">
+                    <div class="portal-icon">⏰</div>
+                    <div class="portal-title">Deadline Management Portal</div>
+                </div>
+                <div class="portal-description">
+                    Comprehensive deadline tracking with intelligent alerts, crisis management, and automated calendar integration.
+                </div>
+                <ul class="portal-features">
+                    <li>Multi-level alert system</li>
+                    <li>Crisis management protocols</li>
+                    <li>Calendar integration</li>
+                    <li>Team workload tracking</li>
+                </ul>
+                <div class="portal-stats">
+                    <span>Setup: ~55 mins</span>
+                    <span>5 wizard steps</span>
+                </div>
+                <button class="launch-btn">Launch Portal</button>
+            </div>
+            
+            <!-- Email Notification Portal -->
+            <div class="portal-card email-notification" onclick="openPortal('email-notification')">
+                <div class="status-badge status-active">Active</div>
+                <div class="portal-header">
+                    <div class="portal-icon">📧</div>
+                    <div class="portal-title">Email Notification Portal</div>
+                </div>
+                <div class="portal-description">
+                    Intelligent email automation with smart templates, delivery optimization, and comprehensive tracking.
+                </div>
+                <ul class="portal-features">
+                    <li>Smart email templates</li>
+                    <li>Delivery optimization</li>
+                    <li>Engagement analytics</li>
+                    <li>Compliance monitoring</li>
+                </ul>
+                <div class="portal-stats">
+                    <span>Setup: ~73 mins</span>
+                    <span>5 wizard steps</span>
+                </div>
+                <button class="launch-btn">Launch Portal</button>
+            </div>
+            
+            <!-- Analytics Reporting Portal -->
+            <div class="portal-card analytics-reporting" onclick="openPortal('analytics-reporting')">
+                <div class="status-badge status-active">Active</div>
+                <div class="portal-header">
+                    <div class="portal-icon">📊</div>
+                    <div class="portal-title">Analytics Reporting Portal</div>
+                </div>
+                <div class="portal-description">
+                    Advanced analytics with interactive dashboards, custom reports, and AI-powered insights for data-driven decisions.
+                </div>
+                <ul class="portal-features">
+                    <li>Interactive dashboards</li>
+                    <li>AI-powered insights</li>
+                    <li>Custom report builder</li>
+                    <li>KPI monitoring</li>
+                </ul>
+                <div class="portal-stats">
+                    <span>Setup: ~120 mins</span>
+                    <span>6 wizard steps</span>
+                </div>
+                <button class="launch-btn">Launch Portal</button>
+            </div>
+            
+            <!-- Salesforce CTA Portal -->
+            <div class="portal-card salesforce-cta" onclick="openPortal('salesforce-cta')">
+                <div class="status-badge status-active">Active</div>
+                <div class="portal-header">
+                    <div class="portal-icon">⚡</div>
+                    <div class="portal-title">Salesforce CTA Portal</div>
+                </div>
+                <div class="portal-description">
+                    Enterprise Salesforce architecture and integration guidance from a Certified Technical Architect perspective.
+                </div>
+                <ul class="portal-features">
+                    <li>Enterprise architecture guidance</li>
+                    <li>Integration best practices</li>
+                    <li>Performance optimization</li>
+                    <li>Security implementation</li>
+                </ul>
+                <div class="portal-stats">
+                    <span>Setup: ~45 mins</span>
+                    <span>4 wizard steps</span>
+                </div>
+                <button class="launch-btn">Launch Portal</button>
+            </div>
+        </div>
+        
+        <div class="quick-actions">
+            <h3>Quick Actions</h3>
+            <div class="action-buttons">
+                <button class="action-btn primary" onclick="openAllPortals()">🚀 Open All Portals</button>
+                <button class="action-btn" onclick="openDocumentationHub()">📚 Documentation Hub</button>
+                <button class="action-btn" onclick="openSetupWizard()">🧙‍♂️ Setup Wizard</button>
+                <button class="action-btn" onclick="openSystemStatus()">📡 System Status</button>
+                <button class="action-btn" onclick="openPortalRegistry()">🗂️ Portal Registry</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Portal configurations
+        const portals = {
+            'document-management': {
+                url: '/portals/document-management',
+                name: 'Document Management Portal',
+                demo: createDocumentManagementDemo()
+            },
+            'deadline-management': {
+                url: '/portals/deadline-management',
+                name: 'Deadline Management Portal',
+                demo: createDeadlineManagementDemo()
+            },
+            'email-notification': {
+                url: '/portals/email-notification',
+                name: 'Email Notification Portal',
+                demo: createEmailNotificationDemo()
+            },
+            'analytics-reporting': {
+                url: '/portals/analytics-reporting',
+                name: 'Analytics Reporting Portal',
+                demo: createAnalyticsReportingDemo()
+            },
+            'salesforce-cta': {
+                url: '/portals/salesforce-cta',
+                name: 'Salesforce CTA Portal',
+                demo: createSalesforceCTADemo()
+            }
+        };
+        
+        function openPortal(portalId) {
+            const portal = portals[portalId];
+            if (portal) {
+                // Open demo in new tab
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(portal.demo);
+                newWindow.document.title = portal.name;
+            }
+        }
+        
+        function openAllPortals() {
+            Object.keys(portals).forEach(portalId => {
+                setTimeout(() => openPortal(portalId), 200 * Object.keys(portals).indexOf(portalId));
+            });
+        }
+        
+        function openDocumentationHub() {
+            const newWindow = window.open('', '_blank');
+            newWindow.document.write(createDocumentationHub());
+            newWindow.document.title = 'MoodBridge Documentation Hub';
+        }
+        
+        function openSetupWizard() {
+            const newWindow = window.open('', '_blank');
+            newWindow.document.write(createSetupWizardDemo());
+            newWindow.document.title = 'Portal Setup Wizard';
+        }
+        
+        function openSystemStatus() {
+            const newWindow = window.open('', '_blank');
+            newWindow.document.write(createSystemStatusDemo());
+            newWindow.document.title = 'System Status Dashboard';
+        }
+        
+        function openPortalRegistry() {
+            const newWindow = window.open('', '_blank');
+            newWindow.document.write(createPortalRegistryDemo());
+            newWindow.document.title = 'Portal Registry';
+        }
+        
+        // Demo HTML generators
+        function createDocumentManagementDemo() {
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document Management Portal</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #eff6ff; }
+        .header { background: #2563eb; color: white; padding: 20px; }
+        .dashboard { padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .widget { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .widget h3 { margin: 0 0 15px 0; color: #1f2937; }
+        .stat { font-size: 2rem; font-weight: bold; color: #2563eb; }
+        .quick-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .storage-bar { background: #e5e7eb; height: 20px; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+        .storage-fill { background: #f59e0b; height: 100%; width: 73%; }
+        .document-list { list-style: none; padding: 0; }
+        .document-list li { padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📄 Document Management Portal</h1>
+        <p>Automated document processing, categorization, and version control</p>
+    </div>
+    <div class="dashboard">
+        <div class="widget">
+            <h3>Storage Overview</h3>
+            <div class="stat">2.4 TB</div>
+            <p>Total Storage Used</p>
+            <div class="storage-bar"><div class="storage-fill"></div></div>
+            <p>73% of 3.3 TB allocated</p>
+        </div>
+        <div class="widget">
+            <h3>Processing Queue</h3>
+            <div class="stat">24</div>
+            <p>Documents in Queue</p>
+            <div class="quick-actions">
+                <button class="btn">Process All</button>
+                <button class="btn">View Queue</button>
+            </div>
+        </div>
+        <div class="widget">
+            <h3>Document Categories</h3>
+            <ul class="document-list">
+                <li>📋 Contracts (156 docs)</li>
+                <li>📄 Legal Briefs (89 docs)</li>
+                <li>📊 Financial Records (234 docs)</li>
+                <li>📧 Correspondence (412 docs)</li>
+            </ul>
+        </div>
+        <div class="widget">
+            <h3>Recent Activities</h3>
+            <ul class="document-list">
+                <li>✅ Contract_2024_Smith.pdf processed</li>
+                <li>📤 Brief_Johnson_v_State.docx uploaded</li>
+                <li>🔄 Financial_Q2_2024.xlsx updated</li>
+                <li>📥 Email_Archive_June.zip imported</li>
+            </ul>
+        </div>
+        <div class="widget">
+            <h3>Quick Actions</h3>
+            <div class="quick-actions">
+                <button class="btn">📤 Bulk Upload</button>
+                <button class="btn">🔍 Advanced Search</button>
+                <button class="btn">📊 Export Report</button>
+                <button class="btn">🧹 Cleanup Wizard</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+        
+        function createDeadlineManagementDemo() {
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deadline Management Portal</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #fef2f2; }
+        .header { background: #dc2626; color: white; padding: 20px; }
+        .dashboard { padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .widget { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .widget h3 { margin: 0 0 15px 0; color: #1f2937; }
+        .critical { color: #dc2626; font-weight: bold; }
+        .warning { color: #f59e0b; font-weight: bold; }
+        .safe { color: #059669; font-weight: bold; }
+        .deadline-item { padding: 10px; margin: 5px 0; border-left: 4px solid #dc2626; background: #fef2f2; border-radius: 4px; }
+        .btn { padding: 8px 16px; background: #dc2626; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 2px; }
+        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: 10px; }
+        .calendar-day { padding: 10px; background: #f9fafb; text-align: center; border-radius: 4px; }
+        .calendar-day.today { background: #dc2626; color: white; }
+        .calendar-day.deadline { background: #fecaca; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⏰ Deadline Management Portal</h1>
+        <p>Comprehensive deadline tracking with intelligent alerts and crisis management</p>
+    </div>
+    <div class="dashboard">
+        <div class="widget">
+            <h3>Urgency Overview</h3>
+            <div class="critical">7 Critical (≤3 days)</div>
+            <div class="warning">12 Upcoming (≤7 days)</div>
+            <div class="safe">23 Scheduled (>7 days)</div>
+            <button class="btn">🆘 Crisis Mode</button>
+        </div>
+        <div class="widget">
+            <h3>Critical Alerts</h3>
+            <div class="deadline-item">
+                <strong>Motion to Dismiss Due</strong><br>
+                Johnson v. State<br>
+                <span class="critical">Due: Tomorrow</span>
+            </div>
+            <div class="deadline-item">
+                <strong>Discovery Response</strong><br>
+                Smith Contract Dispute<br>
+                <span class="critical">Due: July 2nd</span>
+            </div>
+        </div>
+        <div class="widget">
+            <h3>Calendar View</h3>
+            <div class="calendar">
+                <div class="calendar-day">S</div><div class="calendar-day">M</div><div class="calendar-day">T</div><div class="calendar-day">W</div><div class="calendar-day">T</div><div class="calendar-day">F</div><div class="calendar-day">S</div>
+                <div class="calendar-day">29</div><div class="calendar-day today">30</div><div class="calendar-day deadline">1</div><div class="calendar-day deadline">2</div><div class="calendar-day">3</div><div class="calendar-day">4</div><div class="calendar-day">5</div>
+                <div class="calendar-day">6</div><div class="calendar-day">7</div><div class="calendar-day deadline">8</div><div class="calendar-day">9</div><div class="calendar-day">10</div><div class="calendar-day">11</div><div class="calendar-day">12</div>
+            </div>
+        </div>
+        <div class="widget">
+            <h3>Team Workload</h3>
+            <div>Sarah Connor: <span class="critical">8 deadlines</span></div>
+            <div>John Smith: <span class="warning">5 deadlines</span></div>
+            <div>Jane Doe: <span class="safe">3 deadlines</span></div>
+            <button class="btn">👥 Team Dashboard</button>
+        </div>
+        <div class="widget">
+            <h3>Quick Actions</h3>
+            <button class="btn">🚨 Add Urgent Deadline</button>
+            <button class="btn">📥 Bulk Import</button>
+            <button class="btn">🔄 Sync Calendars</button>
+            <button class="btn">📊 Generate Report</button>
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+        
+        function createEmailNotificationDemo() {
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Notification Portal</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #eff6ff; }
+        .header { background: #2563eb; color: white; padding: 20px; }
+        .dashboard { padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .widget { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .widget h3 { margin: 0 0 15px 0; color: #1f2937; }
+        .stat { font-size: 1.5rem; font-weight: bold; color: #2563eb; }
+        .btn { padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 2px; }
+        .email-queue { list-style: none; padding: 0; }
+        .email-queue li { padding: 8px; margin: 4px 0; background: #f8fafc; border-radius: 4px; border-left: 3px solid #10b981; }
+        .metrics { display: flex; justify-content: space-between; }
+        .metric { text-align: center; }
+        .chart-placeholder { height: 100px; background: #f1f5f9; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #64748b; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📧 Email Notification Portal</h1>
+        <p>Intelligent email automation with smart templates and delivery optimization</p>
+    </div>
+    <div class="dashboard">
+        <div class="widget">
+            <h3>Delivery Overview</h3>
+            <div class="metrics">
+                <div class="metric">
+                    <div class="stat">1,247</div>
+                    <div>Sent Today</div>
+                </div>
+                <div class="metric">
+                    <div class="stat">24</div>
+                    <div>Pending</div>
+                </div>
+                <div class="metric">
+                    <div class="stat">3</div>
+                    <div>Failed</div>
+                </div>
+            </div>
+        </div>
+        <div class="widget">
+            <h3>Email Queue</h3>
+            <ul class="email-queue">
+                <li>📧 Client Update - Johnson Case</li>
+                <li>📧 Deadline Reminder - Smith Motion</li>
+                <li>📧 Meeting Confirmation - Deposition</li>
+                <li>📧 Document Request - Discovery</li>
+            </ul>
+            <button class="btn">📋 Manage Queue</button>
+        </div>
+        <div class="widget">
+            <h3>Template Usage</h3>
+            <div class="chart-placeholder">Donut Chart: Template Usage</div>
+            <div>
+                <div>Client Updates: 35%</div>
+                <div>Deadline Reminders: 28%</div>
+                <div>Meeting Notices: 22%</div>
+                <div>Other: 15%</div>
+            </div>
+        </div>
+        <div class="widget">
+            <h3>Engagement Metrics</h3>
+            <div class="chart-placeholder">Line Chart: Engagement Trends</div>
+            <div class="metrics">
+                <div class="metric">
+                    <div class="stat">89%</div>
+                    <div>Open Rate</div>
+                </div>
+                <div class="metric">
+                    <div class="stat">34%</div>
+                    <div>Click Rate</div>
+                </div>
+                <div class="metric">
+                    <div class="stat">12%</div>
+                    <div>Response Rate</div>
+                </div>
+            </div>
+        </div>
+        <div class="widget">
+            <h3>Quick Actions</h3>
+            <button class="btn">✉️ Compose Email</button>
+            <button class="btn">📢 Send Broadcast</button>
+            <button class="btn">🎨 Create Template</button>
+            <button class="btn">🧪 Test Delivery</button>
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+        
+        function createAnalyticsReportingDemo() {
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analytics Reporting Portal</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #faf5ff; }
+        .header { background: #7c3aed; color: white; padding: 20px; }
+        .dashboard { padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .widget { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .widget h3 { margin: 0 0 15px 0; color: #1f2937; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .kpi { text-align: center; padding: 15px; background: #f8fafc; border-radius: 6px; }
+        .kpi-value { font-size: 1.8rem; font-weight: bold; color: #7c3aed; }
+        .kpi-label { font-size: 0.9rem; color: #64748b; }
+        .trend-up { color: #10b981; }
+        .trend-down { color: #ef4444; }
+        .btn { padding: 8px 16px; background: #7c3aed; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 2px; }
+        .chart-placeholder { height: 120px; background: #f1f5f9; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #64748b; margin: 10px 0; }
+        .data-quality { width: 100px; height: 100px; border-radius: 50%; background: conic-gradient(#10b981 0deg 324deg, #e5e7eb 324deg 360deg); margin: 0 auto; position: relative; }
+        .data-quality::after { content: '90%'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; color: #1f2937; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Analytics Reporting Portal</h1>
+        <p>Advanced analytics with interactive dashboards and AI-powered insights</p>
+    </div>
+    <div class="dashboard">
+        <div class="widget" style="grid-column: 1 / -1;">
+            <h3>Key Performance Indicators</h3>
+            <div class="kpi-grid">
+                <div class="kpi">
+                    <div class="kpi-value">156 <span class="trend-up">↑8%</span></div>
+                    <div class="kpi-label">Active Cases</div>
+                </div>
+                <div class="kpi">
+                    <div class="kpi-value">2,340 <span class="trend-up">↑12%</span></div>
+                    <div class="kpi-label">Billable Hours</div>
+                </div>
+                <div class="kpi">
+                    <div class="kpi-value">94% <span class="trend-up">↑2%</span></div>
+                    <div class="kpi-label">Client Satisfaction</div>
+                </div>
+                <div class="kpi">
+                    <div class="kpi-value">$847K <span class="trend-up">↑15%</span></div>
+                    <div class="kpi-label">Monthly Revenue</div>
+                </div>
+            </div>
+        </div>
+        <div class="widget">
+            <h3>Revenue Trends</h3>
+            <div class="chart-placeholder">Area Chart: Revenue Trends (12 months)</div>
+            <p>Showing projected vs actual revenue with 15% growth trend</p>
+        </div>
+        <div class="widget">
+            <h3>Case Performance</h3>
+            <div class="chart-placeholder">Stacked Bar Chart: Cases by Practice Area</div>
+            <div>
+                <div>Corporate Law: 45 cases</div>
+                <div>Litigation: 38 cases</div>
+                <div>Real Estate: 32 cases</div>
+                <div>Family Law: 28 cases</div>
+            </div>
+        </div>
+        <div class="widget">
+            <h3>Team Productivity</h3>
+            <div class="chart-placeholder">Heatmap: Team Performance Matrix</div>
+            <p>Billable hours and utilization rates by team member</p>
+        </div>
+        <div class="widget">
+            <h3>Data Quality Score</h3>
+            <div class="data-quality"></div>
+            <p style="text-align: center; margin-top: 10px;">Excellent data quality</p>
+        </div>
+        <div class="widget">
+            <h3>Quick Actions</h3>
+            <button class="btn">📝 Create Report</button>
+            <button class="btn">📤 Export Dashboard</button>
+            <button class="btn">⏰ Schedule Report</button>
+            <button class="btn">🤖 AI Insights</button>
+            <button class="btn">🔍 Query Builder</button>
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+        
+        function createSalesforceCTADemo() {
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Salesforce CTA Portal</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #f0f8ff; }
+        .header { background: #0066cc; color: white; padding: 20px; }
+        .dashboard { padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .widget { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .widget h3 { margin: 0 0 15px 0; color: #1f2937; }
+        .btn { padding: 8px 16px; background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 2px; }
+        .architecture-item { padding: 10px; margin: 5px 0; background: #f8fafc; border-left: 4px solid #0066cc; border-radius: 4px; }
+        .status-good { color: #10b981; }
+        .status-warning { color: #f59e0b; }
+        .status-critical { color: #ef4444; }
+        .performance-meter { width: 100%; height: 20px; background: #e5e7eb; border-radius: 10px; overflow: hidden; margin: 5px 0; }
+        .performance-fill { height: 100%; background: #10b981; }
+        .performance-fill.warning { background: #f59e0b; }
+        .performance-fill.critical { background: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ Salesforce CTA Portal</h1>
+        <p>Enterprise Salesforce architecture and integration guidance</p>
+    </div>
+    <div class="dashboard">
+        <div class="widget">
+            <h3>Architecture Overview</h3>
+            <div class="architecture-item">
+                <strong>Data Architecture</strong><br>
+                <span class="status-good">✓ Optimized</span>
+            </div>
+            <div class="architecture-item">
+                <strong>Integration Patterns</strong><br>
+                <span class="status-warning">⚠ Needs Review</span>
+            </div>
+            <div class="architecture-item">
+                <strong>Security Model</strong><br>
+                <span class="status-good">✓ Compliant</span>
+            </div>
+        </div>
+        <div class="widget">
+            <h3>Performance Metrics</h3>
+            <div>
+                <div>API Response Time</div>
+                <div class="performance-meter">
+                    <div class="performance-fill" style="width: 85%;"></div>
+                </div>
+                <div>Page Load Speed</div>
+                <div class="performance-meter">
+                    <div class="performance-fill warning" style="width: 65%;"></div>
+                </div>
+                <div>Data Volume</div>
+                <div class="performance-meter">
+                    <div class="performance-fill" style="width: 45%;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="widget">
+            <h3>Integration Status</h3>
+            <div>
+                <div>📧 Email Service: <span class="status-good">Connected</span></div>
+                <div>📊 Analytics: <span class="status-good">Connected</span></div>
+                <div>💳 Payment Gateway: <span class="status-warning">Warning</span></div>
+                <div>📱 Mobile API: <span class="status-good">Connected</span></div>
+            </div>
+        </div>
+        <div class="widget">
+            <h3>Recent Recommendations</h3>
+            <div class="architecture-item">
+                <strong>Optimize Apex Triggers</strong><br>
+                Reduce execution time by 40%
+            </div>
+            <div class="architecture-item">
+                <strong>Implement Caching Strategy</strong><br>
+                Improve page performance
+            </div>
+            <div class="architecture-item">
+                <strong>Review Security Settings</strong><br>
+                Update field-level security
+            </div>
+        </div>
+        <div class="widget">
+            <h3>Quick Actions</h3>
+            <button class="btn">🔍 Architecture Review</button>
+            <button class="btn">📊 Performance Analysis</button>
+            <button class="btn">🛡️ Security Audit</button>
+            <button class="btn">🔗 Integration Health</button>
+            <button class="btn">📚 Best Practices</button>
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+        
+        function createDocumentationHub() {
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Documentation Hub</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #f9fafb; }
+        .header { background: #374151; color: white; padding: 20px; }
+        .content { padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .doc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .doc-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .doc-section h3 { margin: 0 0 15px 0; color: #1f2937; }
+        .doc-list { list-style: none; padding: 0; }
+        .doc-list li { padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
+        .doc-list a { color: #2563eb; text-decoration: none; }
+        .doc-list a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 MoodBridge Documentation Hub</h1>
+        <p>Comprehensive documentation for all portal systems</p>
+    </div>
+    <div class="content">
+        <div class="doc-grid">
+            <div class="doc-section">
+                <h3>Getting Started</h3>
+                <ul class="doc-list">
+                    <li><a href="#">Portal Overview</a></li>
+                    <li><a href="#">Quick Setup Guide</a></li>
+                    <li><a href="#">System Requirements</a></li>
+                    <li><a href="#">First Time Setup</a></li>
+                </ul>
+            </div>
+            <div class="doc-section">
+                <h3>Portal Guides</h3>
+                <ul class="doc-list">
+                    <li><a href="#">Document Management Setup</a></li>
+                    <li><a href="#">Deadline Management Configuration</a></li>
+                    <li><a href="#">Email Notification Setup</a></li>
+                    <li><a href="#">Analytics Dashboard Design</a></li>
+                    <li><a href="#">Salesforce CTA Integration</a></li>
+                </ul>
+            </div>
+            <div class="doc-section">
+                <h3>API Reference</h3>
+                <ul class="doc-list">
+                    <li><a href="#">Portal API Endpoints</a></li>
+                    <li><a href="#">Authentication</a></li>
+                    <li><a href="#">Data Models</a></li>
+                    <li><a href="#">Error Handling</a></li>
+                </ul>
+            </div>
+            <div class="doc-section">
+                <h3>Best Practices</h3>
+                <ul class="doc-list">
+                    <li><a href="#">Security Guidelines</a></li>
+                    <li><a href="#">Performance Optimization</a></li>
+                    <li><a href="#">Data Governance</a></li>
+                    <li><a href="#">Workflow Design</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+        
+        function createSetupWizardDemo() {
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Portal Setup Wizard</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #f3f4f6; }
+        .wizard { max-width: 800px; margin: 50px auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .wizard-header { background: #667eea; color: white; padding: 30px; text-align: center; }
+        .wizard-content { padding: 30px; }
+        .step-indicator { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .step { width: 18%; text-align: center; position: relative; }
+        .step-circle { width: 40px; height: 40px; border-radius: 50%; background: #e5e7eb; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .step.active .step-circle { background: #667eea; color: white; }
+        .step.completed .step-circle { background: #10b981; color: white; }
+        .step-line { position: absolute; top: 20px; left: 50%; width: 100%; height: 2px; background: #e5e7eb; z-index: -1; }
+        .step.completed .step-line { background: #10b981; }
+        .btn { padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-secondary { background: #e5e7eb; color: #374151; }
+        .wizard-actions { display: flex; justify-content: space-between; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="wizard">
+        <div class="wizard-header">
+            <h1>🧙‍♂️ Portal Setup Wizard</h1>
+            <p>Let's get your legal AI portals configured and ready to use</p>
+        </div>
+        <div class="wizard-content">
+            <div class="step-indicator">
+                <div class="step completed">
+                    <div class="step-circle">✓</div>
+                    <div>Welcome</div>
+                    <div class="step-line"></div>
+                </div>
+                <div class="step completed">
+                    <div class="step-circle">✓</div>
+                    <div>Data Sources</div>
+                    <div class="step-line"></div>
+                </div>
+                <div class="step active">
+                    <div class="step-circle">3</div>
+                    <div>Portal Selection</div>
+                    <div class="step-line"></div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">4</div>
+                    <div>Configuration</div>
+                    <div class="step-line"></div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">5</div>
+                    <div>Complete</div>
+                </div>
+            </div>
+            
+            <h2>Select Portals to Configure</h2>
+            <p>Choose which AI assistant portals you'd like to set up for your legal practice:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+                <label style="display: flex; align-items: center; padding: 15px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
+                    <input type="checkbox" checked style="margin-right: 15px;">
+                    <div>
+                        <div style="font-weight: 600;">📄 Document Management</div>
+                        <div style="font-size: 0.9rem; color: #6b7280;">Smart document processing</div>
+                    </div>
+                </label>
+                <label style="display: flex; align-items: center; padding: 15px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
+                    <input type="checkbox" checked style="margin-right: 15px;">
+                    <div>
+                        <div style="font-weight: 600;">⏰ Deadline Management</div>
+                        <div style="font-size: 0.9rem; color: #6b7280;">Critical deadline tracking</div>
+                    </div>
+                </label>
+                <label style="display: flex; align-items: center; padding: 15px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
+                    <input type="checkbox" style="margin-right: 15px;">
+                    <div>
+                        <div style="font-weight: 600;">📧 Email Notifications</div>
+                        <div style="font-size: 0.9rem; color: #6b7280;">Intelligent email automation</div>
+                    </div>
+                </label>
+                <label style="display: flex; align-items: center; padding: 15px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">
+                    <input type="checkbox" style="margin-right: 15px;">
+                    <div>
+                        <div style="font-weight: 600;">📊 Analytics & Reporting</div>
+                        <div style="font-size: 0.9rem; color: #6b7280;">Advanced business intelligence</div>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="wizard-actions">
+                <button class="btn btn-secondary">← Previous</button>
+                <button class="btn btn-primary">Continue →</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+        
+        function createSystemStatusDemo() {
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>System Status Dashboard</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #f9fafb; }
+        .header { background: #059669; color: white; padding: 20px; text-align: center; }
+        .status-grid { padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .status-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .status-card h3 { margin: 0 0 15px 0; color: #1f2937; }
+        .status-indicator { display: flex; align-items: center; margin: 10px 0; }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
+        .status-operational { background: #10b981; }
+        .status-warning { background: #f59e0b; }
+        .status-critical { background: #ef4444; }
+        .uptime-bar { width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin: 10px 0; }
+        .uptime-fill { height: 100%; background: #10b981; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📡 System Status Dashboard</h1>
+        <p>Real-time status of all MoodBridge portal systems</p>
+    </div>
+    <div class="status-grid">
+        <div class="status-card">
+            <h3>Portal Services</h3>
+            <div class="status-indicator">
+                <div class="status-dot status-operational"></div>
+                <span>Document Management Portal - Operational</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot status-operational"></div>
+                <span>Deadline Management Portal - Operational</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot status-warning"></div>
+                <span>Email Notification Portal - Degraded Performance</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot status-operational"></div>
+                <span>Analytics Portal - Operational</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot status-operational"></div>
+                <span>Salesforce CTA Portal - Operational</span>
+            </div>
+        </div>
+        <div class="status-card">
+            <h3>System Uptime</h3>
+            <div>
+                <div>Last 30 days: 99.9%</div>
+                <div class="uptime-bar"><div class="uptime-fill" style="width: 99.9%;"></div></div>
+            </div>
+            <div>
+                <div>Last 90 days: 99.8%</div>
+                <div class="uptime-bar"><div class="uptime-fill" style="width: 99.8%;"></div></div>
+            </div>
+            <div>
+                <div>Last 365 days: 99.7%</div>
+                <div class="uptime-bar"><div class="uptime-fill" style="width: 99.7%;"></div></div>
+            </div>
+        </div>
+        <div class="status-card">
+            <h3>Performance Metrics</h3>
+            <div>Average Response Time: 245ms</div>
+            <div>Database Connection: Healthy</div>
+            <div>API Rate Limit: 8,456/10,000</div>
+            <div>Active Users: 47</div>
+            <div>Memory Usage: 68%</div>
+            <div>CPU Usage: 23%</div>
+        </div>
+        <div class="status-card">
+            <h3>Recent Incidents</h3>
+            <div style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">
+                <div style="font-weight: 600;">Email Service Slowdown</div>
+                <div style="font-size: 0.9rem; color: #6b7280;">June 29, 2:15 PM - Resolved</div>
+            </div>
+            <div style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">
+                <div style="font-weight: 600;">Scheduled Maintenance</div>
+                <div style="font-size: 0.9rem; color: #6b7280;">June 27, 11:00 PM - Completed</div>
+            </div>
+            <div style="padding: 10px 0;">
+                <div style="font-weight: 600;">Database Optimization</div>
+                <div style="font-size: 0.9rem; color: #6b7280;">June 25, 1:30 AM - Completed</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+        
+        function createPortalRegistryDemo() {
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Portal Registry</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; background: #f9fafb; }
+        .header { background: #4f46e5; color: white; padding: 20px; }
+        .registry { padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .portal-list { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .portal-row { display: grid; grid-template-columns: 60px 1fr 120px 100px 150px; align-items: center; padding: 15px; border-bottom: 1px solid #e5e7eb; }
+        .portal-row:last-child { border-bottom: none; }
+        .portal-row.header { background: #f8fafc; font-weight: 600; }
+        .portal-icon { font-size: 1.5rem; text-align: center; }
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; text-align: center; }
+        .status-active { background: #dcfce7; color: #166534; }
+        .status-setup { background: #fef3c7; color: #92400e; }
+        .action-btn { padding: 6px 12px; background: #4f46e5; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: #4f46e5; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗂️ Portal Registry</h1>
+        <p>Manage and monitor all registered bot portals</p>
+    </div>
+    <div class="registry">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">5</div>
+                <div>Total Portals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">5</div>
+                <div>Active Portals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">47</div>
+                <div>Active Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">99.9%</div>
+                <div>Uptime</div>
+            </div>
+        </div>
+        
+        <div class="portal-list">
+            <div class="portal-row header">
+                <div>Icon</div>
+                <div>Portal Name</div>
+                <div>Status</div>
+                <div>Users</div>
+                <div>Actions</div>
+            </div>
+            <div class="portal-row">
+                <div class="portal-icon">📄</div>
+                <div>
+                    <div style="font-weight: 600;">Document Management Portal</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Automated document processing and workflow</div>
+                </div>
+                <div><span class="status-badge status-active">Active</span></div>
+                <div>23</div>
+                <div><button class="action-btn">Configure</button></div>
+            </div>
+            <div class="portal-row">
+                <div class="portal-icon">⏰</div>
+                <div>
+                    <div style="font-weight: 600;">Deadline Management Portal</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Critical deadline tracking and alerts</div>
+                </div>
+                <div><span class="status-badge status-active">Active</span></div>
+                <div>19</div>
+                <div><button class="action-btn">Configure</button></div>
+            </div>
+            <div class="portal-row">
+                <div class="portal-icon">📧</div>
+                <div>
+                    <div style="font-weight: 600;">Email Notification Portal</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Intelligent email automation system</div>
+                </div>
+                <div><span class="status-badge status-active">Active</span></div>
+                <div>15</div>
+                <div><button class="action-btn">Configure</button></div>
+            </div>
+            <div class="portal-row">
+                <div class="portal-icon">📊</div>
+                <div>
+                    <div style="font-weight: 600;">Analytics Reporting Portal</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Business intelligence and reporting</div>
+                </div>
+                <div><span class="status-badge status-active">Active</span></div>
+                <div>12</div>
+                <div><button class="action-btn">Configure</button></div>
+            </div>
+            <div class="portal-row">
+                <div class="portal-icon">⚡</div>
+                <div>
+                    <div style="font-weight: 600;">Salesforce CTA Portal</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Enterprise Salesforce architecture guidance</div>
+                </div>
+                <div><span class="status-badge status-active">Active</span></div>
+                <div>8</div>
+                <div><button class="action-btn">Configure</button></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+    </script>
+</body>
+</html>
