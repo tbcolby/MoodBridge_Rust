@@ -26,9 +26,14 @@ async fn main() {
     // Seed sample data
     seed_sample_data(&pool).await.expect("Failed to seed sample data");
 
-    // Build our application with a route
+    // Build our application with routes
     let app = Router::new()
-        .route("/", get(|| async { "🦀 MoodBridge Rust Legal Dashboard is running!" }))
+        .route("/", get(handlers::dashboard))
+        .route("/api/health", get(handlers::health_check))
+        .route("/api/dashboard-data", get({
+            let pool_clone = pool.clone();
+            move || handlers::dashboard_data_simple(pool_clone.clone())
+        }))
         .layer(CorsLayer::new().allow_origin(Any));
 
     // Address to serve on
