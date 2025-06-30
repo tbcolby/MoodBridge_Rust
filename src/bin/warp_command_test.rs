@@ -1,4 +1,4 @@
-use crate::warp_command::{WarpCommandConfig, WarpCommandService};
+use moodbridge_rust::warp_command::{WarpCommandConfig, WarpCommandService};
 use std::env;
 
 #[tokio::main]

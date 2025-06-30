@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodBridge Academy - Professional Legal Technology Learning</title>
+    <link rel="stylesheet" href="/static/css/salesforce-design-system.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230176d3'%3E%3Cpath d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/%3E%3C/svg%3E">
+    <style>
+        /* Academy-specific styles */
+        .academy-hero {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
+            color: var(--color-text-inverse);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .academy-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            z-index: 1;
+        }
+        
+        .academy-hero .slds-container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .learning-path-card {
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+            height: 100%;
+        }
+        
+        .learning-path-card:hover {
+            transform: translateY(-0.125rem);
+            box-shadow: var(--shadow-drop-down);
+        }
+        
+        .learning-path-icon {
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius-medium);
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-medium);
+        }
+        
+        .stats-card {
+            text-align: center;
+            background: var(--color-background-alt);
+            border-radius: var(--border-radius-large);
+            padding: var(--spacing-large);
+            box-shadow: var(--shadow-docked);
+        }
+        
+        .stats-number {
+            font-size: var(--font-size-10);
+            font-weight: 700;
+            color: var(--brand-primary);
+        }
+        
+        .feature-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: var(--brand-primary);
+            color: var(--color-text-inverse);
+            border-radius: var(--border-radius-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--spacing-medium);
+            font-size: 1.25rem;
+        }
+        
+        .testimonial-card {
+            background: var(--color-background-alt);
+            border-left: 4px solid var(--brand-primary);
+            padding: var(--spacing-large);
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-docked);
+        }
+        
+        .breadcrumb {
+            padding: var(--spacing-small) 0;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: var(--spacing-large);
+        }
+        
+        .breadcrumb-item {
+            color: var(--color-text-weak);
+            text-decoration: none;
+        }
+        
+        .breadcrumb-item:hover {
+            color: var(--brand-primary);
+        }
+        
+        .breadcrumb-item.active {
+            color: var(--color-text-default);
+            font-weight: 600;
+        }
+        
+        .app-launcher {
+            background: var(--color-background-alt);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--spacing-small) 0;
+        }
+        
+        .app-launcher-item {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--spacing-x-small) var(--spacing-small);
+            text-decoration: none;
+            color: var(--color-text-default);
+            border-radius: var(--border-radius-medium);
+            transition: background-color 0.15s ease-in-out;
+            margin-right: var(--spacing-small);
+        }
+        
+        .app-launcher-item:hover {
+            background-color: var(--color-background-shade);
+            text-decoration: none;
+        }
+        
+        .app-launcher-item.active {
+            background-color: var(--brand-primary);
+            color: var(--color-text-inverse);
+        }
+        
+        .global-nav {
+            background: var(--color-background-inverse);
+            color: var(--color-text-inverse);
+            padding: var(--spacing-small) 0;
+        }
+        
+        .global-nav-item {
+            color: var(--color-text-inverse);
+            text-decoration: none;
+            padding: var(--spacing-x-small) var(--spacing-small);
+            border-radius: var(--border-radius-medium);
+            transition: background-color 0.15s ease-in-out;
+            margin-right: var(--spacing-small);
+        }
+        
+        .global-nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+            color: var(--color-text-inverse);
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Navigation -->
+    <div class="global-nav">
+        <div class="slds-container">
+            <div class="slds-grid slds-grid_vertical-align-center">
+                <div class="slds-col">
+                    <span class="slds-text-body_small">⚡ MoodBridge Legal Technology Platform</span>
+                </div>
+                <div class="slds-col slds-no-flex slds-grid slds-grid_vertical-align-center">
+                    <a href="/help" class="global-nav-item">Help & Documentation</a>
+                    <a href="/support" class="global-nav-item">Support</a>
+                    <a href="/profile" class="global-nav-item">Tyler M. • Admin</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Launcher -->
+    <div class="app-launcher">
+        <div class="slds-container">
+            <div class="slds-grid slds-grid_vertical-align-center">
+                <div class="slds-col">
+                    <a href="/" class="app-launcher-item">
+                        <span style="margin-right: var(--spacing-xx-small);">🏠</span>
+                        Dashboard
+                    </a>
+                    <a href="/academy" class="app-launcher-item active">
+                        <span style="margin-right: var(--spacing-xx-small);">🎓</span>
+                        Academy
+                    </a>
+                    <a href="/wizards" class="app-launcher-item">
+                        <span style="margin-right: var(--spacing-xx-small);">🧙‍♂️</span>
+                        Wizards
+                    </a>
+                    <a href="/cases" class="app-launcher-item">
+                        <span style="margin-right: var(--spacing-xx-small);">⚖️</span>
+                        Cases
+                    </a>
+                    <a href="/analytics" class="app-launcher-item">
+                        <span style="margin-right: var(--spacing-xx-small);">📊</span>
+                        Analytics
+                    </a>
+                </div>
+                <div class="slds-col slds-no-flex">
+                    <div class="slds-button-group">
+                        <button class="slds-button slds-button_neutral">
+                            <span style="margin-right: var(--spacing-xx-small);">🔔</span>
+                            Notifications
+                        </button>
+                        <button class="slds-button slds-button_neutral">
+                            <span style="margin-right: var(--spacing-xx-small);">⚙️</span>
+                            Setup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="slds-container">
+            <a href="/" class="breadcrumb-item">Home</a>
+            <span style="margin: 0 var(--spacing-x-small); color: var(--color-text-weak);">›</span>
+            <span class="breadcrumb-item active">Academy</span>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="academy-hero slds-p-around_xx-large">
+        <div class="slds-container">
+            <div class="slds-grid slds-grid_vertical-align-center">
+                <div class="slds-col slds-size_2-of-3">
+                    <h1 class="slds-text-heading_large slds-m-bottom_medium">
+                        🎓 Welcome to MoodBridge Academy
+                    </h1>
+                    <p class="slds-text-body_large slds-m-bottom_large">
+                        Master the future of legal technology with hands-on learning paths, 
+                        interactive challenges, and real-world applications. Build expertise 
+                        in AI-powered legal workflows, case management, and advanced Rust development.
+                    </p>
+                    <div class="slds-button-group">
+                        <a href="#learning-paths" class="slds-button slds-button_brand">
+                            Start Learning Today
+                        </a>
+                        <a href="#features" class="slds-button slds-button_outline-brand">
+                            Explore Features
+                        </a>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-3 slds-text-align_center">
+                    <div style="font-size: 8rem; opacity: 0.3;">🏛️</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="slds-p-around_x-large" style="background: var(--color-background-shade);">
+        <div class="slds-container">
+            <div class="slds-grid slds-gutters slds-wrap">
+                <div class="slds-col slds-size_1-of-4">
+                    <div class="stats-card">
+                        <div class="stats-number">15</div>
+                        <p class="slds-text-body_small slds-text-color_weak">Learning Paths</p>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <div class="stats-card">
+                        <div class="stats-number">67</div>
+                        <p class="slds-text-body_small slds-text-color_weak">Interactive Modules</p>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <div class="stats-card">
+                        <div class="stats-number">240</div>
+                        <p class="slds-text-body_small slds-text-color_weak">Hands-on Challenges</p>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <div class="stats-card">
+                        <div class="stats-number">12k+</div>
+                        <p class="slds-text-body_small slds-text-color_weak">Legal Professionals</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Paths Section -->
+    <section id="learning-paths" class="slds-p-around_x-large">
+        <div class="slds-container">
+            <div class="slds-page-header">
+                <h2 class="slds-page-header__title">Featured Learning Paths</h2>
+                <p class="slds-page-header__meta">
+                    Choose your adventure in legal technology mastery
+                </p>
+            </div>
+            
+            <div class="slds-grid slds-gutters slds-wrap">
+                <!-- MoodBridge Fundamentals -->
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" onclick="location.href='/academy/paths/moodbridge_fundamentals'">
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(1, 118, 211, 0.1); color: var(--brand-primary);">
+                                🏛️
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                MoodBridge Fundamentals
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Master the core concepts and architecture of MoodBridge. Learn about legal case management, 
+                                Rust development patterns, and the foundation of this powerful platform.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-badge">Beginner</span>
+                                    <span class="slds-badge slds-m-left_x-small">2-3 Hours</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-progress-bar_brand slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 20%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">1 of 5 modules completed</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wizard Mastery -->
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" onclick="location.href='/academy/paths/wizard_mastery'">
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(69, 198, 90, 0.1); color: var(--color-background-success);">
+                                🧙‍♂️
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                Wizard Mastery
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Build sophisticated guided workflows and multi-step processes. Learn to create 
+                                intuitive user experiences for complex legal procedures and case creation.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-badge slds-badge_success">Intermediate</span>
+                                    <span class="slds-badge slds-m-left_x-small">3-4 Hours</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 0%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">Not started</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Development -->
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" onclick="location.href='/academy/paths/advanced_development'">
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(255, 183, 93, 0.1); color: var(--color-background-warning);">
+                                🚀
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                Advanced Development
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Deep dive into advanced Rust patterns, AI integration, and performance optimization. 
+                                Build enterprise-grade legal technology solutions with cutting-edge techniques.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-badge slds-badge_warning">Advanced</span>
+                                    <span class="slds-badge slds-m-left_x-small">6-8 Hours</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 0%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">Locked - Complete prerequisites</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integration Specialist -->
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" onclick="location.href='/academy/paths/integration_specialist'">
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(234, 0, 30, 0.1); color: var(--color-background-error);">
+                                🔗
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                Integration Specialist
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Master enterprise integrations with Salesforce, AWS, Azure, and third-party APIs. 
+                                Build robust, scalable connections between legal systems and business platforms.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-badge slds-badge_error">Expert</span>
+                                    <span class="slds-badge slds-m-left_x-small">8-10 Hours</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 0%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">Locked - Complete prerequisites</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-text-align_center slds-m-top_large">
+                <a href="/academy/paths" class="slds-button slds-button_outline-brand">
+                    View All Learning Paths
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="slds-p-around_x-large" style="background: var(--color-background-shade);">
+        <div class="slds-container">
+            <div class="slds-page-header">
+                <h2 class="slds-page-header__title">Why Choose MoodBridge Academy?</h2>
+                <p class="slds-page-header__meta">
+                    Learn with industry-leading tools and methodologies
+                </p>
+            </div>
+            
+            <div class="slds-grid slds-gutters slds-wrap">
+                <div class="slds-col slds-size_1-of-3 slds-m-bottom_large">
+                    <div class="feature-icon">🎯</div>
+                    <h4 class="slds-text-heading_small slds-m-bottom_small">Interactive Learning</h4>
+                    <p class="slds-text-body_regular slds-text-color_weak">
+                        Hands-on exercises, live code editors, and real-world simulations. 
+                        Learn by doing, not just reading.
+                    </p>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-3 slds-m-bottom_large">
+                    <div class="feature-icon">🏆</div>
+                    <h4 class="slds-text-heading_small slds-m-bottom_small">Skill Recognition</h4>
+                    <p class="slds-text-body_regular slds-text-color_weak">
+                        Earn verified badges and certificates. Showcase your expertise 
+                        to employers and colleagues.
+                    </p>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-3 slds-m-bottom_large">
+                    <div class="feature-icon">🚀</div>
+                    <h4 class="slds-text-heading_small slds-m-bottom_small">Career Advancement</h4>
+                    <p class="slds-text-body_regular slds-text-color_weak">
+                        Build the skills needed for modern legal technology roles. 
+                        Stay ahead of industry trends.
+                    </p>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-3 slds-m-bottom_large">
+                    <div class="feature-icon">👥</div>
+                    <h4 class="slds-text-heading_small slds-m-bottom_small">Expert Community</h4>
+                    <p class="slds-text-body_regular slds-text-color_weak">
+                        Connect with legal tech professionals worldwide. Share knowledge 
+                        and learn from industry experts.
+                    </p>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-3 slds-m-bottom_large">
+                    <div class="feature-icon">📱</div>
+                    <h4 class="slds-text-heading_small slds-m-bottom_small">Mobile Friendly</h4>
+                    <p class="slds-text-body_regular slds-text-color_weak">
+                        Learn anywhere, anytime. Our responsive platform works 
+                        perfectly on all devices.
+                    </p>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-3 slds-m-bottom_large">
+                    <div class="feature-icon">🔄</div>
+                    <h4 class="slds-text-heading_small slds-m-bottom_small">Always Updated</h4>
+                    <p class="slds-text-body_regular slds-text-color_weak">
+                        Content continuously updated with latest legal tech innovations, 
+                        frameworks, and best practices.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="slds-p-around_x-large">
+        <div class="slds-container">
+            <div class="slds-page-header">
+                <h2 class="slds-page-header__title">What Legal Professionals Say</h2>
+                <p class="slds-page-header__meta">
+                    Success stories from our learning community
+                </p>
+            </div>
+            
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="testimonial-card">
+                        <p class="slds-text-body_regular slds-m-bottom_medium">
+                            "MoodBridge Academy transformed how I approach legal technology. The Rust 
+                            fundamentals course gave me the confidence to build advanced legal applications."
+                        </p>
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                            <div class="slds-col">
+                                <p class="slds-text-body_small">
+                                    <strong>Sarah Chen</strong><br>
+                                    <span class="slds-text-color_weak">Senior Legal Tech Developer, BigLaw Firm</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="testimonial-card">
+                        <p class="slds-text-body_regular slds-m-bottom_medium">
+                            "The wizard engine course is phenomenal. I implemented a complex case intake 
+                            process that saved our firm 15 hours per week. Incredible ROI!"
+                        </p>
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                            <div class="slds-col">
+                                <p class="slds-text-body_small">
+                                    <strong>Marcus Rodriguez</strong><br>
+                                    <span class="slds-text-color_weak">Legal Operations Manager, Mid-Size Firm</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="slds-p-around_x-large" style="background: var(--brand-primary); color: var(--color-text-inverse);">
+        <div class="slds-container slds-text-align_center">
+            <h2 class="slds-text-heading_large slds-m-bottom_medium">
+                Ready to Master Legal Technology?
+            </h2>
+            <p class="slds-text-body_large slds-m-bottom_large">
+                Join thousands of legal professionals building the future of law with technology.
+            </p>
+            <div class="slds-button-group">
+                <a href="/academy/register" class="slds-button slds-button_outline-brand" style="background: var(--color-background-alt); color: var(--brand-primary);">
+                    Start Free Trial
+                </a>
+                <a href="/academy/paths/moodbridge_fundamentals" class="slds-button" style="background: transparent; border-color: var(--color-text-inverse); color: var(--color-text-inverse);">
+                    Begin Learning
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Tracking Modal (Hidden by default) -->
+    <div id="progress-modal" class="slds-modal slds-backdrop slds-backdrop_open" style="display: none;">
+        <div class="slds-modal__container">
+            <div class="slds-modal__header">
+                <h2 class="slds-modal__title">Your Learning Progress</h2>
+                <button class="slds-button slds-button_icon slds-modal__close" onclick="closeProgressModal()">
+                    <span style="font-size: 1.5rem;">×</span>
+                </button>
+            </div>
+            <div class="slds-modal__content slds-p-around_medium">
+                <div class="slds-notify slds-notify_success slds-m-bottom_medium">
+                    <span>🎉 Great progress! You've completed 1 module this week.</span>
+                </div>
+                <div class="slds-progress-bar slds-progress-bar_brand slds-m-bottom_small">
+                    <span class="slds-progress-bar__value" style="width: 20%;"></span>
+                </div>
+                <p class="slds-text-body_small slds-text-color_weak">Overall completion: 20%</p>
+            </div>
+            <div class="slds-modal__footer">
+                <button class="slds-button slds-button_brand">Continue Learning</button>
+                <button class="slds-button slds-button_neutral" onclick="closeProgressModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple interactivity for the academy
+        function showProgressModal() {
+            document.getElementById('progress-modal').style.display = 'flex';
+        }
+        
+        function closeProgressModal() {
+            document.getElementById('progress-modal').style.display = 'none';
+        }
+        
+        // Animate progress bars on scroll
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('.slds-progress-bar__value');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            });
+        }
+        
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(animateProgressBars, 500);
+        });
+        
+        // Add click handlers for learning path cards
+        document.querySelectorAll('.learning-path-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-0.125rem)';
+                this.style.boxShadow = 'var(--shadow-drop-down)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'var(--shadow-docked)';
+            });
+        });
+    </script>
+</body>
+</html>

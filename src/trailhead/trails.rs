@@ -1,17 +1,17 @@
 use super::*;
 use uuid::Uuid;
 
-pub fn create_moodbridge_trails() -> Vec<Trail> {
+pub fn create_moodbridge_learning_paths() -> Vec<Trail> {
     vec![
-        create_fundamentals_trail(),
-        create_wizard_mastery_trail(),
-        create_advanced_development_trail(),
-        create_integration_specialist_trail(),
+        create_fundamentals_path(),
+        create_wizard_mastery_path(),
+        create_advanced_development_path(),
+        create_integration_specialist_path(),
     ]
 }
 
-/// Trail 1: MoodBridge Fundamentals
-fn create_fundamentals_trail() -> Trail {
+/// Learning Path 1: MoodBridge Fundamentals
+fn create_fundamentals_path() -> Trail {
     Trail {
         id: "moodbridge_fundamentals".to_string(),
         title: "🏛️ MoodBridge Fundamentals".to_string(),
@@ -33,8 +33,8 @@ fn create_fundamentals_trail() -> Trail {
     }
 }
 
-/// Trail 2: Wizard Mastery
-fn create_wizard_mastery_trail() -> Trail {
+/// Learning Path 2: Wizard Mastery
+fn create_wizard_mastery_path() -> Trail {
     Trail {
         id: "wizard_mastery".to_string(),
         title: "🧙‍♂️ Wizard Engine Mastery".to_string(),
@@ -56,8 +56,8 @@ fn create_wizard_mastery_trail() -> Trail {
     }
 }
 
-/// Trail 3: Advanced Development
-fn create_advanced_development_trail() -> Trail {
+/// Learning Path 3: Advanced Development
+fn create_advanced_development_path() -> Trail {
     Trail {
         id: "advanced_development".to_string(),
         title: "⚡ Advanced Development Patterns".to_string(),
@@ -79,8 +79,8 @@ fn create_advanced_development_trail() -> Trail {
     }
 }
 
-/// Trail 4: Integration Specialist
-fn create_integration_specialist_trail() -> Trail {
+/// Learning Path 4: Integration Specialist
+fn create_integration_specialist_path() -> Trail {
     Trail {
         id: "integration_specialist".to_string(),
         title: "🔗 Integration Specialist".to_string(),
@@ -966,17 +966,23 @@ pub fn create_legal_research_agent(llm: Box<dyn LLM>) -> AgentExecutor {
                         ],
                         validation_criteria: vec![
                             ValidationCriterion {
-                                criterion: "Tool implements required methods".to_string(),
+                                id: "tool_methods".to_string(),
+                                description: "Tool implements required methods".to_string(),
+                                validation_type: ValidationType::CodeContains,
+                                expected_value: serde_json::Value::String("impl Tool".to_string()),
                                 points: 10,
                             },
                             ValidationCriterion {
-                                criterion: "Returns properly formatted compliance report".to_string(),
+                                id: "compliance_report".to_string(),
+                                description: "Returns properly formatted compliance report".to_string(),
+                                validation_type: ValidationType::OutputMatches,
+                                expected_value: serde_json::Value::String("ComplianceReport".to_string()),
                                 points: 15,
                             },
                         ],
                         starter_code: Some("// Implement your ComplianceTool here\nstruct ComplianceTool;\n\n#[async_trait]\nimpl Tool for ComplianceTool {\n    // Your implementation here\n}".to_string()),
-                        solution_code: None,
-                        max_attempts: 3,
+                        solution: None,
+                        hints: vec!["Implement the Tool trait methods".to_string(), "Return a JSON compliance report".to_string()],
                     }),
                 },
                 order: 3,

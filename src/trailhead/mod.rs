@@ -3,11 +3,11 @@ use std::collections::HashMap;
 use async_trait::async_trait;
 
 pub mod trails;
-pub mod modules;
-pub mod badges;
-pub mod challenges;
-pub mod playground;
-pub mod community;
+// pub mod modules;
+// pub mod badges;
+// pub mod challenges;
+// pub mod playground;
+// pub mod community;
 
 /// Represents a learning trail (collection of modules)
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -283,27 +283,27 @@ pub enum InteractionType {
     NoteAdded,
 }
 
-/// Trailhead learning management system
-pub struct TrailheadManager {
-    pub trails: HashMap<String, Trail>,
+/// MoodBridge Academy learning management system
+pub struct AcademyManager {
+    pub learning_paths: HashMap<String, Trail>,
     pub modules: HashMap<String, Module>,
     pub badges: HashMap<String, Badge>,
     pub user_progress: HashMap<String, UserProgress>,
 }
 
-impl TrailheadManager {
+impl AcademyManager {
     pub fn new() -> Self {
         Self {
-            trails: HashMap::new(),
+            learning_paths: HashMap::new(),
             modules: HashMap::new(),
             badges: HashMap::new(),
             user_progress: HashMap::new(),
         }
     }
 
-    /// Register a new trail
-    pub fn register_trail(&mut self, trail: Trail) {
-        self.trails.insert(trail.id.clone(), trail);
+    /// Register a new learning path
+    pub fn register_path(&mut self, path: Trail) {
+        self.learning_paths.insert(path.id.clone(), path);
     }
 
     /// Register a new module
@@ -324,10 +324,10 @@ impl TrailheadManager {
             .get(trail_id)
     }
 
-    /// Start a trail for a user
-    pub fn start_trail(&mut self, user_id: &str, trail_id: &str) -> Result<(), String> {
-        let trail = self.trails.get(trail_id)
-            .ok_or("Trail not found")?;
+    /// Start a learning path for a user
+    pub fn start_path(&mut self, user_id: &str, path_id: &str) -> Result<(), String> {
+        let path = self.learning_paths.get(path_id)
+            .ok_or("Learning path not found")?;
 
         let progress = self.user_progress
             .entry(user_id.to_string())
@@ -341,16 +341,16 @@ impl TrailheadManager {
             });
 
         let trail_progress = TrailProgress {
-            trail_id: trail_id.to_string(),
+            trail_id: path_id.to_string(),
             started_at: chrono::Utc::now(),
             completed_at: None,
-            current_module: trail.modules.first().cloned(),
+            current_module: path.modules.first().cloned(),
             current_unit: None,
             module_progress: HashMap::new(),
             completion_percentage: 0.0,
         };
 
-        progress.trail_progress.insert(trail_id.to_string(), trail_progress);
+        progress.trail_progress.insert(path_id.to_string(), trail_progress);
         progress.last_activity = chrono::Utc::now();
 
         Ok(())
@@ -396,7 +396,7 @@ impl TrailheadManager {
 
     /// Update completion percentage for a trail
     fn update_completion_percentage(&mut self, user_id: &str, trail_id: &str) -> Result<(), String> {
-        let trail = self.trails.get(trail_id).ok_or("Trail not found")?;
+        let trail = self.learning_paths.get(trail_id).ok_or("Learning path not found")?;
         let progress = self.user_progress.get_mut(user_id).ok_or("User progress not found")?;
         let trail_progress = progress.trail_progress.get_mut(trail_id).ok_or("Trail progress not found")?;
 
@@ -493,7 +493,7 @@ impl TrailheadManager {
     }
 }
 
-impl Default for TrailheadManager {
+impl Default for AcademyManager {
     fn default() -> Self {
         Self::new()
     }

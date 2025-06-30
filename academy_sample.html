@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏛️ MoodBridge Fundamentals - MoodBridge Academy</title>
+    <link rel="stylesheet" href="/static/css/salesforce-design-system.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230176d3'%3E%3Cpath d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/%3E%3C/svg%3E">
+    <style>
+        body {
+            background: var(--color-background);
+        }
+        
+        .path-hero {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
+            color: var(--color-text-inverse);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .path-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            z-index: 1;
+        }
+        
+        .path-hero .slds-container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .path-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: var(--spacing-medium);
+            opacity: 0.9;
+        }
+        
+        .module-card {
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+            height: 100%;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-0.125rem);
+            box-shadow: var(--shadow-drop-down);
+        }
+        
+        .module-status-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+        
+        .path-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .meta-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+        
+        .progress-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 6px;
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .module-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+        
+        .module-card.completed {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(255, 255, 255, 0.95));
+        }
+        
+        .module-card.current {
+            border-color: #FF9800;
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.1), rgba(255, 255, 255, 0.95));
+        }
+        
+        .module-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .module-icon {
+            font-size: 32px;
+            margin-right: 15px;
+        }
+        
+        .module-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .module-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .module-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .module-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .status-completed {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .status-current {
+            background: #FF9800;
+            color: white;
+        }
+        
+        .status-locked {
+            background: #e0e0e0;
+            color: #999;
+        }
+        
+        .start-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .prerequisites {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #FFC107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .learning-objectives {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .feature-card h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .path-title {
+                font-size: 28px;
+            }
+            
+            .path-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Navigation -->
+    <div class="global-nav">
+        <div class="slds-container">
+            <div class="slds-grid slds-grid_vertical-align-center">
+                <div class="slds-col">
+                    <span class="slds-text-body_small">⚡ MoodBridge Legal Technology Platform</span>
+                </div>
+                <div class="slds-col slds-no-flex slds-grid slds-grid_vertical-align-center">
+                    <a href="/help" class="global-nav-item">Help & Documentation</a>
+                    <a href="/support" class="global-nav-item">Support</a>
+                    <a href="/profile" class="global-nav-item">Tyler M. • Admin</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Launcher -->
+    <div class="app-launcher">
+        <div class="slds-container">
+            <div class="slds-grid slds-grid_vertical-align-center">
+                <div class="slds-col">
+                    <a href="/" class="app-launcher-item">
+                        <span style="margin-right: var(--spacing-xx-small);">🏠</span>
+                        Dashboard
+                    </a>
+                    <a href="/academy" class="app-launcher-item active">
+                        <span style="margin-right: var(--spacing-xx-small);">🎓</span>
+                        Academy
+                    </a>
+                    <a href="/wizards" class="app-launcher-item">
+                        <span style="margin-right: var(--spacing-xx-small);">🧙‍♂️</span>
+                        Wizards
+                    </a>
+                    <a href="/cases" class="app-launcher-item">
+                        <span style="margin-right: var(--spacing-xx-small);">⚖️</span>
+                        Cases
+                    </a>
+                    <a href="/analytics" class="app-launcher-item">
+                        <span style="margin-right: var(--spacing-xx-small);">📊</span>
+                        Analytics
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="slds-container">
+            <a href="/" class="breadcrumb-item">Home</a>
+            <span style="margin: 0 var(--spacing-x-small); color: var(--color-text-weak);">›</span>
+            <a href="/academy" class="breadcrumb-item">Academy</a>
+            <span style="margin: 0 var(--spacing-x-small); color: var(--color-text-weak);">›</span>
+            <span class="breadcrumb-item active">MoodBridge Fundamentals</span>
+        </div>
+    </div>
+
+    <!-- Path Hero Section -->
+    <section class="path-hero slds-p-around_large">
+        <div class="slds-container">
+            <div class="slds-grid slds-grid_vertical-align-center">
+                <div class="slds-col slds-size_2-of-3">
+                    <div class="path-icon">🏛️</div>
+                    <h1 class="slds-text-heading_large slds-m-bottom_medium">
+                        MoodBridge Fundamentals
+                    </h1>
+                    <p class="slds-text-body_large slds-m-bottom_large">
+                        Master the core concepts and architecture of MoodBridge_Rust. Learn about legal case management, 
+                        Rust development patterns, and the foundation of this powerful legal technology platform.
+                    </p>
+                    <div class="slds-grid slds-gutters slds-wrap">
+                        <div class="slds-col">
+                            <span class="slds-badge">👶 Beginner</span>
+                        </div>
+                        <div class="slds-col">
+                            <span class="slds-badge">⏱️ 2-3 Hours</span>
+                        </div>
+                        <div class="slds-col">
+                            <span class="slds-badge">📚 5 Modules</span>
+                        </div>
+                        <div class="slds-col">
+                            <span class="slds-badge">🏷️ Legal Tech</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="slds-container slds-p-around_large">
+
+        <!-- Progress Section -->
+        <div class="slds-card slds-m-bottom_large">
+            <div class="slds-card__header">
+                <h3 class="slds-text-heading_small">Your Progress</h3>
+            </div>
+            <div class="slds-card__body">
+                <div class="slds-progress-bar slds-progress-bar_brand slds-m-bottom_small">
+                    <span class="slds-progress-bar__value" style="width: 20%;"></span>
+                </div>
+                <p class="slds-text-body_small slds-text-color_weak">1 of 5 modules completed • 40 minutes remaining</p>
+            </div>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="slds-notify slds-notify_success slds-m-bottom_medium">
+            <div>
+                <h4 class="slds-text-heading_small slds-m-bottom_small">🎯 What You'll Learn</h4>
+                <ul class="slds-list_dotted">
+                    <li>Understand what MoodBridge is and its role in legal technology</li>
+                    <li>Navigate the basic interface and dashboard</li>
+                    <li>Access and use the Wizard Engine for guided workflows</li>
+                    <li>Master Langchain fundamentals for AI-powered legal applications</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Prerequisites -->
+        <div class="slds-notify slds-notify_warning slds-m-bottom_medium">
+            <div>
+                <h4 class="slds-text-heading_small slds-m-bottom_small">📋 Prerequisites</h4>
+                <p>No prior knowledge required! This is the perfect starting point for learning MoodBridge.</p>
+            </div>
+        </div>
+
+        <!-- Modules Grid -->
+        <div class="slds-grid slds-gutters slds-wrap">
+            <!-- Module 1: Introduction to MoodBridge -->
+            <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                <div class="slds-card module-card" style="border-left: 4px solid var(--color-background-success);">
+                    <div class="slds-card__body">
+                        <div class="slds-grid slds-grid_vertical-align-start slds-m-bottom_medium">
+                            <div class="slds-col slds-no-flex">
+                                <div style="font-size: 2rem; margin-right: var(--spacing-medium);">🏛️</div>
+                            </div>
+                            <div class="slds-col">
+                                <h3 class="slds-text-heading_small slds-m-bottom_x-small">Introduction to MoodBridge</h3>
+                                <p class="slds-text-body_regular slds-text-color_weak">
+                                    Discover what MoodBridge is, its purpose in legal technology, and how it revolutionizes case management.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                            <div class="slds-col">
+                                <span class="slds-text-body_small slds-text-color_weak">📖 3 units • 30 minutes</span>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <div class="slds-grid slds-grid_vertical-align-center">
+                                    <div class="module-status-icon" style="background: var(--color-background-success); color: var(--color-text-inverse);">✓</div>
+                                    <span class="slds-text-body_small slds-text-color_success slds-m-left_x-small">Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 2: Rust for Legal Tech -->
+            <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                <div class="slds-card module-card" style="border-left: 4px solid var(--color-background-warning);">
+                    <div class="slds-card__body">
+                        <div class="slds-grid slds-grid_vertical-align-start slds-m-bottom_medium">
+                            <div class="slds-col slds-no-flex">
+                                <div style="font-size: 2rem; margin-right: var(--spacing-medium);">🦀</div>
+                            </div>
+                            <div class="slds-col">
+                                <h3 class="slds-text-heading_small slds-m-bottom_x-small">Rust for Legal Tech</h3>
+                                <p class="slds-text-body_regular slds-text-color_weak">
+                                    Learn Rust programming fundamentals specifically applied to legal technology development.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                            <div class="slds-col">
+                                <span class="slds-text-body_small slds-text-color_weak">📖 4 units • 45 minutes</span>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <div class="slds-grid slds-grid_vertical-align-center">
+                                    <div class="module-status-icon" style="background: var(--color-background-warning); color: var(--color-text-default);">▶</div>
+                                    <span class="slds-text-body_small slds-text-color_warning slds-m-left_x-small">In Progress</span>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/academy/paths/moodbridge_fundamentals/modules/rust_for_legal_tech" class="slds-button slds-button_brand">Continue Learning</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 3: Architecture Overview -->
+            <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                <div class="slds-card module-card" style="border-left: 4px solid var(--color-border); opacity: 0.7;">
+                    <div class="slds-card__body">
+                        <div class="slds-grid slds-grid_vertical-align-start slds-m-bottom_medium">
+                            <div class="slds-col slds-no-flex">
+                                <div style="font-size: 2rem; margin-right: var(--spacing-medium); opacity: 0.5;">🏗️</div>
+                            </div>
+                            <div class="slds-col">
+                                <h3 class="slds-text-heading_small slds-m-bottom_x-small">Architecture Overview</h3>
+                                <p class="slds-text-body_regular slds-text-color_weak">
+                                    Understand the system architecture, design patterns, and core components of MoodBridge.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                            <div class="slds-col">
+                                <span class="slds-text-body_small slds-text-color_weak">📖 5 units • 45 minutes</span>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <div class="slds-grid slds-grid_vertical-align-center">
+                                    <div class="module-status-icon" style="background: var(--color-background-shade); color: var(--color-text-weak);">🔒</div>
+                                    <span class="slds-text-body_small slds-text-color_weak slds-m-left_x-small">Locked</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 4: Database Fundamentals -->
+            <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                <div class="slds-card module-card" style="border-left: 4px solid var(--color-border); opacity: 0.7;">
+                    <div class="slds-card__body">
+                        <div class="slds-grid slds-grid_vertical-align-start slds-m-bottom_medium">
+                            <div class="slds-col slds-no-flex">
+                                <div style="font-size: 2rem; margin-right: var(--spacing-medium); opacity: 0.5;">🗄️</div>
+                            </div>
+                            <div class="slds-col">
+                                <h3 class="slds-text-heading_small slds-m-bottom_x-small">Database Fundamentals</h3>
+                                <p class="slds-text-body_regular slds-text-color_weak">
+                                    Master database design, ORM usage, and data management patterns for legal applications.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                            <div class="slds-col">
+                                <span class="slds-text-body_small slds-text-color_weak">📖 4 units • 45 minutes</span>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <div class="slds-grid slds-grid_vertical-align-center">
+                                    <div class="module-status-icon" style="background: var(--color-background-shade); color: var(--color-text-weak);">🔒</div>
+                                    <span class="slds-text-body_small slds-text-color_weak slds-m-left_x-small">Locked</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 5: Langchain Development -->
+            <div class="slds-col slds-size_1-of-1 slds-m-bottom_large">
+                <div class="slds-card module-card" style="border-left: 4px solid var(--color-border); opacity: 0.7;">
+                    <div class="slds-card__body">
+                        <div class="slds-grid slds-grid_vertical-align-start slds-m-bottom_medium">
+                            <div class="slds-col slds-no-flex">
+                                <div style="font-size: 2rem; margin-right: var(--spacing-medium); opacity: 0.5;">🔗</div>
+                            </div>
+                            <div class="slds-col">
+                                <h3 class="slds-text-heading_small slds-m-bottom_x-small">Langchain Development</h3>
+                                <p class="slds-text-body_regular slds-text-color_weak">
+                                    Master Langchain for building intelligent AI-powered legal applications. Learn concepts, patterns, and implementation strategies.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                            <div class="slds-col">
+                                <span class="slds-text-body_small slds-text-color_weak">📖 3 units • 3 hours</span>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <div class="slds-grid slds-grid_vertical-align-center">
+                                    <div class="module-status-icon" style="background: var(--color-background-shade); color: var(--color-text-weak);">🔒</div>
+                                    <span class="slds-text-body_small slds-text-color_weak slds-m-left_x-small">Locked</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Features Section -->
+        <div class="slds-card slds-m-bottom_large">
+            <div class="slds-card__header">
+                <h3 class="slds-text-heading_small">🚀 What Makes This Path Special</h3>
+            </div>
+            <div class="slds-card__body">
+                <div class="slds-grid slds-gutters slds-wrap">
+                    <div class="slds-col slds-size_1-of-2 slds-m-bottom_medium">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <div style="width: 2.5rem; height: 2.5rem; background: var(--brand-primary); color: var(--color-text-inverse); border-radius: var(--border-radius-medium); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">🧙‍♂️</div>
+                            </div>
+                            <div class="slds-media__body">
+                                <h4 class="slds-text-heading_small slds-m-bottom_x-small">Wizard Engine</h4>
+                                <p class="slds-text-body_small slds-text-color_weak">Learn our step-by-step guided workflows for case creation and complex processes</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-m-bottom_medium">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <div style="width: 2.5rem; height: 2.5rem; background: var(--brand-primary); color: var(--color-text-inverse); border-radius: var(--border-radius-medium); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">📊</div>
+                            </div>
+                            <div class="slds-media__body">
+                                <h4 class="slds-text-heading_small slds-m-bottom_x-small">Analytics Dashboard</h4>
+                                <p class="slds-text-body_small slds-text-color_weak">Master real-time insights into case metrics and business intelligence</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-m-bottom_medium">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <div style="width: 2.5rem; height: 2.5rem; background: var(--brand-primary); color: var(--color-text-inverse); border-radius: var(--border-radius-medium); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">🔗</div>
+                            </div>
+                            <div class="slds-media__body">
+                                <h4 class="slds-text-heading_small slds-m-bottom_x-small">Enterprise Integration</h4>
+                                <p class="slds-text-body_small slds-text-color_weak">Connect seamlessly to Salesforce, AWS, Azure, and other platforms</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-m-bottom_medium">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <div style="width: 2.5rem; height: 2.5rem; background: var(--brand-primary); color: var(--color-text-inverse); border-radius: var(--border-radius-medium); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">🤖</div>
+                            </div>
+                            <div class="slds-media__body">
+                                <h4 class="slds-text-heading_small slds-m-bottom_x-small">AI-Powered Features</h4>
+                                <p class="slds-text-body_small slds-text-color_weak">Build advanced algorithms for document analysis and intelligent automation</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="slds-card">
+            <div class="slds-card__body slds-text-align_center">
+                <h3 class="slds-text-heading_small slds-m-bottom_medium">Ready to Continue Your Journey?</h3>
+                <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_large">Join thousands of legal professionals mastering MoodBridge technology.</p>
+                <div class="slds-button-group">
+                    <a href="/academy/paths/moodbridge_fundamentals/modules/rust_for_legal_tech" class="slds-button slds-button_brand">
+                        Continue to Rust for Legal Tech →
+                    </a>
+                    <a href="/academy" class="slds-button slds-button_outline-brand">
+                        Back to Academy
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple progress animation
+        window.addEventListener('load', function() {
+            const progressFill = document.querySelector('.progress-fill');
+            setTimeout(() => {
+                progressFill.style.width = '20%';
+            }, 500);
+        });
+
+        // Module interaction
+        document.querySelectorAll('.module-card').forEach(card => {
+            card.addEventListener('click', function() {
+                if (!this.classList.contains('completed') && !this.classList.contains('current')) {
+                    // Show locked message for locked modules
+                    alert('Complete previous modules to unlock this one!');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

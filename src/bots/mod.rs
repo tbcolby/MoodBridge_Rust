@@ -10,6 +10,11 @@ pub mod legal_team;
 pub mod case_constructor;
 pub mod document_processor;
 pub mod review_coordinator;
+pub mod salesforce_cta_bot;
+pub mod document_management_bot;
+pub mod deadline_management_bot;
+pub mod email_notification_bot;
+pub mod analytics_reporting_bot;
 
 /// Bot specialization types for legal work
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -53,9 +58,33 @@ pub enum BotSpecialty {
     
     // Case Management
     CaseStatusDashboard,
-    DeadlineManagement,
     ClientCommunicationLogger,
     LegalOperationsOrchestrator,
+    
+    // Enterprise Technology
+    SalesforceArchitect,
+    
+    // Document and Workflow Management
+    DocumentManagement,
+    EmailNotificationBot,
+    DeadlineManagement,
+    LegalResearch,
+    FormsAutomation,
+    ClientCommunication,
+    ContractAnalysis,
+    WorkflowOptimization,
+    DataMigration,
+    AnalyticsReporting,
+    ComplianceMonitoring,
+    BillingAutomation,
+    SecurityMonitoring,
+    IntegrationManagement,
+    UserActivityTracker,
+    ApiManagement,
+    AiPoweredSearch,
+    CollaborationBot,
+    ProjectManagement,
+    KnowledgeBase,
 }
 
 /// Bot capability trait

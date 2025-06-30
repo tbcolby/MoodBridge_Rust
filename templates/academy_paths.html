@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Paths - MoodBridge Academy</title>
+    <link rel="stylesheet" href="/static/css/salesforce-design-system.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230176d3'%3E%3Cpath d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/%3E%3C/svg%3E">
+    <style>
+        .path-category-header {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
+            color: var(--color-text-inverse);
+            border-radius: var(--border-radius-medium);
+            margin-bottom: var(--spacing-large);
+        }
+        
+        .learning-path-card {
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+            height: 100%;
+            position: relative;
+        }
+        
+        .learning-path-card:hover {
+            transform: translateY(-0.125rem);
+            box-shadow: var(--shadow-drop-down);
+        }
+        
+        .learning-path-icon {
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius-medium);
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-medium);
+        }
+        
+        .path-difficulty {
+            position: absolute;
+            top: var(--spacing-medium);
+            right: var(--spacing-medium);
+        }
+        
+        .filter-tabs {
+            margin-bottom: var(--spacing-large);
+        }
+        
+        .search-container {
+            margin-bottom: var(--spacing-large);
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: var(--spacing-small);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-medium);
+            font-size: var(--font-size-4);
+        }
+        
+        .stats-overview {
+            background: var(--color-background-shade);
+            border-radius: var(--border-radius-medium);
+            padding: var(--spacing-large);
+            margin-bottom: var(--spacing-large);
+        }
+        
+        .path-preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: var(--z-index-modal);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--color-background-alt);
+            border-radius: var(--border-radius-medium);
+            padding: var(--spacing-large);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Navigation -->
+    <div class="global-nav">
+        <div class="slds-container">
+            <div class="slds-grid slds-grid_vertical-align-center">
+                <div class="slds-col">
+                    <span class="slds-text-body_small">⚡ MoodBridge Legal Technology Platform</span>
+                </div>
+                <div class="slds-col slds-no-flex slds-grid slds-grid_vertical-align-center">
+                    <a href="/help" class="global-nav-item">Help & Documentation</a>
+                    <a href="/support" class="global-nav-item">Support</a>
+                    <a href="/profile" class="global-nav-item">Tyler M. • Admin</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Launcher -->
+    <div class="app-launcher">
+        <div class="slds-container">
+            <div class="slds-grid slds-grid_vertical-align-center">
+                <div class="slds-col">
+                    <a href="/" class="app-launcher-item">
+                        <span style="margin-right: var(--spacing-xx-small);">🏠</span>
+                        Dashboard
+                    </a>
+                    <a href="/academy" class="app-launcher-item active">
+                        <span style="margin-right: var(--spacing-xx-small);">🎓</span>
+                        Academy
+                    </a>
+                    <a href="/wizards" class="app-launcher-item">
+                        <span style="margin-right: var(--spacing-xx-small);">🧙‍♂️</span>
+                        Wizards
+                    </a>
+                    <a href="/cases" class="app-launcher-item">
+                        <span style="margin-right: var(--spacing-xx-small);">⚖️</span>
+                        Cases
+                    </a>
+                    <a href="/analytics" class="app-launcher-item">
+                        <span style="margin-right: var(--spacing-xx-small);">📊</span>
+                        Analytics
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="slds-container">
+            <a href="/" class="breadcrumb-item">Home</a>
+            <span style="margin: 0 var(--spacing-x-small); color: var(--color-text-weak);">›</span>
+            <a href="/academy" class="breadcrumb-item">Academy</a>
+            <span style="margin: 0 var(--spacing-x-small); color: var(--color-text-weak);">›</span>
+            <span class="breadcrumb-item active">Learning Paths</span>
+        </div>
+    </div>
+
+    <div class="slds-container slds-p-around_large">
+        <!-- Page Header -->
+        <div class="slds-page-header slds-m-bottom_large">
+            <h1 class="slds-page-header__title">🛤️ Learning Paths</h1>
+            <p class="slds-page-header__meta">
+                Structured learning journeys to master MoodBridge and legal technology
+            </p>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-4 slds-text-align_center">
+                    <div class="slds-text-heading_large slds-text-color_success">15</div>
+                    <p class="slds-text-body_small slds-text-color_weak">Total Paths</p>
+                </div>
+                <div class="slds-col slds-size_1-of-4 slds-text-align_center">
+                    <div class="slds-text-heading_large slds-text-color_warning">4</div>
+                    <p class="slds-text-body_small slds-text-color_weak">In Progress</p>
+                </div>
+                <div class="slds-col slds-size_1-of-4 slds-text-align_center">
+                    <div class="slds-text-heading_large slds-text-color_default">120</div>
+                    <p class="slds-text-body_small slds-text-color_weak">Hours of Content</p>
+                </div>
+                <div class="slds-col slds-size_1-of-4 slds-text-align_center">
+                    <div class="slds-text-heading_large slds-text-color_error">45</div>
+                    <p class="slds-text-body_small slds-text-color_weak">Badges Available</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="search-container">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_2-of-3">
+                    <input type="text" class="search-input" placeholder="🔍 Search learning paths..." id="pathSearch">
+                </div>
+                <div class="slds-col slds-size_1-of-3">
+                    <select class="slds-select" id="difficultyFilter">
+                        <option value="">All Difficulty Levels</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="expert">Expert</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <div class="slds-tabs_default">
+                <ul class="slds-tabs__nav" role="tablist">
+                    <li class="slds-tabs__item slds-is-active" role="presentation">
+                        <a class="slds-tabs__link" href="#all" role="tab" id="tab-all">All Paths</a>
+                    </li>
+                    <li class="slds-tabs__item" role="presentation">
+                        <a class="slds-tabs__link" href="#fundamentals" role="tab" id="tab-fundamentals">Fundamentals</a>
+                    </li>
+                    <li class="slds-tabs__item" role="presentation">
+                        <a class="slds-tabs__link" href="#development" role="tab" id="tab-development">Development</a>
+                    </li>
+                    <li class="slds-tabs__item" role="presentation">
+                        <a class="slds-tabs__link" href="#integration" role="tab" id="tab-integration">Integration</a>
+                    </li>
+                    <li class="slds-tabs__item" role="presentation">
+                        <a class="slds-tabs__link" href="#specialization" role="tab" id="tab-specialization">Specialization</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Fundamentals Category -->
+        <section id="fundamentals-section" class="slds-m-bottom_xx-large">
+            <div class="path-category-header slds-p-around_medium">
+                <h2 class="slds-text-heading_medium">🏛️ Fundamentals</h2>
+                <p class="slds-text-body_regular">Start your journey with essential legal technology concepts</p>
+            </div>
+            
+            <div class="slds-grid slds-gutters slds-wrap">
+                <!-- MoodBridge Fundamentals -->
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" data-category="fundamentals" data-difficulty="beginner" onclick="openPathPreview('moodbridge_fundamentals')">
+                        <div class="path-difficulty">
+                            <span class="slds-badge">Beginner</span>
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(1, 118, 211, 0.1); color: var(--brand-primary);">
+                                🏛️
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                MoodBridge Fundamentals
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Master the core concepts and architecture of MoodBridge. Learn about legal case management, 
+                                Rust development patterns, and platform foundations.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-text-body_small slds-text-color_weak">📚 5 modules • ⏱️ 2-3 hours</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-progress-bar_brand slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 20%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">1 of 5 modules completed</p>
+                        </div>
+                        <div class="slds-card__footer">
+                            <a href="/academy/paths/moodbridge_fundamentals" class="slds-button slds-button_brand">Continue Learning</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legal Technology Basics -->
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" data-category="fundamentals" data-difficulty="beginner">
+                        <div class="path-difficulty">
+                            <span class="slds-badge">Beginner</span>
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(69, 198, 90, 0.1); color: var(--color-background-success);">
+                                ⚖️
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                Legal Technology Basics
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Essential legal technology concepts, document management, e-discovery fundamentals, 
+                                and compliance requirements for modern law firms.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-text-body_small slds-text-color_weak">📚 4 modules • ⏱️ 1.5-2 hours</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 0%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">Not started</p>
+                        </div>
+                        <div class="slds-card__footer">
+                            <a href="/academy/paths/legal_tech_basics" class="slds-button slds-button_outline-brand">Start Path</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Development Category -->
+        <section id="development-section" class="slds-m-bottom_xx-large">
+            <div class="path-category-header slds-p-around_medium">
+                <h2 class="slds-text-heading_medium">🦀 Development</h2>
+                <p class="slds-text-body_regular">Build technical expertise in Rust and legal application development</p>
+            </div>
+            
+            <div class="slds-grid slds-gutters slds-wrap">
+                <!-- Wizard Mastery -->
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" data-category="development" data-difficulty="intermediate">
+                        <div class="path-difficulty">
+                            <span class="slds-badge slds-badge_success">Intermediate</span>
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(255, 183, 93, 0.1); color: var(--color-background-warning);">
+                                🧙‍♂️
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                Wizard Mastery
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Build sophisticated guided workflows and multi-step processes. Create intuitive 
+                                user experiences for complex legal procedures.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-text-body_small slds-text-color_weak">📚 6 modules • ⏱️ 3-4 hours</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 0%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">Prerequisites required</p>
+                        </div>
+                        <div class="slds-card__footer">
+                            <button class="slds-button slds-button_neutral" disabled>🔒 Locked</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Development -->
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" data-category="development" data-difficulty="advanced">
+                        <div class="path-difficulty">
+                            <span class="slds-badge slds-badge_warning">Advanced</span>
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(234, 0, 30, 0.1); color: var(--color-background-error);">
+                                🚀
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                Advanced Development
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Deep dive into advanced Rust patterns, AI integration, and performance optimization 
+                                for enterprise-grade legal technology solutions.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-text-body_small slds-text-color_weak">📚 8 modules • ⏱️ 6-8 hours</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 0%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">Prerequisites required</p>
+                        </div>
+                        <div class="slds-card__footer">
+                            <button class="slds-button slds-button_neutral" disabled>🔒 Locked</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI & Machine Learning -->
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" data-category="development" data-difficulty="advanced">
+                        <div class="path-difficulty">
+                            <span class="slds-badge slds-badge_warning">Advanced</span>
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(138, 43, 226, 0.1); color: #8a2be2;">
+                                🤖
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                AI & Machine Learning
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Implement intelligent legal document analysis, predictive analytics, 
+                                and natural language processing for legal applications.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-text-body_small slds-text-color_weak">📚 10 modules • ⏱️ 8-10 hours</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 0%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">Prerequisites required</p>
+                        </div>
+                        <div class="slds-card__footer">
+                            <button class="slds-button slds-button_neutral" disabled>🔒 Locked</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Database & Analytics -->
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" data-category="development" data-difficulty="intermediate">
+                        <div class="path-difficulty">
+                            <span class="slds-badge slds-badge_success">Intermediate</span>
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(0, 123, 255, 0.1); color: #007bff;">
+                                📊
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                Database & Analytics
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Master data modeling, query optimization, reporting systems, 
+                                and business intelligence for legal practice management.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-text-body_small slds-text-color_weak">📚 7 modules • ⏱️ 5-6 hours</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 0%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">Prerequisites required</p>
+                        </div>
+                        <div class="slds-card__footer">
+                            <button class="slds-button slds-button_neutral" disabled>🔒 Locked</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Integration Category -->
+        <section id="integration-section" class="slds-m-bottom_xx-large">
+            <div class="path-category-header slds-p-around_medium">
+                <h2 class="slds-text-heading_medium">🔗 Integration</h2>
+                <p class="slds-text-body_regular">Connect MoodBridge with enterprise systems and third-party services</p>
+            </div>
+            
+            <div class="slds-grid slds-gutters slds-wrap">
+                <!-- Integration Specialist -->
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" data-category="integration" data-difficulty="expert">
+                        <div class="path-difficulty">
+                            <span class="slds-badge slds-badge_error">Expert</span>
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(255, 99, 132, 0.1); color: #ff6384;">
+                                🌐
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                Integration Specialist
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Master enterprise integrations with Salesforce, AWS, Azure, and third-party APIs. 
+                                Build robust, scalable connections between systems.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-text-body_small slds-text-color_weak">📚 12 modules • ⏱️ 8-10 hours</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 0%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">Prerequisites required</p>
+                        </div>
+                        <div class="slds-card__footer">
+                            <button class="slds-button slds-button_neutral" disabled>🔒 Locked</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Salesforce Integration -->
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" data-category="integration" data-difficulty="advanced">
+                        <div class="path-difficulty">
+                            <span class="slds-badge slds-badge_warning">Advanced</span>
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(0, 162, 255, 0.1); color: #00a2ff;">
+                                ☁️
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                Salesforce Integration
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Deep dive into Salesforce APIs, Lightning Platform integration, 
+                                and custom application development within the Salesforce ecosystem.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-text-body_small slds-text-color_weak">📚 9 modules • ⏱️ 6-7 hours</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 0%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">Prerequisites required</p>
+                        </div>
+                        <div class="slds-card__footer">
+                            <button class="slds-button slds-button_neutral" disabled>🔒 Locked</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Specialization Category -->
+        <section id="specialization-section" class="slds-m-bottom_xx-large">
+            <div class="path-category-header slds-p-around_medium">
+                <h2 class="slds-text-heading_medium">🎯 Specialization</h2>
+                <p class="slds-text-body_regular">Expert-level specializations for specific legal technology domains</p>
+            </div>
+            
+            <div class="slds-grid slds-gutters slds-wrap">
+                <!-- E-Discovery Expert -->
+                <div class="slds-col slds-size_1-of-3 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" data-category="specialization" data-difficulty="expert">
+                        <div class="path-difficulty">
+                            <span class="slds-badge slds-badge_error">Expert</span>
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(75, 192, 192, 0.1); color: #4bc0c0;">
+                                🔍
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                E-Discovery Expert
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Master electronic discovery processes, data preservation, 
+                                advanced search techniques, and compliance management.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-text-body_small slds-text-color_weak">📚 15 modules</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 0%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">Coming Soon</p>
+                        </div>
+                        <div class="slds-card__footer">
+                            <button class="slds-button slds-button_neutral" disabled>Coming Soon</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legal Analytics Pro -->
+                <div class="slds-col slds-size_1-of-3 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" data-category="specialization" data-difficulty="expert">
+                        <div class="path-difficulty">
+                            <span class="slds-badge slds-badge_error">Expert</span>
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(255, 159, 64, 0.1); color: #ff9f40;">
+                                📈
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                Legal Analytics Pro
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Advanced analytics, predictive modeling, and data visualization 
+                                for legal practice optimization and strategic decision making.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-text-body_small slds-text-color_weak">📚 18 modules</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 0%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">Coming Soon</p>
+                        </div>
+                        <div class="slds-card__footer">
+                            <button class="slds-button slds-button_neutral" disabled>Coming Soon</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security & Compliance -->
+                <div class="slds-col slds-size_1-of-3 slds-m-bottom_large">
+                    <div class="slds-card learning-path-card" data-category="specialization" data-difficulty="expert">
+                        <div class="path-difficulty">
+                            <span class="slds-badge slds-badge_error">Expert</span>
+                        </div>
+                        <div class="slds-card__body">
+                            <div class="learning-path-icon" style="background: rgba(201, 203, 207, 0.1); color: #c9cbcf;">
+                                🔒
+                            </div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">
+                                Security & Compliance
+                            </h3>
+                            <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_medium">
+                                Expert-level security implementation, compliance frameworks, 
+                                data protection, and regulatory requirement management.
+                            </p>
+                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                                <div class="slds-col">
+                                    <span class="slds-text-body_small slds-text-color_weak">📚 20 modules</span>
+                                </div>
+                            </div>
+                            <div class="slds-progress-bar slds-m-bottom_small">
+                                <span class="slds-progress-bar__value" style="width: 0%;"></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">Coming Soon</p>
+                        </div>
+                        <div class="slds-card__footer">
+                            <button class="slds-button slds-button_neutral" disabled>Coming Soon</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Path Preview Modal -->
+    <div id="pathPreviewModal" class="path-preview-modal">
+        <div class="modal-content">
+            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+                <div class="slds-col">
+                    <h2 class="slds-text-heading_medium" id="modalTitle">Path Preview</h2>
+                </div>
+                <div class="slds-col slds-no-flex">
+                    <button class="slds-button slds-button_icon" onclick="closePathPreview()">
+                        <span style="font-size: 1.5rem;">×</span>
+                    </button>
+                </div>
+            </div>
+            <div id="modalContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        document.getElementById('pathSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.learning-path-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const description = card.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.closest('.slds-col').style.display = 'block';
+                } else {
+                    card.closest('.slds-col').style.display = 'none';
+                }
+            });
+        });
+
+        // Difficulty filter
+        document.getElementById('difficultyFilter').addEventListener('change', function(e) {
+            const difficulty = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.learning-path-card');
+            
+            cards.forEach(card => {
+                if (!difficulty || card.dataset.difficulty === difficulty) {
+                    card.closest('.slds-col').style.display = 'block';
+                } else {
+                    card.closest('.slds-col').style.display = 'none';
+                }
+            });
+        });
+
+        // Tab functionality
+        document.querySelectorAll('.slds-tabs__link').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all tabs
+                document.querySelectorAll('.slds-tabs__item').forEach(item => {
+                    item.classList.remove('slds-is-active');
+                });
+                
+                // Add active class to clicked tab
+                this.closest('.slds-tabs__item').classList.add('slds-is-active');
+                
+                // Filter content based on tab
+                const category = this.getAttribute('href').substring(1);
+                filterByCategory(category);
+            });
+        });
+
+        function filterByCategory(category) {
+            const sections = document.querySelectorAll('section[id$="-section"]');
+            
+            if (category === 'all') {
+                sections.forEach(section => section.style.display = 'block');
+            } else {
+                sections.forEach(section => {
+                    if (section.id === category + '-section') {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        // Path preview modal
+        function openPathPreview(pathId) {
+            const modal = document.getElementById('pathPreviewModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            
+            // Mock data for preview
+            const pathData = {
+                'moodbridge_fundamentals': {
+                    title: 'MoodBridge Fundamentals',
+                    description: 'Master the core concepts and architecture of MoodBridge.',
+                    modules: [
+                        'Introduction to MoodBridge',
+                        'Rust for Legal Tech',
+                        'Architecture Overview',
+                        'Database Fundamentals',
+                        'Langchain Development'
+                    ],
+                    prerequisites: 'None - perfect for beginners',
+                    outcomes: [
+                        'Understand MoodBridge architecture',
+                        'Navigate the interface confidently',
+                        'Use the Wizard Engine effectively',
+                        'Implement basic Rust patterns'
+                    ]
+                }
+            };
+            
+            const data = pathData[pathId] || {
+                title: 'Path Preview',
+                description: 'Detailed information coming soon...',
+                modules: [],
+                prerequisites: 'To be determined',
+                outcomes: []
+            };
+            
+            title.textContent = data.title;
+            content.innerHTML = `
+                <div class="slds-m-bottom_medium">
+                    <p class="slds-text-body_regular">${data.description}</p>
+                </div>
+                <div class="slds-m-bottom_medium">
+                    <h4 class="slds-text-heading_small slds-m-bottom_small">Prerequisites</h4>
+                    <p class="slds-text-body_small">${data.prerequisites}</p>
+                </div>
+                <div class="slds-m-bottom_medium">
+                    <h4 class="slds-text-heading_small slds-m-bottom_small">Learning Outcomes</h4>
+                    <ul class="slds-list_dotted">
+                        ${data.outcomes.map(outcome => `<li>${outcome}</li>`).join('')}
+                    </ul>
+                </div>
+                <div class="slds-m-bottom_medium">
+                    <h4 class="slds-text-heading_small slds-m-bottom_small">Modules</h4>
+                    <ul class="slds-list_ordered">
+                        ${data.modules.map(module => `<li>${module}</li>`).join('')}
+                    </ul>
+                </div>
+                <div class="slds-button-group">
+                    <a href="/academy/paths/${pathId}" class="slds-button slds-button_brand">Start Learning</a>
+                    <button class="slds-button slds-button_neutral" onclick="closePathPreview()">Close</button>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closePathPreview() {
+            document.getElementById('pathPreviewModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('pathPreviewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePathPreview();
+            }
+        });
+
+        // Animate progress bars on load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const progressBars = document.querySelectorAll('.slds-progress-bar__value');
+                progressBars.forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 500);
+        });
+
+        // Add hover effects to cards
+        document.querySelectorAll('.learning-path-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-0.125rem)';
+                this.style.boxShadow = 'var(--shadow-drop-down)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'var(--shadow-docked)';
+            });
+        });
+    </script>
+</body>
+</html>

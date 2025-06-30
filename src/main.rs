@@ -1,5 +1,6 @@
-use axum::{routing::{get, post, put}, Router};
+use axum::{routing::{get, post, put}, Router, response::Html};
 use tower_http::cors::{Any, CorsLayer};
+use tower_http::services::ServeDir;
 use tracing_subscriber;
 use std::{env, net::SocketAddr};
 use crate::db::{create_pool, seed_sample_data};
@@ -11,6 +12,7 @@ pub mod db;
 // pub mod algorithms;
 pub mod warp_command;
 pub mod wizard;
+pub mod trailhead;
 // pub mod integrations;
 
 #[tokio::main]
@@ -61,6 +63,12 @@ async fn main() {
         .route("/api/wizards/:id", get(wizard::handlers::get_wizard))
         .route("/api/wizards/submit", post(wizard::handlers::submit_step))
         .route("/api/wizard-types", get(wizard::handlers::get_wizard_types))
+        // Academy Routes
+        .route("/academy", get(academy_home))
+        .route("/academy/paths", get(academy_paths))
+        .route("/academy/paths/moodbridge_fundamentals", get(academy_path_detail))
+        // Static file serving
+        .nest_service("/static", ServeDir::new("static"))
         .with_state(pool.clone())
         .layer(CorsLayer::new().allow_origin(Any));
 
@@ -73,4 +81,20 @@ async fn main() {
         .serve(app.into_make_service())
         .await
         .unwrap();
+}
+
+// Academy handler functions
+async fn academy_home() -> Html<String> {
+    let html = include_str!("../templates/academy_home.html");
+    Html(html.to_string())
+}
+
+async fn academy_paths() -> Html<String> {
+    let html = include_str!("../templates/academy_paths.html");
+    Html(html.to_string())
+}
+
+async fn academy_path_detail() -> Html<String> {
+    let html = include_str!("../academy_sample.html");
+    Html(html.to_string())
 }
