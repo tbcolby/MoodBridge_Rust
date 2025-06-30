@@ -165,7 +165,7 @@ async fn show_project(pool: &Pool<Sqlite>, id: i64) -> Result<(), sqlx::Error> {
             println!("Status: {}", p.status);
             println!("Priority: {}", p.priority);
             println!("Type: {}", p.project_type);
-            println!("Progress: {:.1}%", p.progress_percentage);
+            println!("Progress: {:.1}%", p.progress_percentage.unwrap_or(0.0));
             println!("Owner: {}", p.owner.unwrap_or_else(|| "N/A".to_string()));
             println!("Estimated Hours: {}", p.estimated_hours.map(|h| format!("{:.1}", h)).unwrap_or_else(|| "N/A".to_string()));
             println!("Actual Hours: {}", p.actual_hours.map(|h| format!("{:.1}", h)).unwrap_or_else(|| "0.0".to_string()));
@@ -269,7 +269,7 @@ async fn list_tasks(pool: &Pool<Sqlite>, project_id: i64) -> Result<(), sqlx::Er
 
     for task in tasks {
         println!("{:<4} {:<30} {:<12} {:<10} {:<12} {:<15}", 
-            task.id,
+            task.id.unwrap_or(0),
             truncate(&task.title, 29),
             task.status,
             task.priority,
@@ -312,16 +312,16 @@ async fn show_dashboard(pool: &Pool<Sqlite>) -> Result<(), sqlx::Error> {
     
     println!("\n📊 Project Summary:");
     println!("  Total Projects: {}", summary.total_projects);
-    println!("  Active Projects: {}", summary.active_projects);
-    println!("  Completed Projects: {}", summary.completed_projects);
+    println!("  Active Projects: {}", summary.active_projects.unwrap_or(0));
+    println!("  Completed Projects: {}", summary.completed_projects.unwrap_or(0));
     println!("  Total Estimated Hours: {:.1}", summary.total_estimated_hours.unwrap_or(0.0));
     println!("  Total Actual Hours: {:.1}", summary.total_actual_hours.unwrap_or(0.0));
 
     println!("\n📝 Task Summary:");
     println!("  Total Tasks: {}", task_summary.total_tasks);
-    println!("  Completed Tasks: {}", task_summary.completed_tasks);
-    println!("  Critical Tasks: {}", task_summary.critical_tasks);
-    println!("  Overdue Tasks: {}", task_summary.overdue_tasks);
+    println!("  Completed Tasks: {}", task_summary.completed_tasks.unwrap_or(0));
+    println!("  Critical Tasks: {}", task_summary.critical_tasks.unwrap_or(0));
+    println!("  Overdue Tasks: {}", task_summary.overdue_tasks.unwrap_or(0));
 
     // Show active projects
     println!("\n🔥 Active Projects:");
@@ -337,8 +337,8 @@ async fn show_dashboard(pool: &Pool<Sqlite>) -> Result<(), sqlx::Error> {
     for project in active_projects {
         println!("  • {} (ID: {}) - {:.1}% [{}]", 
             project.name, 
-            project.id, 
-            project.progress_percentage,
+            project.id.unwrap_or(0), 
+            project.progress_percentage.unwrap_or(0.0),
             project.priority
         );
     }

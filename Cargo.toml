@@ -5,6 +5,10 @@ edition = "2021"
 authors = ["Legal Technology Solutions <contact@example.com>"]
 description = "High-performance legal dashboard in Rust with SQLite and Axum"
 
+[lib]
+name = "moodbridge_rust"
+path = "src/lib.rs"
+
 [dependencies]
 axum = "0.6"
 tokio = { version = "1.0", features = ["full"] }
@@ -35,3 +39,5 @@ clap = { version = "4.0", features = ["derive"] }
 tokio-cron-scheduler = "0.9"
 log = "0.4"
 env_logger = "0.10"
+# Wizard dependencies (already covered by existing dependencies)
+# uuid, chrono, serde, serde_json, async-trait, anyhow are already included

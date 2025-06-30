@@ -1,6 +1,6 @@
 use sqlx::{sqlite::SqlitePool, Pool, Sqlite};
 use std::path::Path;
-use tracing::{error, info};
+use tracing::info;
 
 pub type DbPool = Pool<Sqlite>;
 

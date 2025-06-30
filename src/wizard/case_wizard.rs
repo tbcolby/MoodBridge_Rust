@@ -569,7 +569,7 @@ impl Wizard for CaseCreationWizard {
         }
         
         // Handle dynamic field updates based on selections
-        if let Some(case_type) = state.data.get("case_type") {
+        if let Some(case_type) = state.data.get("case_type").cloned() {
             self.update_subtypes(state, case_type.as_str().unwrap_or("")).await?;
         }
         

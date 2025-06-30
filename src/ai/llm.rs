@@ -1,4 +1,4 @@
-use crate::ai::{AiConfig, AiError, AiService, AnalysisRequest, AnalysisResponse, AiInsight, InsightType};
+use crate::ai::{AiConfig, AiError, AiService, AnalysisResponse, AiInsight, InsightType};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::time::Instant;
@@ -101,7 +101,7 @@ impl AiService for OpenAiService {
     }
 
     async fn detect_patterns(&self, data: &serde_json::Value) -> Result<Vec<AiInsight>, AiError> {
-        let start_time = Instant::now();
+        let _start_time = Instant::now();
         
         let system_message = OpenAiMessage {
             role: "system".to_string(),

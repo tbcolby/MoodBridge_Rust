@@ -59,7 +59,7 @@ impl EmailService {
             .body(body.to_string())
             .map_err(|e| WarpCommandError::EmailError(format!("Failed to build email: {}", e)))?;
 
-        use lettre::Transport;
+        // use lettre::Transport;
         self.smtp_transport
             .send(email)
             .await

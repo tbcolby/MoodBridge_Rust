@@ -2,8 +2,8 @@ use super::*;
 use regex::Regex;
 use std::collections::HashMap;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Seek, SeekFrom};
-use chrono::{DateTime, Utc, TimeZone, Local, NaiveDateTime};
+use std::io::{BufRead, BufReader};
+use chrono::{DateTime, Utc};
 use serde_json::Value;
 
 /// Raw log entry from Warp
@@ -73,7 +73,7 @@ impl WarpLogAnalyzer {
 
     /// Analyze today's development activity from logs
     pub async fn analyze_daily_activity(&self) -> Result<Vec<CommandExecution>, WarpCommandError> {
-        let mut file = File::open(&self.log_path)?;
+        let file = File::open(&self.log_path)?;
         let reader = BufReader::new(file);
         
         let mut commands = Vec::new();

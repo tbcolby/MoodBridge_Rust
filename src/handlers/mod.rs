@@ -8,7 +8,7 @@ use serde_json::{json, Value};
 use sqlx::Row;
 
 // Re-export models
-use crate::models::*;
+// use crate::models::*;
 use crate::db::DbPool;
 
 // Project management handlers module
@@ -149,11 +149,15 @@ pub async fn dashboard() -> Html<String> {
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🦀⚖️ MoodBridge Legal Dashboard</h1>
-            <p>Real-time analytics for family law case management</p>
-        </div>
+        <div class="container">
+            <div class="header">
+                <h1>🦀⚖️ MoodBridge Legal Dashboard</h1>
+                <p>Real-time analytics for family law case management</p>
+                <div style="margin-top: 20px;">
+                    <a href="/wizards" style="background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; margin-right: 15px;">🧙‍♂️ Wizard Engine</a>
+                    <a href="/projects" style="background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none;">📋 Project Manager</a>
+                </div>
+            </div>
         
         <div class="stats-grid">
             <div class="stat-card">

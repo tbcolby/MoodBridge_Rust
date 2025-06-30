@@ -2,12 +2,13 @@ use axum::{routing::{get, post, put}, Router};
 use tower_http::cors::{Any, CorsLayer};
 use tracing_subscriber;
 use std::{env, net::SocketAddr};
-use crate::db::{create_pool, run_migrations, seed_sample_data};
+use crate::db::{create_pool, seed_sample_data};
 
 pub mod handlers;
 pub mod models;
 pub mod db;
 pub mod ai;
+pub mod algorithms;
 pub mod warp_command;
 pub mod wizard;
 // pub mod integrations;
@@ -54,6 +55,12 @@ async fn main() {
         .route("/api/task-analytics", get(handlers::project::get_task_analytics))
         .route("/api/work-sessions/:task_id/start", post(handlers::project::start_work_session))
         .route("/api/work-sessions/:session_id/end", put(handlers::project::end_work_session))
+        // Wizard Routes
+        .route("/wizards", get(wizard::handlers::wizard_ui))
+        .route("/api/wizards", post(wizard::handlers::create_wizard))
+        .route("/api/wizards/:id", get(wizard::handlers::get_wizard))
+        .route("/api/wizards/submit", post(wizard::handlers::submit_step))
+        .route("/api/wizard-types", get(wizard::handlers::get_wizard_types))
         .with_state(pool.clone())
         .layer(CorsLayer::new().allow_origin(Any));
 

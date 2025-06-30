@@ -1,14 +1,15 @@
-pub mod llm;
-pub mod patterns;
 pub mod analytics;
+pub mod knuthian_analytics;
+pub mod llm;
 pub mod fabric_integration;
+pub mod patterns;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use chrono::{DateTime, Utc};
 
 /// AI Insight types for legal analysis
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum InsightType {
     Pattern,
     RiskAssessment,
@@ -16,6 +17,8 @@ pub enum InsightType {
     TimelineCorrelation,
     SentimentAnalysis,
     DocumentAnalysis,
+    Classification,
+    Optimization,
 }
 
 /// AI-generated insight structure

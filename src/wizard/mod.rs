@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::hash::Hash;
 use async_trait::async_trait;
 use anyhow::Result;
 
@@ -23,7 +24,7 @@ pub struct WizardState {
 }
 
 /// Types of wizards available in the system
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum WizardType {
     CaseCreation,
     ProjectSetup,
@@ -216,8 +217,8 @@ pub trait Wizard {
 
 /// Wizard manager for handling wizard lifecycle
 pub struct WizardManager {
-    wizards: HashMap<WizardType, Box<dyn Wizard + Send + Sync>>,
-    states: HashMap<String, WizardState>,
+    pub wizards: HashMap<WizardType, Box<dyn Wizard + Send + Sync>>,
+    pub states: HashMap<String, WizardState>,
 }
 
 impl WizardManager {
@@ -242,7 +243,7 @@ impl WizardManager {
         let wizard_id = uuid::Uuid::new_v4().to_string();
         let now = chrono::Utc::now();
         
-        let mut state = WizardState {
+        let state = WizardState {
             id: wizard_id.clone(),
             wizard_type: request.wizard_type,
             current_step: 0,
@@ -264,6 +265,17 @@ impl WizardManager {
     
     /// Submit step data
     pub async fn submit_step(&mut self, submission: StepSubmission) -> Result<WizardResponse> {
+        // Create default step outside of borrow
+        let default_step = WizardStep {
+            step_number: 0,
+            title: "Error".to_string(),
+            description: "An error occurred".to_string(),
+            fields: Vec::new(),
+            validation_rules: Vec::new(),
+            is_optional: false,
+            next_step_condition: None,
+        };
+        
         let state = self.states.get_mut(&submission.wizard_id)
             .ok_or_else(|| anyhow::anyhow!("Wizard not found"))?;
         
@@ -276,12 +288,19 @@ impl WizardManager {
         if !errors.is_empty() {
             let current_step_config = wizard.get_steps().get(state.current_step)
                 .cloned()
-                .unwrap_or_else(|| self.get_default_step());
+                .unwrap_or_else(|| default_step.clone());
+            
+            let navigation = WizardNavigation {
+                can_go_previous: state.current_step > 0,
+                can_go_next: state.current_step < state.total_steps - 1,
+                can_complete: state.current_step == state.total_steps - 1,
+                progress_percentage: ((state.current_step + 1) as f32 / state.total_steps as f32) * 100.0,
+            };
             
             return Ok(WizardResponse {
                 state: state.clone(),
                 current_step_config,
-                navigation: self.calculate_navigation(state),
+                navigation,
                 errors,
             });
         }
@@ -321,18 +340,25 @@ impl WizardManager {
         
         let current_step_config = wizard.get_steps().get(state.current_step)
             .cloned()
-            .unwrap_or_else(|| self.get_default_step());
+            .unwrap_or_else(|| default_step.clone());
+        
+        let navigation = WizardNavigation {
+            can_go_previous: state.current_step > 0,
+            can_go_next: state.current_step < state.total_steps - 1,
+            can_complete: state.current_step == state.total_steps - 1,
+            progress_percentage: ((state.current_step + 1) as f32 / state.total_steps as f32) * 100.0,
+        };
         
         Ok(WizardResponse {
             state: state.clone(),
             current_step_config,
-            navigation: self.calculate_navigation(state),
+            navigation,
             errors: Vec::new(),
         })
     }
     
     /// Calculate navigation options
-    fn calculate_navigation(&self, state: &WizardState) -> WizardNavigation {
+    pub fn calculate_navigation(&self, state: &WizardState) -> WizardNavigation {
         WizardNavigation {
             can_go_previous: state.current_step > 0,
             can_go_next: state.current_step < state.total_steps - 1,
@@ -342,7 +368,7 @@ impl WizardManager {
     }
     
     /// Get default step for error cases
-    fn get_default_step(&self) -> WizardStep {
+    pub fn get_default_step(&self) -> WizardStep {
         WizardStep {
             step_number: 0,
             title: "Error".to_string(),

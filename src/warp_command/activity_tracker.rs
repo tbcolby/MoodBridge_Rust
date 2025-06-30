@@ -1,7 +1,7 @@
 use super::*;
 use super::log_analyzer::CommandExecution;
 use std::collections::HashMap;
-use chrono::{DateTime, Utc, Duration};
+use chrono::Utc;
 
 pub struct ActivityTracker {
     session_gap_minutes: i64,
