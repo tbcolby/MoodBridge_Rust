@@ -368,11 +368,11 @@ impl ActivityTracker {
 
     fn count_context_switches(&self, commands: &[CommandExecution]) -> u32 {
         let mut switches = 0;
-        let mut last_directory = None;
+        let mut last_directory: Option<&String> = None;
 
         for cmd in commands {
             if let Some(last_dir) = &last_directory {
-                if *last_dir != cmd.working_directory {
+                if last_dir.as_str() != cmd.working_directory {
                     switches += 1;
                 }
             }

@@ -134,11 +134,11 @@ async fn list_projects(pool: &Pool<Sqlite>) -> Result<(), sqlx::Error> {
 
     for project in projects {
         println!("{:<4} {:<30} {:<12} {:<10} {:<9.1}% {:<12} {:<12} {:<15}", 
-            project.id.unwrap_or(0),
+            project.id,
             truncate(&project.name, 29),
             project.status,
             project.priority,
-            project.progress_percentage.unwrap_or(0.0),
+            project.progress_percentage,
             project.estimated_hours.map(|h| format!("{:.1}", h)).unwrap_or_else(|| "N/A".to_string()),
             project.actual_hours.map(|h| format!("{:.1}", h)).unwrap_or_else(|| "0.0".to_string()),
             project.target_date.unwrap_or_else(|| "N/A".to_string())

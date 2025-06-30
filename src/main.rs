@@ -9,6 +9,7 @@ pub mod models;
 pub mod db;
 pub mod ai;
 pub mod warp_command;
+// pub mod integrations;
 
 #[tokio::main]
 async fn main() {
@@ -26,7 +27,7 @@ async fn main() {
 
     // Create database pool and run migrations
     let pool = create_pool(&database_url).await.expect("Failed to create database pool");
-    run_migrations(&pool).await.expect("Failed to run migrations");
+    // run_migrations(&pool).await.expect("Failed to run migrations");
 
     // Seed sample data
     seed_sample_data(&pool).await.expect("Failed to seed sample data");
