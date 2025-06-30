@@ -91,8 +91,8 @@ mod ai_insights_tests {
     use super::*;
     use crate::ai::AiInsight;
 
-    #[test]
-    fn test_ai_insight_creation() {
+    #[tokio::test]
+    async fn test_ai_insight_creation() {
         let insight = AiInsight {
             insight_type: InsightType::Pattern,
             confidence_score: 0.85,
@@ -106,8 +106,8 @@ mod ai_insights_tests {
         assert_eq!(insight.generated_by, "gpt-4");
     }
 
-    #[test]
-    fn test_insight_types() {
+    #[tokio::test]
+    async fn test_insight_types() {
         let pattern = InsightType::Pattern;
         let risk = InsightType::RiskAssessment;
         let recommendation = InsightType::Recommendation;

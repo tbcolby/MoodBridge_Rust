@@ -1,10 +1,11 @@
-use crate::db;
-use crate::handlers::{ai_monitor, ai_prompt, ai_voice, dashboard_data, diff_data, health_check};
-use crate::models::requests::*;
-use axum::extract::Json as AxumJson;
+use axum::extract::{Json as AxumJson, State};
 use axum::http::StatusCode;
+use moodbridge_rust::db;
+use moodbridge_rust::handlers::{
+    ai_monitor, ai_prompt, ai_voice, dashboard_data, diff_data, health_check,
+};
+use moodbridge_rust::models::requests::*;
 use serde_json::json;
-use tokio::test;
 
 #[tokio::test]
 async fn test_health_check() {
@@ -16,9 +17,7 @@ async fn test_health_check() {
 #[tokio::test]
 async fn test_dashboard_data() {
     let pool = db::create_pool("sqlite::memory:").await.unwrap();
-    let response = dashboard_data(axum::extract::State::new(pool))
-        .await
-        .unwrap();
+    let response = dashboard_data(State(pool)).await.unwrap();
     assert_eq!(response.status(), StatusCode::OK);
 }
 
@@ -26,9 +25,7 @@ async fn test_dashboard_data() {
 async fn test_ai_prompt() {
     let pool = db::create_pool("sqlite::memory:").await.unwrap();
     let payload = json!({ "prompt": "Explain the legal term", "input_type": "text" });
-    let response = ai_prompt(axum::extract::State::new(pool), AxumJson(payload))
-        .await
-        .unwrap();
+    let response = ai_prompt(State(pool), AxumJson(payload)).await.unwrap();
     assert_eq!(response.status(), StatusCode::OK);
 }
 
@@ -36,9 +33,7 @@ async fn test_ai_prompt() {
 async fn test_ai_voice() {
     let pool = db::create_pool("sqlite::memory:").await.unwrap();
     let body = axum::body::Bytes::from_static(b"test audio data");
-    let response = ai_voice(axum::extract::State::new(pool), body)
-        .await
-        .unwrap();
+    let response = ai_voice(State(pool), body).await.unwrap();
     assert_eq!(response.status(), StatusCode::OK);
 }
 
