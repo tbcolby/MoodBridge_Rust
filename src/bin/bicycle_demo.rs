@@ -10,6 +10,7 @@ use moodbridge_rust::bicycle::{
     optimization::{GeneticOptimizer, OptimizationObjective, OptimizationConstraints},
     aerodynamics::AerodynamicAnalyzer,
     wizard::{BicycleWizard, WizardAnswer, AnswerValue},
+    physics,
 };
 use std::collections::HashMap;
 
@@ -149,7 +150,7 @@ fn demo_testing_and_certification() {
     println!("──────────────────────────────────────");
     
     let design = BicycleDesign::new("Test Subject Road Bike");
-    let physics_engine = PhysicsEngine::new();
+    let physics_engine = physics::PhysicsEngine::new();
     
     // Run road bike test suite
     println!("🔍 Running road bike test suite...");
