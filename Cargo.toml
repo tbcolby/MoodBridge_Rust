@@ -41,5 +41,6 @@ log = "0.4"
 env_logger = "0.10"
 rand = "0.8"
 urlencoding = "2.1"
+regex = "1.10"
 # Wizard dependencies (already covered by existing dependencies)
 # uuid, chrono, serde, serde_json, async-trait, anyhow are already included
