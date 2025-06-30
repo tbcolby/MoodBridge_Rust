@@ -127,10 +127,13 @@ async fn test_large_dataset_performance() {
         let denial = PlacementDenial {
             id: i,
             denied_date: format!("2024-01-{:02}", (i % 30) + 1),
+            requested_start_time: None,
+            requested_end_time: None,
             duration_hours: Some((i % 12) as f64 + 1.0),
             denial_reason: Some(format!("Reason {}", i)),
             violation_category: Some("Test Category".to_string()),
-            ..Default::default()
+            evidence_attached: None,
+            created_at: None,
         };
 
         let _ = sqlx::query(

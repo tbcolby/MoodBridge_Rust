@@ -92,6 +92,10 @@ async-stripe = "1.0.0-alpha.2"
 multipart = "0.18"
 aws-sdk-s3 = "1.0"
 
+# Import Wizard Dependencies
+hex = "0.4"
+flate2 = "1.0"
+
 # Testing (dev dependencies)
 [dev-dependencies]
 tokio-test = "0.4"
