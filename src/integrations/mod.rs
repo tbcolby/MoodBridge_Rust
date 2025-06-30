@@ -10,14 +10,8 @@ use serde::{Deserialize, Serialize};
 use async_trait::async_trait;
 use uuid::Uuid;
 
-pub mod auth;
-pub mod config;
-pub mod salesforce;
-pub mod aws;
-pub mod azure; 
-pub mod snowflake;
-pub mod etl;
-pub mod metrics;
+pub mod computational;
+pub mod engines;
 
 /// Core integration result type
 pub type IntegrationResult<T> = Result<T, IntegrationError>;

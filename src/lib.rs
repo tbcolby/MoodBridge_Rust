@@ -1,9 +1,10 @@
-pub mod handlers;
 pub mod models;
+pub mod handlers;
 pub mod db;
-// pub mod ai;
+pub mod wizard;
+pub mod demo_app;
 // pub mod algorithms;
 pub mod warp_command;
-pub mod wizard;
 pub mod trailhead;
-// pub mod integrations;
+pub mod integrations;
+pub mod bicycle;
