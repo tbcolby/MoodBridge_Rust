@@ -10,6 +10,7 @@ use sqlx::Row;
 // Re-export models
 use crate::models::*;
 use crate::db::DbPool;
+use crate::ai::{AiConfig, core_engine::{AiCoreEngine, AdvancedPromptRequest, InputType}};
 
 // Health check endpoint
 pub async fn health_check() -> Result<Json<Value>, StatusCode> {
@@ -19,10 +20,11 @@ pub async fn health_check() -> Result<Json<Value>, StatusCode> {
     })))
 }
 
-// Dashboard HTML page
+// Dashboard HTML page - VS Code style interface
 pub async fn dashboard() -> Html<String> {
-    let html = std::fs::read_to_string("templates/dashboard.html")
-        .unwrap_or_else(|_| "<h1>Error loading dashboard template</h1>".to_string());
+    let html = std::fs::read_to_string("templates/vscode-dashboard.html")
+        .unwrap_or_else(|_| std::fs::read_to_string("templates/dashboard.html")
+            .unwrap_or_else(|_| "<h1>Error loading dashboard templates</h1>".to_string()));
     Html(html)
 }
 
@@ -108,57 +110,148 @@ pub async fn dashboard_data(State(pool): State<DbPool>) -> Result<Json<Value>, S
     })))
 }
 
-// AI prompt endpoint for enhanced interactions
+// Advanced AI prompt endpoint with multi-modal capabilities
 pub async fn ai_prompt(
     State(pool): State<DbPool>,
     Json(payload): Json<Value>
 ) -> Result<Json<Value>, StatusCode> {
-    let prompt = payload["prompt"].as_str().unwrap_or("");
+    let prompt = payload["prompt"].as_str().unwrap_or("").to_string();
+    let input_type = payload["input_type"].as_str().unwrap_or("text");
+    let require_citations = payload["require_citations"].as_bool().unwrap_or(false);
+    let style_preference = payload["style"].as_str().map(|s| s.to_string());
     
-    // Simple keyword-based AI response (replace with actual AI integration)
-    let response = match prompt.to_lowercase().as_str() {
-        p if p.contains("statistics") || p.contains("stats") => {
-            json!({
-                "action": "show_stats",
-                "message": "Here's a summary of your key statistics",
-                "data": get_quick_stats(&pool).await?
-            })
-        },
-        p if p.contains("theme") && p.contains("dark") => {
-            json!({
-                "action": "toggle_theme",
-                "target": "dark",
-                "message": "Switched to dark theme"
-            })
-        },
-        p if p.contains("theme") && p.contains("light") => {
-            json!({
-                "action": "toggle_theme",
-                "target": "light",
-                "message": "Switched to light theme"
-            })
-        },
-        p if p.contains("refresh") || p.contains("reload") => {
-            json!({
-                "action": "refresh_data",
-                "message": "Dashboard data refreshed"
-            })
-        },
-        p if p.contains("help") => {
-            json!({
-                "action": "show_help",
-                "message": "I can help you with:\n• Changing themes\n• Refreshing data\n• Showing statistics\n• Opening settings\n• Analyzing trends"
-            })
-        },
-        _ => {
-            json!({
-                "action": "general_response",
-                "message": format!("I understand you're asking about: '{}'. Try asking about themes, statistics, or data refresh.", prompt)
-            })
-        }
+    // Initialize AI Core Engine
+    let ai_config = AiConfig::default();
+    let ai_engine = AiCoreEngine::new(ai_config);
+    
+    // Gather current dashboard context
+    let mut context = std::collections::HashMap::new();
+    
+    // Add dashboard statistics to context
+    if let Ok(stats) = get_quick_stats(&pool).await {
+        context.insert("current_stats".to_string(), stats);
+    }
+    
+    // Add recent incidents to context
+    if let Ok(recent_data) = get_recent_dashboard_data(&pool).await {
+        context.insert("recent_data".to_string(), recent_data);
+    }
+    
+    // Determine input type
+    let parsed_input_type = match input_type {
+        "voice" => InputType::Voice,
+        "structured" => InputType::Structured,
+        "visual" => InputType::Visual,
+        "contextual" => InputType::Contextual,
+        _ => InputType::Text,
     };
     
-    Ok(Json(response))
+    // Create advanced prompt request
+    let ai_request = AdvancedPromptRequest {
+        input: prompt.clone(),
+        input_type: parsed_input_type,
+        context: Some(context),
+        intent_hints: extract_intent_hints(&prompt),
+        require_citations,
+        max_response_length: Some(2000),
+        style_preference,
+    };
+    
+    // Process the request through AI Core Engine
+    match ai_engine.process_advanced_prompt(ai_request).await {
+        Ok(ai_response) => {
+            // Convert AI response to JSON format expected by frontend
+            let response_json = json!({
+                "success": true,
+                "primary_response": ai_response.primary_response,
+                "confidence": ai_response.confidence,
+                "detected_intent": ai_response.detected_intent,
+                "suggested_actions": ai_response.suggested_actions,
+                "contextual_insights": ai_response.contextual_insights,
+                "follow_up_questions": ai_response.follow_up_questions,
+                "risk_alerts": ai_response.risk_alerts,
+                "citations": ai_response.citations,
+                "processing_metadata": ai_response.processing_metadata,
+                "action": determine_frontend_action(&ai_response.detected_intent, &ai_response.suggested_actions),
+                "message": ai_response.primary_response
+            });
+            
+            Ok(Json(response_json))
+        },
+        Err(e) => {
+            // Fallback to simple responses if AI engine fails
+            tracing::warn!("AI engine failed, falling back to simple responses: {}", e);
+            let fallback_response = generate_fallback_response(&prompt, &pool).await?;
+            Ok(Json(fallback_response))
+        }
+    }
+}
+
+// Real-time AI monitoring endpoint
+pub async fn ai_monitor(
+    State(pool): State<DbPool>
+) -> Result<Json<Value>, StatusCode> {
+    let ai_config = AiConfig::default();
+    let ai_engine = AiCoreEngine::new(ai_config);
+    
+    // Gather current dashboard context for monitoring
+    let mut context = std::collections::HashMap::new();
+    
+    if let Ok(stats) = get_quick_stats(&pool).await {
+        context.insert("current_stats".to_string(), stats);
+    }
+    
+    if let Ok(recent_data) = get_recent_dashboard_data(&pool).await {
+        context.insert("recent_data".to_string(), recent_data);
+    }
+    
+    // Get proactive suggestions from AI
+    match ai_engine.monitor_and_assist(&context).await {
+        Ok(suggestions) => {
+            Ok(Json(json!({
+                "success": true,
+                "proactive_suggestions": suggestions,
+                "monitoring_active": true,
+                "timestamp": chrono::Utc::now()
+            })))
+        },
+        Err(e) => {
+            tracing::error!("AI monitoring failed: {}", e);
+            Ok(Json(json!({
+                "success": false,
+                "error": "AI monitoring temporarily unavailable",
+                "monitoring_active": false
+            })))
+        }
+    }
+}
+
+// Voice processing endpoint
+pub async fn ai_voice(
+    State(pool): State<DbPool>,
+    body: axum::body::Bytes
+) -> Result<Json<Value>, StatusCode> {
+    let ai_config = AiConfig::default();
+    let ai_engine = AiCoreEngine::new(ai_config);
+    
+    match ai_engine.process_voice_input(&body).await {
+        Ok(ai_response) => {
+            Ok(Json(json!({
+                "success": true,
+                "transcription": "Audio processed",
+                "response": ai_response.primary_response,
+                "confidence": ai_response.confidence,
+                "suggested_actions": ai_response.suggested_actions
+            })))
+        },
+        Err(e) => {
+            tracing::error!("Voice processing failed: {}", e);
+            Ok(Json(json!({
+                "success": false,
+                "error": "Voice processing not available"
+            })))
+        }
+    }
 }
 
 async fn get_quick_stats(pool: &DbPool) -> Result<Value, StatusCode> {
@@ -177,4 +270,148 @@ async fn get_quick_stats(pool: &DbPool) -> Result<Value, StatusCode> {
         "total_hours": stats_row.get::<f64, _>("total_hours"),
         "avg_duration": stats_row.get::<f64, _>("avg_duration")
     }))
+}
+
+async fn get_recent_dashboard_data(pool: &DbPool) -> Result<Value, StatusCode> {
+    let recent_query = sqlx::query(
+        "SELECT denied_date, denial_reason, duration_hours, violation_category
+         FROM placement_denials 
+         ORDER BY denied_date DESC 
+         LIMIT 20"
+    );
+    
+    let recent_rows = recent_query.fetch_all(pool).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let recent_incidents: Vec<Value> = recent_rows.iter().map(|row| {
+        json!({
+            "denied_date": row.get::<String, _>("denied_date"),
+            "denial_reason": row.get::<String, _>("denial_reason"),
+            "duration_hours": row.get::<f64, _>("duration_hours"),
+            "violation_category": row.get::<String, _>("violation_category")
+        })
+    }).collect();
+    
+    Ok(json!({
+        "recent_incidents": recent_incidents,
+        "count": recent_incidents.len()
+    }))
+}
+
+fn extract_intent_hints(prompt: &str) -> Vec<String> {
+    let mut hints = Vec::new();
+    let lower_prompt = prompt.to_lowercase();
+    
+    // Detect common intent patterns
+    if lower_prompt.contains("analyze") || lower_prompt.contains("analysis") {
+        hints.push("analysis_request".to_string());
+    }
+    if lower_prompt.contains("statistics") || lower_prompt.contains("stats") {
+        hints.push("data_query".to_string());
+    }
+    if lower_prompt.contains("theme") || lower_prompt.contains("appearance") {
+        hints.push("ui_modification".to_string());
+    }
+    if lower_prompt.contains("help") || lower_prompt.contains("assistance") {
+        hints.push("help_request".to_string());
+    }
+    if lower_prompt.contains("risk") || lower_prompt.contains("danger") {
+        hints.push("risk_assessment".to_string());
+    }
+    if lower_prompt.contains("trend") || lower_prompt.contains("pattern") {
+        hints.push("pattern_detection".to_string());
+    }
+    if lower_prompt.contains("predict") || lower_prompt.contains("forecast") {
+        hints.push("predictive_analysis".to_string());
+    }
+    
+    // Default to general query if no specific patterns detected
+    if hints.is_empty() {
+        hints.push("general_query".to_string());
+    }
+    
+    hints
+}
+
+fn determine_frontend_action(intent: &str, suggested_actions: &[crate::ai::core_engine::SuggestedAction]) -> String {
+    // Determine what action the frontend should take based on AI analysis
+    match intent {
+        "analysis_request" => "show_analysis_results".to_string(),
+        "data_query" => "display_data".to_string(),
+        "ui_modification" => "modify_interface".to_string(),
+        "help_request" => "show_help_panel".to_string(),
+        "risk_assessment" => "highlight_risks".to_string(),
+        "pattern_detection" => "show_patterns".to_string(),
+        "predictive_analysis" => "show_predictions".to_string(),
+        _ => {
+            // Use suggested actions to determine frontend action
+            if let Some(action) = suggested_actions.first() {
+                match action.action_type.as_str() {
+                    "run_analysis" => "show_analysis_results".to_string(),
+                    "provide_information" => "display_information".to_string(),
+                    "general_assistance" => "show_message".to_string(),
+                    _ => "general_response".to_string(),
+                }
+            } else {
+                "general_response".to_string()
+            }
+        }
+    }
+}
+
+async fn generate_fallback_response(prompt: &str, pool: &DbPool) -> Result<Value, StatusCode> {
+    // Fallback to simple keyword-based responses when AI engine is unavailable
+    let response = match prompt.to_lowercase().as_str() {
+        p if p.contains("statistics") || p.contains("stats") => {
+            json!({
+                "success": true,
+                "action": "show_stats",
+                "message": "Here's a summary of your key statistics",
+                "data": get_quick_stats(pool).await?,
+                "fallback": true
+            })
+        },
+        p if p.contains("theme") && p.contains("dark") => {
+            json!({
+                "success": true,
+                "action": "toggle_theme",
+                "target": "dark",
+                "message": "Switched to dark theme",
+                "fallback": true
+            })
+        },
+        p if p.contains("theme") && p.contains("light") => {
+            json!({
+                "success": true,
+                "action": "toggle_theme",
+                "target": "light",
+                "message": "Switched to light theme",
+                "fallback": true
+            })
+        },
+        p if p.contains("refresh") || p.contains("reload") => {
+            json!({
+                "success": true,
+                "action": "refresh_data",
+                "message": "Dashboard data refreshed",
+                "fallback": true
+            })
+        },
+        p if p.contains("help") => {
+            json!({
+                "success": true,
+                "action": "show_help",
+                "message": "I can help you with:\n• Changing themes\n• Refreshing data\n• Showing statistics\n• Opening settings\n• Analyzing trends",
+                "fallback": true
+            })
+        },
+        _ => {
+            json!({
+                "success": true,
+                "action": "general_response",
+                "message": format!("I understand you're asking about: '{}'. The advanced AI is temporarily unavailable, but I can help with basic commands like themes, statistics, or data refresh.", prompt),
+                "fallback": true
+            })
+        }
+    };
+    
+    Ok(response)
 }

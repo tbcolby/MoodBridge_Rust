@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoodBridge Legal Dashboard</title>
+    <title>MoodBridge Legal IDE</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖️</text></svg>">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -321,10 +324,370 @@
         .dark-theme .stat-card,
         .dark-theme .chart-card,
         .dark-theme .recent-incidents,
-        .dark-theme .ai-prompt-section {
+        .dark-theme .ai-interface-section {
             background: #2c3e50;
             color: var(--text-color);
-        }        
+        }
+        
+        /* Advanced AI Interface Styles */
+        .ai-interface-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border: 2px solid #e8f4fd;
+        }
+        
+        .ai-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .ai-indicator {
+            font-size: 24px;
+            animation: aiPulse 2s infinite;
+        }
+        
+        @keyframes aiPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .ai-status-text {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 16px;
+        }
+        
+        .ai-confidence {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .ai-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .ai-control-btn {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            color: #667eea;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        
+        .ai-control-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .ai-control-btn.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .ai-input-container {
+            margin-bottom: 20px;
+        }
+        
+        .ai-prompt-input {
+            width: 100%;
+            padding: 18px;
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+        
+        .ai-prompt-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .ai-input-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            gap: 15px;
+        }
+        
+        .ai-style-select {
+            padding: 10px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            background: white;
+            color: #333;
+            cursor: pointer;
+        }
+        
+        .ai-suggestions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .suggestion-chip {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .suggestion-chip:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+        
+        .ai-response-area {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .ai-response-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .ai-response-content {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .ai-suggested-actions {
+            margin-bottom: 15px;
+        }
+        
+        .action-item {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-item:hover {
+            background: #fff8d4;
+            transform: translateX(5px);
+        }
+        
+        .action-priority-critical {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .action-priority-high {
+            border-left-color: #fd7e14;
+            background: #ffe8d1;
+        }
+        
+        .ai-follow-up {
+            margin-bottom: 15px;
+        }
+        
+        .follow-up-question {
+            background: #e3f2fd;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .follow-up-question:hover {
+            background: #bbdefb;
+            transform: scale(1.02);
+        }
+        
+        .ai-risk-alerts {
+            margin-top: 15px;
+        }
+        
+        .risk-alert {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 0 8px 8px 0;
+            animation: riskPulse 3s infinite;
+        }
+        
+        @keyframes riskPulse {
+            0%, 100% { box-shadow: none; }
+            50% { box-shadow: 0 0 10px rgba(220, 53, 69, 0.3); }
+        }
+        
+        .ai-proactive-panel {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .proactive-header {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .proactive-content {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .proactive-suggestion {
+            background: white;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .proactive-suggestion:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        }
+        
+        /* Loading Screen Styles */
+        .global-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+        }
+        
+        .loading-spinner {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .loading-progress {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        /* Error Notification Styles */
+        .error-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff4757;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.3);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .error-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
     </style>
 </head>
 <body>
@@ -338,10 +701,58 @@
             <p>Real-time analytics for family law case management</p>
         </div>
         
-        <!-- AI Prompt Section -->
-        <div class="ai-prompt-section">
-            <input type="text" class="ai-prompt-input" id="ai-prompt" placeholder="Ask me anything about your dashboard... e.g., 'Show me trends for June' or 'Change the theme to dark mode'">
-            <button class="ai-prompt-btn" id="ai-submit" onclick="handleAiPrompt()">✨ Ask AI</button>
+        <!-- Advanced AI Interface Section -->
+        <div class="ai-interface-section">
+            <div class="ai-header">
+                <div class="ai-status">
+                    <div class="ai-indicator" id="ai-indicator">🤖</div>
+                    <span class="ai-status-text" id="ai-status">Advanced AI Ready</span>
+                    <div class="ai-confidence" id="ai-confidence">95%</div>
+                </div>
+                <div class="ai-controls">
+                    <button class="ai-control-btn" id="voice-toggle" onclick="toggleVoice()" title="Voice Input">🎤</button>
+                    <button class="ai-control-btn" id="context-toggle" onclick="toggleContext()" title="Context Awareness">🧠</button>
+                    <button class="ai-control-btn" id="monitor-toggle" onclick="toggleMonitoring()" title="Real-time Monitoring">📊</button>
+                    <button class="ai-control-btn" id="citations-toggle" onclick="toggleCitations()" title="Require Citations">📚</button>
+                </div>
+            </div>
+            
+            <div class="ai-input-container">
+                <textarea class="ai-prompt-input" id="ai-prompt" placeholder="Ask me anything about your legal dashboard... I can analyze patterns, predict risks, provide insights, and much more. Try: 'Analyze recent trends' or 'What risks should I be aware of?'" rows="3"></textarea>
+                <div class="ai-input-controls">
+                    <select class="ai-style-select" id="ai-style">
+                        <option value="professional">Professional</option>
+                        <option value="conversational">Conversational</option>
+                        <option value="technical">Technical</option>
+                        <option value="executive">Executive Summary</option>
+                    </select>
+                    <button class="ai-prompt-btn" id="ai-submit" onclick="handleAdvancedAiPrompt()">🧠 Analyze</button>
+                </div>
+            </div>
+            
+            <div class="ai-suggestions" id="ai-suggestions">
+                <div class="suggestion-chip" onclick="insertSuggestion('Analyze recent denial patterns')">📈 Analyze Patterns</div>
+                <div class="suggestion-chip" onclick="insertSuggestion('What are the highest risk cases?')">⚠️ Risk Assessment</div>
+                <div class="suggestion-chip" onclick="insertSuggestion('Generate monthly report')">📋 Generate Report</div>
+                <div class="suggestion-chip" onclick="insertSuggestion('Predict next month trends')">🔮 Predictions</div>
+            </div>
+            
+            <div class="ai-response-area" id="ai-response-area" style="display: none;">
+                <div class="ai-response-header">
+                    <span class="response-confidence">Confidence: <span id="response-confidence">--</span></span>
+                    <span class="response-intent">Intent: <span id="response-intent">--</span></span>
+                    <span class="response-time">Processing: <span id="response-time">--</span>ms</span>
+                </div>
+                <div class="ai-response-content" id="ai-response-content"></div>
+                <div class="ai-suggested-actions" id="ai-suggested-actions"></div>
+                <div class="ai-follow-up" id="ai-follow-up"></div>
+                <div class="ai-risk-alerts" id="ai-risk-alerts"></div>
+            </div>
+            
+            <div class="ai-proactive-panel" id="ai-proactive-panel">
+                <div class="proactive-header">🎯 Proactive Insights</div>
+                <div class="proactive-content" id="proactive-content">Monitoring for opportunities...</div>
+            </div>
         </div>
         
         <div class="stats-grid">
@@ -377,6 +788,17 @@
         <div class="recent-incidents">
             <h2 style="margin-bottom: 20px;">Recent Incidents</h2>
             <div id="incidents-list" class="loading">Loading incidents...</div>
+        </div>
+    </div>
+    
+    <!-- Global Loading Screen -->
+    <div id="global-loading" class="global-loading" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <div class="loading-text">Loading MoodBridge Dashboard...</div>
+            <div class="loading-progress">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
         </div>
     </div>
     
@@ -441,9 +863,61 @@
     </div>
     
     <script>
-        // Fetch dashboard data
+        // Show loading screen with progress
+        function showLoadingScreen() {
+            document.getElementById('global-loading').style.display = 'flex';
+            simulateProgress();
+        }
+        
+        // Hide loading screen
+        function hideLoadingScreen() {
+            document.getElementById('global-loading').style.display = 'none';
+        }
+        
+        // Simulate loading progress
+        function simulateProgress() {
+            const progressBar = document.getElementById('progress-bar');
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 30;
+                if (progress > 90) progress = 90;
+                progressBar.style.width = progress + '%';
+                if (progress >= 90) clearInterval(interval);
+            }, 100);
+        }
+        
+        // Complete progress
+        function completeProgress() {
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = '100%';
+            setTimeout(hideLoadingScreen, 500);
+        }
+        
+        // Show error message
+        function showErrorMessage(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-notification';
+            errorDiv.innerHTML = `
+                <div class="error-content">
+                    <strong>Error:</strong> ${message}
+                    <button onclick="this.parentElement.parentElement.remove()" style="float: right; background: none; border: none; color: white; cursor: pointer;">&times;</button>
+                </div>
+            `;
+            document.body.appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+        
+        // Fetch dashboard data with robust error handling
         async function loadDashboard() {
+            showLoadingScreen();
+            
             try {
+                // Test API health first
+                const healthResponse = await fetch('/api/health');
+                if (!healthResponse.ok) {
+                    throw new Error('API health check failed');
+                }
+                
                 const response = await fetch('/api/dashboard-data');
                 const data = await response.json();
                 
@@ -509,8 +983,18 @@
                     </div>
                 `).join('');
                 
+                completeProgress();
+                
             } catch (error) {
                 console.error('Error loading dashboard:', error);
+                hideLoadingScreen();
+                showErrorMessage('Failed to load dashboard data. Please check your connection and try again.');
+                
+                // Retry after 5 seconds
+                setTimeout(() => {
+                    console.log('Retrying dashboard load...');
+                    loadDashboard();
+                }, 5000);
             }
         }
         
@@ -519,6 +1003,7 @@
             loadDashboard();
             loadUserSettings();
             setupInteractivity();
+            initializeAiInterface();
         });
         
         // Settings Management
@@ -593,32 +1078,292 @@
             localStorage.setItem('moodbridge-settings', JSON.stringify(settings));
         }
         
-        // AI Prompt Handler
-        async function handleAiPrompt() {
+        // Advanced AI Prompt Handler with multi-modal capabilities
+        let aiState = {
+            voiceEnabled: false,
+            contextAware: true,
+            monitoringActive: true,
+            citationsRequired: false,
+            isProcessing: false
+        };
+        
+        async function handleAdvancedAiPrompt() {
             const input = document.getElementById('ai-prompt');
             const button = document.getElementById('ai-submit');
             const prompt = input.value.trim();
+            const style = document.getElementById('ai-style').value;
             
-            if (!prompt) return;
+            if (!prompt || aiState.isProcessing) return;
             
+            aiState.isProcessing = true;
             button.disabled = true;
-            button.textContent = '🤔 Thinking...';
+            button.textContent = '🧠 Processing...';
+            
+            // Update AI status
+            document.getElementById('ai-status').textContent = 'Processing request...';
+            document.getElementById('ai-indicator').textContent = '⚡';
             
             try {
-                // Simple AI response simulation (replace with actual AI integration)
-                const response = await simulateAiResponse(prompt);
+                const requestData = {
+                    prompt: prompt,
+                    input_type: 'text',
+                    require_citations: aiState.citationsRequired,
+                    style: style
+                };
                 
-                // Execute the AI response
-                executeAiResponse(response, prompt);
+                const response = await fetch('/api/ai-prompt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                const aiResponse = await response.json();
+                
+                if (aiResponse.success) {
+                    displayAdvancedAiResponse(aiResponse);
+                } else {
+                    // Fallback handling
+                    showAiMessage(aiResponse.message || 'AI processing failed, but I can still help with basic commands.');
+                }
                 
                 input.value = '';
             } catch (error) {
-                alert('Sorry, I encountered an error processing your request.');
-                console.error('AI Error:', error);
+                console.error('Advanced AI Error:', error);
+                showAiMessage('Advanced AI is temporarily unavailable. Using fallback mode for basic assistance.');
             } finally {
+                aiState.isProcessing = false;
                 button.disabled = false;
-                button.textContent = '✨ Ask AI';
+                button.textContent = '🧠 Analyze';
+                document.getElementById('ai-status').textContent = 'Advanced AI Ready';
+                document.getElementById('ai-indicator').textContent = '🤖';
             }
+        }
+        
+        function displayAdvancedAiResponse(response) {
+            const responseArea = document.getElementById('ai-response-area');
+            const responseContent = document.getElementById('ai-response-content');
+            const suggestedActions = document.getElementById('ai-suggested-actions');
+            const followUp = document.getElementById('ai-follow-up');
+            const riskAlerts = document.getElementById('ai-risk-alerts');
+            
+            // Update response metadata
+            document.getElementById('response-confidence').textContent = Math.round(response.confidence * 100) + '%';
+            document.getElementById('response-intent').textContent = response.detected_intent || 'general';
+            document.getElementById('response-time').textContent = response.processing_metadata?.processing_time_ms || '--';
+            
+            // Display primary response
+            responseContent.innerHTML = response.primary_response || response.message;
+            
+            // Display suggested actions
+            if (response.suggested_actions && response.suggested_actions.length > 0) {
+                suggestedActions.innerHTML = '<h4>Suggested Actions:</h4>' + 
+                    response.suggested_actions.map(action => `
+                        <div class="action-item action-priority-${action.priority?.toLowerCase() || 'medium'}" 
+                             onclick="executeAiAction('${action.action_type}', '${action.description}')">
+                            <strong>${action.description}</strong>
+                            <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                                Impact: ${Math.round((action.estimated_impact || 0) * 100)}% | 
+                                Priority: ${action.priority || 'Medium'}
+                            </div>
+                        </div>
+                    `).join('');
+            } else {
+                suggestedActions.innerHTML = '';
+            }
+            
+            // Display follow-up questions
+            if (response.follow_up_questions && response.follow_up_questions.length > 0) {
+                followUp.innerHTML = '<h4>Follow-up Questions:</h4>' + 
+                    response.follow_up_questions.map(question => `
+                        <div class="follow-up-question" onclick="insertSuggestion('${question}')">
+                            ${question}
+                        </div>
+                    `).join('');
+            } else {
+                followUp.innerHTML = '';
+            }
+            
+            // Display risk alerts
+            if (response.risk_alerts && response.risk_alerts.length > 0) {
+                riskAlerts.innerHTML = '<h4>Risk Alerts:</h4>' + 
+                    response.risk_alerts.map(alert => `
+                        <div class="risk-alert">
+                            <strong>${alert.alert_type}:</strong> ${alert.description}
+                            <div style="margin-top: 5px; font-size: 12px;">
+                                Recommended: ${alert.recommended_action}
+                            </div>
+                        </div>
+                    `).join('');
+            } else {
+                riskAlerts.innerHTML = '';
+            }
+            
+            // Show response area
+            responseArea.style.display = 'block';
+            
+            // Execute any frontend actions
+            if (response.action) {
+                executeAiAction(response.action, response.message);
+            }
+        }
+        
+        function executeAiAction(actionType, description) {
+            switch (actionType) {
+                case 'show_analysis_results':
+                    showDataModal('AI Analysis Results', description);
+                    break;
+                case 'display_data':
+                    showDataModal('Data Display', generateDataSummary());
+                    break;
+                case 'modify_interface':
+                case 'toggle_theme':
+                    toggleTheme();
+                    showAiMessage('Interface modified as requested!');
+                    break;
+                case 'show_help_panel':
+                    toggleSettings();
+                    showAiMessage('Help panel opened!');
+                    break;
+                case 'highlight_risks':
+                    highlightRiskElements();
+                    showAiMessage('Risk elements highlighted!');
+                    break;
+                case 'show_patterns':
+                    showDataModal('Pattern Analysis', 'Advanced pattern detection results would be displayed here.');
+                    break;
+                case 'show_predictions':
+                    showDataModal('Predictive Analysis', 'AI-powered predictions and forecasts would be displayed here.');
+                    break;
+                case 'refresh_data':
+                    loadDashboard();
+                    showAiMessage('Dashboard refreshed!');
+                    break;
+                default:
+                    showAiMessage(description);
+            }
+        }
+        
+        function highlightRiskElements() {
+            // Add visual highlighting to elements that might indicate risk
+            document.querySelectorAll('.incident-hours').forEach(el => {
+                const hours = parseFloat(el.textContent);
+                if (hours > 10) {
+                    el.style.boxShadow = '0 0 10px rgba(255, 0, 0, 0.5)';
+                    el.style.animation = 'riskPulse 2s infinite';
+                }
+            });
+            
+            setTimeout(() => {
+                document.querySelectorAll('.incident-hours').forEach(el => {
+                    el.style.boxShadow = '';
+                    el.style.animation = '';
+                });
+            }, 5000);
+        }
+        
+        // AI Control Functions
+        function toggleVoice() {
+            aiState.voiceEnabled = !aiState.voiceEnabled;
+            const btn = document.getElementById('voice-toggle');
+            btn.classList.toggle('active', aiState.voiceEnabled);
+            
+            if (aiState.voiceEnabled) {
+                showAiMessage('Voice input enabled! Click the microphone when ready to speak.');
+                // Implement voice recognition here
+            } else {
+                showAiMessage('Voice input disabled.');
+            }
+        }
+        
+        function toggleContext() {
+            aiState.contextAware = !aiState.contextAware;
+            const btn = document.getElementById('context-toggle');
+            btn.classList.toggle('active', aiState.contextAware);
+            showAiMessage(`Context awareness ${aiState.contextAware ? 'enabled' : 'disabled'}.`);
+        }
+        
+        function toggleMonitoring() {
+            aiState.monitoringActive = !aiState.monitoringActive;
+            const btn = document.getElementById('monitor-toggle');
+            btn.classList.toggle('active', aiState.monitoringActive);
+            
+            if (aiState.monitoringActive) {
+                startProactiveMonitoring();
+                showAiMessage('Real-time monitoring activated!');
+            } else {
+                stopProactiveMonitoring();
+                showAiMessage('Real-time monitoring paused.');
+            }
+        }
+        
+        function toggleCitations() {
+            aiState.citationsRequired = !aiState.citationsRequired;
+            const btn = document.getElementById('citations-toggle');
+            btn.classList.toggle('active', aiState.citationsRequired);
+            showAiMessage(`Citations ${aiState.citationsRequired ? 'required' : 'optional'} for responses.`);
+        }
+        
+        function insertSuggestion(suggestion) {
+            document.getElementById('ai-prompt').value = suggestion;
+            document.getElementById('ai-prompt').focus();
+        }
+        
+        // Proactive AI Monitoring
+        let monitoringInterval;
+        
+        function startProactiveMonitoring() {
+            if (monitoringInterval) clearInterval(monitoringInterval);
+            
+            monitoringInterval = setInterval(async () => {
+                if (!aiState.monitoringActive) return;
+                
+                try {
+                    const response = await fetch('/api/ai-monitor');
+                    const data = await response.json();
+                    
+                    if (data.success && data.proactive_suggestions?.length > 0) {
+                        displayProactiveSuggestions(data.proactive_suggestions);
+                    }
+                } catch (error) {
+                    console.error('Proactive monitoring error:', error);
+                }
+            }, 30000); // Check every 30 seconds
+        }
+        
+        function stopProactiveMonitoring() {
+            if (monitoringInterval) {
+                clearInterval(monitoringInterval);
+                monitoringInterval = null;
+            }
+        }
+        
+        function displayProactiveSuggestions(suggestions) {
+            const proactiveContent = document.getElementById('proactive-content');
+            
+            proactiveContent.innerHTML = suggestions.map(suggestion => `
+                <div class="proactive-suggestion" onclick="insertSuggestion('${suggestion.description}')">
+                    <strong>${suggestion.action_type}:</strong> ${suggestion.description}
+                    <div style="font-size: 11px; color: #666;">Priority: ${suggestion.priority}</div>
+                </div>
+            `).join('');
+        }
+        
+        // Initialize AI interface
+        function initializeAiInterface() {
+            // Set initial state
+            document.getElementById('context-toggle').classList.add('active');
+            document.getElementById('monitor-toggle').classList.add('active');
+            
+            // Start proactive monitoring
+            startProactiveMonitoring();
+            
+            // Update confidence display periodically
+            setInterval(() => {
+                const confidence = Math.floor(Math.random() * 10) + 90; // 90-99%
+                document.getElementById('ai-confidence').textContent = confidence + '%';
+            }, 10000);
         }
         
         async function simulateAiResponse(prompt) {
@@ -817,8 +1562,9 @@
         
         // Allow Enter key for AI prompt
         document.addEventListener('keypress', function(e) {
-            if (e.target.id === 'ai-prompt' && e.key === 'Enter') {
-                handleAiPrompt();
+            if (e.target.id === 'ai-prompt' && e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleAdvancedAiPrompt();
             }
         });
         

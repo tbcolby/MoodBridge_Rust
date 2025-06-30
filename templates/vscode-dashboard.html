@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodBridge Legal IDE</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖️</text></svg>">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* VS Code Dark Theme Colors */
+            --bg-primary: #1e1e1e;
+            --bg-secondary: #252526;
+            --bg-tertiary: #2d2d30;
+            --bg-hover: #2a2d2e;
+            --border-color: #3c3c3c;
+            --text-primary: #cccccc;
+            --text-secondary: #969696;
+            --text-muted: #6f6f6f;
+            --accent-blue: #007acc;
+            --accent-green: #4ec9b0;
+            --accent-orange: #ce9178;
+            --accent-purple: #c586c0;
+            --accent-red: #f44747;
+            --accent-yellow: #ffcc02;
+            --sidebar-width: 60px;
+            --activity-bar-width: 48px;
+            --panel-height: 300px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            font-size: 13px;
+        }
+
+        .vscode-container {
+            display: grid;
+            grid-template-columns: var(--activity-bar-width) var(--sidebar-width) 1fr;
+            grid-template-rows: 35px 1fr var(--panel-height);
+            grid-template-areas:
+                "title-bar title-bar title-bar"
+                "activity-bar sidebar main-content"
+                "activity-bar sidebar panel";
+            height: 100vh;
+        }
+
+        /* Title Bar */
+        .title-bar {
+            grid-area: title-bar;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border-color);
+            justify-content: space-between;
+        }
+
+        .title-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title-center {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .title-right {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .window-control.close { background: var(--accent-red); }
+        .window-control.minimize { background: var(--accent-yellow); }
+        .window-control.maximize { background: var(--accent-green); }
+
+        /* Activity Bar */
+        .activity-bar {
+            grid-area: activity-bar;
+            background: var(--bg-tertiary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 0;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .activity-item {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+
+        .activity-item:hover {
+            background: var(--bg-hover);
+        }
+
+        .activity-item.active {
+            background: var(--bg-hover);
+        }
+
+        .activity-item.active::before {
+            content: '';
+            position: absolute;
+            left: -1px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--accent-blue);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+            transition: width 0.2s ease;
+        }
+
+        .sidebar.collapsed {
+            width: 0;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 8px 16px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .tree-item {
+            padding: 4px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .tree-item:hover {
+            background: var(--bg-hover);
+        }
+
+        .tree-item.selected {
+            background: var(--bg-hover);
+        }
+
+        .tree-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            grid-area: main-content;
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .tab-bar {
+            background: var(--bg-secondary);
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            height: 35px;
+        }
+
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 16px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            max-width: 200px;
+            min-width: 120px;
+        }
+
+        .tab:hover {
+            background: var(--bg-hover);
+        }
+
+        .tab.active {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--bg-primary);
+        }
+
+        .tab-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .tab-label {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tab-close {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .tab:hover .tab-close {
+            opacity: 1;
+        }
+
+        .tab-close:hover {
+            background: var(--bg-hover);
+        }
+
+        .editor-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .editor-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: var(--bg-primary);
+        }
+
+        /* Panel */
+        .panel {
+            grid-area: panel;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            display: flex;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-right: 1px solid var(--border-color);
+            transition: background-color 0.2s;
+        }
+
+        .panel-tab:hover {
+            background: var(--bg-hover);
+        }
+
+        .panel-tab.active {
+            background: var(--bg-secondary);
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        /* Dashboard Specific Styles */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            transition: all 0.2s;
+        }
+
+        .metric-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 4px 12px rgba(0, 122, 204, 0.15);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin-bottom: 4px;
+        }
+
+        .metric-change {
+            font-size: 12px;
+            color: var(--accent-green);
+        }
+
+        .chart-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        /* AI Assistant */
+        .ai-assistant {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .ai-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .ai-input {
+            width: 100%;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 12px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .ai-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+        }
+
+        .ai-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .ai-suggestions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .suggestion-chip {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 4px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .suggestion-chip:hover {
+            border-color: var(--accent-blue);
+            background: rgba(0, 122, 204, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #106ba3;
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-blue);
+        }
+
+        /* Command Palette */
+        .command-palette {
+            position: fixed;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+        }
+
+        .command-palette.show {
+            display: block;
+        }
+
+        .command-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 16px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .command-results {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .command-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .command-item:hover {
+            background: var(--bg-hover);
+        }
+
+        .command-icon {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--accent-blue);
+            color: white;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 12px;
+            z-index: 100;
+        }
+
+        .status-left {
+            display: flex;
+            gap: 16px;
+        }
+
+        .status-right {
+            margin-left: auto;
+            display: flex;
+            gap: 16px;
+        }
+
+        /* Minimap */
+        .minimap {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100%;
+            background: var(--bg-tertiary);
+            border-left: 1px solid var(--border-color);
+            opacity: 0.8;
+        }
+
+        /* Terminal/Console styles */
+        .terminal {
+            background: var(--bg-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            padding: 16px;
+            color: var(--text-primary);
+        }
+
+        .terminal-line {
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .terminal-prompt {
+            color: var(--accent-green);
+        }
+
+        .terminal-output {
+            color: var(--text-secondary);
+        }
+
+        .terminal-error {
+            color: var(--accent-red);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .vscode-container {
+                grid-template-columns: var(--activity-bar-width) 0 1fr;
+            }
+            
+            .sidebar {
+                width: 0;
+            }
+        }
+
+        /* Loading animation */
+        .loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: var(--accent-blue);
+            z-index: 1001;
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .loading-bar.active {
+            animation: loading 2s ease-in-out infinite;
+        }
+
+        @keyframes loading {
+            0% { transform: scaleX(0); }
+            50% { transform: scaleX(0.7); }
+            100% { transform: scaleX(1); }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-muted);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-bar" id="loading-bar"></div>
+    
+    <div class="vscode-container">
+        <!-- Title Bar -->
+        <div class="title-bar">
+            <div class="title-left">
+                <div class="window-control close"></div>
+                <div class="window-control minimize"></div>
+                <div class="window-control maximize"></div>
+            </div>
+            <div class="title-center">MoodBridge Legal IDE - Dashboard.legal</div>
+            <div class="title-right">
+                <span id="connection-status">🟢 Connected</span>
+            </div>
+        </div>
+
+        <!-- Activity Bar -->
+        <div class="activity-bar">
+            <div class="activity-item active" data-view="explorer" title="Explorer">
+                <i class="fas fa-folder"></i>
+            </div>
+            <div class="activity-item" data-view="search" title="Search">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="activity-item" data-view="ai" title="AI Assistant">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="activity-item" data-view="analytics" title="Analytics">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <div class="activity-item" data-view="extensions" title="Extensions">
+                <i class="fas fa-puzzle-piece"></i>
+            </div>
+            <div class="activity-item" data-view="settings" title="Settings">
+                <i class="fas fa-cog"></i>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span id="sidebar-title">Legal Case Explorer</span>
+                <i class="fas fa-times" onclick="toggleSidebar()" style="cursor: pointer;"></i>
+            </div>
+            <div class="sidebar-content" id="sidebar-content">
+                <!-- Dynamic content based on active view -->
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="tab-bar">
+                <div class="tab active" data-tab="dashboard">
+                    <i class="fas fa-chart-line tab-icon"></i>
+                    <span class="tab-label">Dashboard.legal</span>
+                    <div class="tab-close">×</div>
+                </div>
+                <div class="tab" data-tab="analytics">
+                    <i class="fas fa-analytics tab-icon"></i>
+                    <span class="tab-label">Analytics.md</span>
+                    <div class="tab-close">×</div>
+                </div>
+                <div class="tab" data-tab="cases">
+                    <i class="fas fa-gavel tab-icon"></i>
+                    <span class="tab-label">Cases.json</span>
+                    <div class="tab-close">×</div>
+                </div>
+            </div>
+            
+            <div class="editor-area">
+                <div class="editor-content" id="editor-content">
+                    <!-- Dashboard Content -->
+                    <div class="dashboard-content">
+                        <!-- AI Assistant -->
+                        <div class="ai-assistant">
+                            <div class="ai-header">
+                                <div class="ai-status"></div>
+                                <span>Legal AI Assistant</span>
+                                <span style="margin-left: auto; font-size: 12px; color: var(--text-secondary);">GPT-4 Legal</span>
+                            </div>
+                            <textarea class="ai-input" id="ai-input" placeholder="Ask me anything about your legal data... e.g., 'Analyze recent patterns' or 'Show risk trends'"></textarea>
+                            <div class="ai-controls">
+                                <div class="ai-suggestions">
+                                    <div class="suggestion-chip" onclick="insertPrompt('Analyze recent denial patterns')">📊 Patterns</div>
+                                    <div class="suggestion-chip" onclick="insertPrompt('What are the risk factors?')">⚠️ Risks</div>
+                                    <div class="suggestion-chip" onclick="insertPrompt('Generate monthly report')">📋 Report</div>
+                                    <div class="suggestion-chip" onclick="insertPrompt('Predict trends')">🔮 Forecast</div>
+                                </div>
+                                <button class="btn-primary" onclick="processAiQuery()">Run Analysis</button>
+                            </div>
+                        </div>
+
+                        <!-- Metrics Grid -->
+                        <div class="dashboard-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">Total Incidents</div>
+                                <div class="metric-value" id="total-incidents">...</div>
+                                <div class="metric-change" id="incidents-change">↗️ +2.3% from last month</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Hours Lost</div>
+                                <div class="metric-value" id="total-hours">...</div>
+                                <div class="metric-change" id="hours-change">↘️ -5.1% from last month</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Avg Duration</div>
+                                <div class="metric-value" id="avg-duration">...</div>
+                                <div class="metric-change" id="duration-change">→ No change</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">This Month</div>
+                                <div class="metric-value" id="this-month">...</div>
+                                <div class="metric-change" id="month-change">↗️ +12% trend</div>
+                            </div>
+                        </div>
+
+                        <!-- Charts -->
+                        <div class="chart-container">
+                            <div class="chart-title">📈 Monthly Incident Trends</div>
+                            <canvas id="trendChart" height="200"></canvas>
+                        </div>
+
+                        <div class="chart-container">
+                            <div class="chart-title">🍩 Incident Categories</div>
+                            <canvas id="categoryChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-tab active" data-panel="terminal">Terminal</div>
+                <div class="panel-tab" data-panel="output">Output</div>
+                <div class="panel-tab" data-panel="problems">Problems</div>
+                <div class="panel-tab" data-panel="debug">Debug Console</div>
+            </div>
+            <div class="panel-content" id="panel-content">
+                <div class="terminal" id="terminal">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">moodbridge@legal-ide:~$</span> 
+                        <span>Welcome to MoodBridge Legal IDE</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-output">🚀 System initialized successfully</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-output">📊 Loading dashboard data...</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">moodbridge@legal-ide:~$</span> 
+                        <span id="terminal-cursor">_</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Command Palette -->
+    <div class="command-palette" id="command-palette">
+        <input type="text" class="command-input" placeholder="Type a command..." id="command-input">
+        <div class="command-results" id="command-results">
+            <!-- Dynamic command results -->
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span>⚖️ Legal Mode</span>
+            <span>UTF-8</span>
+            <span>Ln 42, Col 16</span>
+        </div>
+        <div class="status-right">
+            <span id="ai-status">🤖 AI Ready</span>
+            <span id="data-status">📊 Data Synced</span>
+            <span>🔌 Connected</span>
+        </div>
+    </div>
+
+    <script>
+        // VS Code-like functionality
+        let currentView = 'explorer';
+        let currentTab = 'dashboard';
+        let currentPanel = 'terminal';
+
+        // Initialize the IDE
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+            initializeKeyboardShortcuts();
+            setupTerminal();
+            updateSidebarContent();
+            
+            // Simulate VS Code startup
+            showLoadingBar();
+            setTimeout(hideLoadingBar, 2000);
+        });
+
+        // Loading bar animation
+        function showLoadingBar() {
+            const loadingBar = document.getElementById('loading-bar');
+            loadingBar.style.width = '100%';
+            loadingBar.classList.add('active');
+        }
+
+        function hideLoadingBar() {
+            const loadingBar = document.getElementById('loading-bar');
+            loadingBar.classList.remove('active');
+            setTimeout(() => {
+                loadingBar.style.width = '0';
+            }, 300);
+        }
+
+        // Activity bar switching
+        document.querySelectorAll('.activity-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.activity-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                currentView = this.dataset.view;
+                updateSidebarContent();
+            });
+        });
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentTab = this.dataset.tab;
+                updateEditorContent();
+            });
+        });
+
+        // Panel switching
+        document.querySelectorAll('.panel-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentPanel = this.dataset.panel;
+                updatePanelContent();
+            });
+        });
+
+        // Sidebar content updates
+        function updateSidebarContent() {
+            const sidebarTitle = document.getElementById('sidebar-title');
+            const sidebarContent = document.getElementById('sidebar-content');
+            
+            switch(currentView) {
+                case 'explorer':
+                    sidebarTitle.textContent = 'Legal Case Explorer';
+                    sidebarContent.innerHTML = `
+                        <div class="tree-item">
+                            <i class="fas fa-folder tree-icon" style="color: var(--accent-blue);"></i>
+                            <span>legal-dashboard</span>
+                        </div>
+                        <div class="tree-item" style="padding-left: 32px;">
+                            <i class="fas fa-file tree-icon" style="color: var(--accent-green);"></i>
+                            <span>dashboard.legal</span>
+                        </div>
+                        <div class="tree-item" style="padding-left: 32px;">
+                            <i class="fas fa-file tree-icon" style="color: var(--accent-purple);"></i>
+                            <span>analytics.md</span>
+                        </div>
+                        <div class="tree-item" style="padding-left: 32px;">
+                            <i class="fas fa-file tree-icon" style="color: var(--accent-orange);"></i>
+                            <span>cases.json</span>
+                        </div>
+                        <div class="tree-item" style="padding-left: 32px;">
+                            <i class="fas fa-file tree-icon" style="color: var(--accent-yellow);"></i>
+                            <span>incidents.csv</span>
+                        </div>
+                        <div class="tree-item">
+                            <i class="fas fa-folder tree-icon" style="color: var(--accent-blue);"></i>
+                            <span>data-sources</span>
+                        </div>
+                        <div class="tree-item">
+                            <i class="fas fa-folder tree-icon" style="color: var(--accent-blue);"></i>
+                            <span>reports</span>
+                        </div>
+                    `;
+                    break;
+                case 'search':
+                    sidebarTitle.textContent = 'Search';
+                    sidebarContent.innerHTML = `
+                        <div style="padding: 16px;">
+                            <input type="text" class="ai-input" placeholder="Search legal documents..." style="margin-bottom: 16px;">
+                            <div style="margin-bottom: 12px; color: var(--text-secondary); font-size: 12px;">
+                                Recent searches:
+                            </div>
+                            <div class="tree-item">
+                                <i class="fas fa-search tree-icon"></i>
+                                <span>"placement denial"</span>
+                            </div>
+                            <div class="tree-item">
+                                <i class="fas fa-search tree-icon"></i>
+                                <span>"holiday violations"</span>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'ai':
+                    sidebarTitle.textContent = 'AI Assistant';
+                    sidebarContent.innerHTML = `
+                        <div style="padding: 16px;">
+                            <div style="margin-bottom: 16px;">
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">Models Available:</div>
+                                <div class="tree-item selected">
+                                    <i class="fas fa-robot tree-icon" style="color: var(--accent-green);"></i>
+                                    <span>GPT-4 Legal</span>
+                                </div>
+                                <div class="tree-item">
+                                    <i class="fas fa-brain tree-icon" style="color: var(--accent-blue);"></i>
+                                    <span>Claude Legal</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">Quick Actions:</div>
+                                <div class="tree-item" onclick="insertPrompt('Summarize recent incidents')">
+                                    <i class="fas fa-file-alt tree-icon"></i>
+                                    <span>Summarize</span>
+                                </div>
+                                <div class="tree-item" onclick="insertPrompt('Analyze risk patterns')">
+                                    <i class="fas fa-exclamation-triangle tree-icon"></i>
+                                    <span>Risk Analysis</span>
+                                </div>
+                                <div class="tree-item" onclick="insertPrompt('Generate report')">
+                                    <i class="fas fa-chart-bar tree-icon"></i>
+                                    <span>Generate Report</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'analytics':
+                    sidebarTitle.textContent = 'Analytics';
+                    sidebarContent.innerHTML = `
+                        <div style="padding: 16px;">
+                            <div class="tree-item">
+                                <i class="fas fa-chart-line tree-icon" style="color: var(--accent-green);"></i>
+                                <span>Live Metrics</span>
+                            </div>
+                            <div class="tree-item">
+                                <i class="fas fa-chart-pie tree-icon" style="color: var(--accent-blue);"></i>
+                                <span>Category Analysis</span>
+                            </div>
+                            <div class="tree-item">
+                                <i class="fas fa-trend-up tree-icon" style="color: var(--accent-purple);"></i>
+                                <span>Trend Analysis</span>
+                            </div>
+                            <div class="tree-item">
+                                <i class="fas fa-exclamation-circle tree-icon" style="color: var(--accent-red);"></i>
+                                <span>Risk Indicators</span>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                default:
+                    sidebarTitle.textContent = currentView.charAt(0).toUpperCase() + currentView.slice(1);
+                    sidebarContent.innerHTML = `<div style="padding: 16px; color: var(--text-secondary);">Content for ${currentView}</div>`;
+            }
+        }
+
+        // Keyboard shortcuts
+        function initializeKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // Command Palette (Ctrl/Cmd + Shift + P)
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'P') {
+                    e.preventDefault();
+                    toggleCommandPalette();
+                }
+                
+                // Toggle sidebar (Ctrl/Cmd + B)
+                if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+                    e.preventDefault();
+                    toggleSidebar();
+                }
+                
+                // Toggle terminal (Ctrl/Cmd + `)
+                if ((e.ctrlKey || e.metaKey) && e.key === '`') {
+                    e.preventDefault();
+                    togglePanel();
+                }
+                
+                // Quick AI prompt (Ctrl/Cmd + K)
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    document.getElementById('ai-input').focus();
+                }
+            });
+        }
+
+        // Command palette
+        function toggleCommandPalette() {
+            const palette = document.getElementById('command-palette');
+            palette.classList.toggle('show');
+            if (palette.classList.contains('show')) {
+                document.getElementById('command-input').focus();
+                updateCommandResults('');
+            }
+        }
+
+        document.getElementById('command-input').addEventListener('input', function(e) {
+            updateCommandResults(e.target.value);
+        });
+
+        function updateCommandResults(query) {
+            const results = document.getElementById('command-results');
+            const commands = [
+                { name: 'AI: Analyze Legal Patterns', icon: 'robot', action: () => insertPrompt('Analyze recent legal patterns') },
+                { name: 'View: Toggle Sidebar', icon: 'bars', action: toggleSidebar },
+                { name: 'View: Toggle Terminal', icon: 'terminal', action: togglePanel },
+                { name: 'Dashboard: Refresh Data', icon: 'sync', action: loadDashboardData },
+                { name: 'Export: Generate Report', icon: 'file-export', action: () => insertPrompt('Generate comprehensive report') },
+                { name: 'AI: Risk Assessment', icon: 'exclamation-triangle', action: () => insertPrompt('Perform risk assessment') },
+            ];
+            
+            const filtered = commands.filter(cmd => 
+                cmd.name.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            results.innerHTML = filtered.map(cmd => `
+                <div class="command-item" onclick="executeCommand('${cmd.name}')">
+                    <i class="fas fa-${cmd.icon} command-icon"></i>
+                    <span>${cmd.name}</span>
+                </div>
+            `).join('');
+        }
+
+        function executeCommand(commandName) {
+            // Execute command based on name
+            toggleCommandPalette();
+            addTerminalLine(`Executed: ${commandName}`, 'output');
+        }
+
+        // Sidebar and panel toggles
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        function togglePanel() {
+            const panel = document.querySelector('.panel');
+            panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        // Terminal functionality
+        function setupTerminal() {
+            // Blinking cursor
+            setInterval(() => {
+                const cursor = document.getElementById('terminal-cursor');
+                if (cursor) {
+                    cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
+                }
+            }, 500);
+        }
+
+        function addTerminalLine(text, type = 'output') {
+            const terminal = document.getElementById('terminal');
+            const cursorLine = terminal.lastElementChild;
+            
+            const newLine = document.createElement('div');
+            newLine.className = 'terminal-line';
+            
+            if (type === 'command') {
+                newLine.innerHTML = `<span class="terminal-prompt">moodbridge@legal-ide:~$</span> <span>${text}</span>`;
+            } else if (type === 'error') {
+                newLine.innerHTML = `<span class="terminal-error">${text}</span>`;
+            } else {
+                newLine.innerHTML = `<span class="terminal-output">${text}</span>`;
+            }
+            
+            terminal.insertBefore(newLine, cursorLine);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // AI Processing
+        function insertPrompt(prompt) {
+            document.getElementById('ai-input').value = prompt;
+        }
+
+        async function processAiQuery() {
+            const input = document.getElementById('ai-input');
+            const query = input.value.trim();
+            
+            if (!query) return;
+            
+            addTerminalLine(`AI Query: ${query}`, 'command');
+            addTerminalLine('🤖 Processing with GPT-4 Legal...', 'output');
+            
+            // Show loading in status
+            document.getElementById('ai-status').textContent = '🤖 Processing...';
+            
+            try {
+                const response = await fetch('/api/ai-prompt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: query,
+                        style: 'professional',
+                        require_citations: false
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    addTerminalLine(`✅ Analysis complete (${result.processing_metadata?.processing_time_ms}ms)`, 'output');
+                    addTerminalLine(`Confidence: ${Math.round(result.confidence * 100)}%`, 'output');
+                    addTerminalLine(`Intent: ${result.detected_intent}`, 'output');
+                    
+                    // Show results in a modal or panel
+                    showAiResults(result);
+                } else {
+                    addTerminalLine('❌ AI analysis failed', 'error');
+                }
+            } catch (error) {
+                addTerminalLine(`❌ Error: ${error.message}`, 'error');
+            }
+            
+            document.getElementById('ai-status').textContent = '🤖 AI Ready';
+            input.value = '';
+        }
+
+        function showAiResults(result) {
+            // Could open a new tab or show in a modal
+            addTerminalLine('📊 Results displayed in main editor', 'output');
+        }
+
+        // Dashboard data loading
+        async function loadDashboardData() {
+            try {
+                addTerminalLine('📊 Loading dashboard data...', 'output');
+                
+                const response = await fetch('/api/dashboard-data');
+                const data = await response.json();
+                
+                // Update metrics
+                document.getElementById('total-incidents').textContent = data.stats.total_incidents;
+                document.getElementById('total-hours').textContent = data.stats.total_hours.toFixed(1);
+                document.getElementById('avg-duration').textContent = data.stats.avg_duration.toFixed(1) + 'h';
+                document.getElementById('this-month').textContent = data.stats.this_month;
+                
+                // Create charts
+                createTrendChart(data.monthly_trend);
+                createCategoryChart(data.categories);
+                
+                addTerminalLine('✅ Dashboard data loaded successfully', 'output');
+                document.getElementById('data-status').textContent = '📊 Data Synced';
+                
+            } catch (error) {
+                addTerminalLine(`❌ Failed to load data: ${error.message}`, 'error');
+                document.getElementById('data-status').textContent = '📊 Data Error';
+            }
+        }
+
+        function createTrendChart(data) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(item => item.month),
+                    datasets: [{
+                        label: 'Incidents',
+                        data: data.map(item => item.count),
+                        borderColor: '#007acc',
+                        backgroundColor: 'rgba(0, 122, 204, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true,
+                            grid: { color: '#3c3c3c' },
+                            ticks: { color: '#cccccc' }
+                        },
+                        x: {
+                            grid: { color: '#3c3c3c' },
+                            ticks: { color: '#cccccc' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createCategoryChart(data) {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.map(item => item.category),
+                    datasets: [{
+                        data: data.map(item => item.count),
+                        backgroundColor: [
+                            '#007acc', '#4ec9b0', '#ce9178', '#c586c0',
+                            '#f44747', '#ffcc02', '#569cd6', '#9cdcfe'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            position: 'bottom',
+                            labels: { color: '#cccccc' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Close command palette when clicking outside
+        document.addEventListener('click', function(e) {
+            const palette = document.getElementById('command-palette');
+            if (!palette.contains(e.target) && palette.classList.contains('show')) {
+                palette.classList.remove('show');
+            }
+        });
+
+        // Enter key for AI input
+        document.getElementById('ai-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                processAiQuery();
+            }
+        });
+    </script>
+</body>
+</html>

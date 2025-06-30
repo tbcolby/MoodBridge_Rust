@@ -2,6 +2,7 @@ pub mod llm;
 pub mod patterns;
 pub mod analytics;
 pub mod fabric_integration;
+pub mod core_engine;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -82,16 +83,24 @@ pub enum AiError {
     TimeoutError,
 }
 
-/// AI service configuration
+/// Enhanced AI service configuration with multi-modal capabilities
 #[derive(Debug, Clone)]
 pub struct AiConfig {
     pub openai_api_key: Option<String>,
     pub openai_base_url: String,
     pub default_model: String,
+    pub advanced_model: String,
+    pub embedding_model: String,
     pub fabric_patterns_path: Option<String>,
     pub enable_fabric_integration: bool,
+    pub enable_voice_processing: bool,
+    pub enable_predictive_analytics: bool,
+    pub enable_real_time_monitoring: bool,
+    pub confidence_threshold: f64,
     pub max_retries: u32,
     pub timeout_seconds: u64,
+    pub context_memory_size: usize,
+    pub learning_rate: f64,
 }
 
 impl Default for AiConfig {
@@ -100,10 +109,18 @@ impl Default for AiConfig {
             openai_api_key: std::env::var("OPENAI_API_KEY").ok(),
             openai_base_url: "https://api.openai.com/v1".to_string(),
             default_model: "gpt-4".to_string(),
+            advanced_model: "gpt-4-turbo".to_string(),
+            embedding_model: "text-embedding-3-large".to_string(),
             fabric_patterns_path: std::env::var("FABRIC_PATTERNS_PATH").ok(),
             enable_fabric_integration: true,
+            enable_voice_processing: true,
+            enable_predictive_analytics: true,
+            enable_real_time_monitoring: true,
+            confidence_threshold: 0.75,
             max_retries: 3,
             timeout_seconds: 30,
+            context_memory_size: 50,
+            learning_rate: 0.01,
         }
     }
 }
