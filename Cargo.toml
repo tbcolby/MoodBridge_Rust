@@ -2,7 +2,7 @@
 name = "moodbridge_rust"
 version = "0.1.0"
 edition = "2021"
-authors = ["Tyler Colby <tbcolby@gmail.com>"]
+authors = ["Legal Technology Solutions <contact@example.com>"]
 description = "High-performance legal dashboard in Rust with SQLite and Axum"
 
 [dependencies]

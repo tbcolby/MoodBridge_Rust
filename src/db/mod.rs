@@ -31,31 +31,31 @@ pub async fn run_migrations(pool: &DbPool) -> Result<(), sqlx::Error> {
 }
 
 pub async fn seed_sample_data(pool: &DbPool) -> Result<(), sqlx::Error> {
-    info!("Seeding sample placement denial data");
+    info!("Seeding sample placement incident data");
     
     let sample_denials = vec![
-        ("2025-02-11", "09:00", "15:00", 6.0, "Refusal without cause", "Stipulation Violation", "Text messages"),
-        ("2025-02-14", "16:00", "20:00", 4.0, "Last minute cancellation", "Placement Interference", "Email chain"),
-        ("2025-02-18", "10:00", "18:00", 8.0, "Claimed illness", "Pattern Behavior", "Medical excuse"),
-        ("2025-02-25", "14:00", "19:00", 5.0, "Transportation issues", "Communication Gap", "Phone log"),
-        ("2025-03-05", "09:00", "17:00", 8.0, "Schedule conflict", "Placement Denial", "Calendar evidence"),
-        ("2025-03-12", "11:00", "16:00", 5.0, "Child resistance claim", "Alienation Tactic", "Witness statement"),
-        ("2025-03-19", "15:00", "20:00", 5.0, "Activity conflict", "Prioritization Issue", "Activity schedule"),
-        ("2025-03-26", "09:00", "12:00", 3.0, "Weather excuse", "Minimal Effort", "Weather report"),
-        ("2025-04-02", "13:00", "18:00", 5.0, "Vehicle problems", "Repeated Excuse", "Maintenance record"),
-        ("2025-04-09", "10:00", "16:00", 6.0, "Medical appointment", "Scheduling Conflict", "Appointment slip"),
-        ("2025-04-16", "14:00", "19:00", 5.0, "Extended family visit", "Priority Override", "Family photos"),
-        ("2025-04-23", "09:00", "15:00", 6.0, "School event", "Activity Prioritization", "School notice"),
-        ("2025-04-30", "16:00", "20:00", 4.0, "Sudden plans", "Last Minute Change", "Text exchange"),
-        ("2025-05-07", "11:00", "17:00", 6.0, "Mother's Day prep", "Holiday Excuse", "Shopping receipts"),
-        ("2025-05-14", "09:00", "14:00", 5.0, "Friend's birthday", "Social Priority", "Party invitation"),
-        ("2025-05-21", "15:00", "19:00", 4.0, "Tired child", "Physical Excuse", "Bedtime log"),
-        ("2025-05-28", "10:00", "16:00", 6.0, "Memorial Day plans", "Holiday Override", "Family gathering"),
-        ("2025-06-04", "13:00", "18:00", 5.0, "Swimming lessons", "Activity Conflict", "Lesson schedule"),
-        ("2025-06-11", "09:00", "15:00", 6.0, "Graduation party", "Event Priority", "Graduation invite"),
-        ("2025-06-14", "08:00", "20:00", 12.0, "Father's Day denied", "Holiday Violation", "Text refusal"),
-        ("2025-06-18", "16:00", "19:00", 3.0, "Dinner plans", "Social Override", "Restaurant receipt"),
-        ("2025-06-25", "11:00", "17:00", 6.0, "Camp preparation", "Summer Activity", "Camp materials"),
+        ("2024-02-11", "09:00", "15:00", 6.0, "Schedule conflict cited", "Administrative Issue", "Email communication"),
+        ("2024-02-14", "16:00", "20:00", 4.0, "Last minute rescheduling", "Communication Gap", "Text message thread"),
+        ("2024-02-18", "10:00", "18:00", 8.0, "Health concerns cited", "Medical Excuse", "Medical documentation"),
+        ("2024-02-25", "14:00", "19:00", 5.0, "Transportation unavailable", "Logistical Issue", "Communication log"),
+        ("2024-03-05", "09:00", "17:00", 8.0, "Calendar conflict", "Scheduling Issue", "Calendar evidence"),
+        ("2024-03-12", "11:00", "16:00", 5.0, "Child preference expressed", "Behavioral Factor", "Statement recorded"),
+        ("2024-03-19", "15:00", "20:00", 5.0, "Activity commitment", "Priority Conflict", "Activity documentation"),
+        ("2024-03-26", "09:00", "12:00", 3.0, "Weather concerns", "Environmental Factor", "Weather documentation"),
+        ("2024-04-02", "13:00", "18:00", 5.0, "Vehicle unavailable", "Logistical Issue", "Maintenance documentation"),
+        ("2024-04-09", "10:00", "16:00", 6.0, "Medical appointment", "Health Priority", "Appointment verification"),
+        ("2024-04-16", "14:00", "19:00", 5.0, "Family obligation", "Family Priority", "Family documentation"),
+        ("2024-04-23", "09:00", "15:00", 6.0, "Educational event", "Academic Priority", "School notification"),
+        ("2024-04-30", "16:00", "20:00", 4.0, "Emergency plans", "Unplanned Event", "Communication record"),
+        ("2024-05-07", "11:00", "17:00", 6.0, "Holiday preparation", "Holiday Conflict", "Activity receipts"),
+        ("2024-05-14", "09:00", "14:00", 5.0, "Social commitment", "Social Priority", "Event invitation"),
+        ("2024-05-21", "15:00", "19:00", 4.0, "Child fatigue cited", "Health Concern", "Health log"),
+        ("2024-05-28", "10:00", "16:00", 6.0, "Holiday plans", "Holiday Priority", "Family activity"),
+        ("2024-06-04", "13:00", "18:00", 5.0, "Lesson conflict", "Activity Conflict", "Lesson schedule"),
+        ("2024-06-11", "09:00", "15:00", 6.0, "Special event", "Event Priority", "Event documentation"),
+        ("2024-06-14", "08:00", "20:00", 12.0, "Holiday denied", "Holiday Conflict", "Communication record"),
+        ("2024-06-18", "16:00", "19:00", 3.0, "Social plans", "Social Priority", "Activity receipt"),
+        ("2024-06-25", "11:00", "17:00", 6.0, "Program preparation", "Activity Preparation", "Program materials"),
     ];
     
     // Check if data already exists
@@ -88,12 +88,12 @@ pub async fn seed_sample_data(pool: &DbPool) -> Result<(), sqlx::Error> {
     
     // Add timeline events
     let timeline_events = vec![
-        ("2018-10-12", "court", "Divorce Judgment Entered", "Initial custody arrangements established", 5),
-        ("2023-12-05", "agreement", "Provider-First Stipulation Filed", "Stipulation establishing placement schedule", 4),
-        ("2025-02-11", "violation", "First Placement Denial", "Beginning of systematic placement interference", 5),
-        ("2025-02-12", "mediation", "Mediator Directive Issued", "Formal directive regarding placement compliance", 4),
-        ("2025-06-14", "violation", "Father's Day Denied", "Complete denial of Father's Day placement", 5),
-        ("2025-06-26", "court", "Motion to Enforce Filed", "Legal action initiated for enforcement", 5),
+        ("2018-10-12", "court", "Initial Order Entered", "Initial custody arrangements established", 5),
+        ("2023-12-05", "agreement", "Custody Stipulation Filed", "Stipulation establishing placement schedule", 4),
+        ("2024-02-11", "violation", "First Incident Reported", "Beginning of documented placement issues", 5),
+        ("2024-02-12", "mediation", "Mediator Directive Issued", "Formal directive regarding placement compliance", 4),
+        ("2024-06-14", "violation", "Holiday Placement Denied", "Complete denial of holiday placement", 5),
+        ("2024-06-26", "court", "Enforcement Motion Filed", "Legal action initiated for enforcement", 5),
     ];
     
     for event in timeline_events {
@@ -113,9 +113,9 @@ pub async fn seed_sample_data(pool: &DbPool) -> Result<(), sqlx::Error> {
     
     // Add violations
     let violations = vec![
-        ("2025-02-11", "Placement Interference", "Systematic denial pattern begins", "Stipulation Section 3.2", 4),
-        ("2025-06-14", "Holiday Violation", "Father's Day completely denied", "Stipulation Section 2.1", 5),
-        ("2025-06-26", "Contempt Pattern", "Ongoing non-compliance with court orders", "Multiple violations", 5),
+        ("2024-02-11", "Placement Interference", "Systematic incident pattern begins", "Agreement Section 3.2", 4),
+        ("2024-06-14", "Holiday Violation", "Holiday placement completely denied", "Agreement Section 2.1", 5),
+        ("2024-06-26", "Compliance Pattern", "Ongoing non-compliance with agreements", "Multiple sections", 5),
     ];
     
     for violation in violations {

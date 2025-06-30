@@ -1,6 +1,6 @@
 # MoodBridge Rust 🦀⚖️
 
-**High-performance legal dashboard for Colby v. McConnell Ek case**
+**High-performance legal dashboard for family law case management**
 
 A blazing-fast Rust rewrite of the MoodBridge legal operations platform, built with Axum, SQLx, and SQLite.
 
@@ -119,11 +119,11 @@ cargo fmt
 cargo clippy
 ```
 
-## 📊 Case Data
+## 📊 Sample Data
 
-**Current Status**: 37 placement denials, 561 hours lost
-**Case**: Colby v. McConnell Ek (2018-FA-004441)
-**Court**: Milwaukee County Circuit Court, Family Division
+**Current Status**: 22 placement incidents tracked
+**Case**: Anonymous Family Law Case (DEMO-2024-001)
+**Court**: Anonymous County Circuit Court, Family Division
 
 ---
 

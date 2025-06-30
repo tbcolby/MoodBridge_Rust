@@ -135,7 +135,7 @@ CREATE INDEX IF NOT EXISTS idx_timeline_events_ai ON timeline_events(ai_generate
 
 -- Prepopulate initial data
 INSERT OR IGNORE INTO case_info (docket_number, case_title, court, status)
-VALUES ('2018-FA-004441', 'Colby v. McConnell Ek', 'Milwaukee County Circuit Court', 'Active');
+VALUES ('DEMO-2024-001', 'Anonymous v. Anonymous', 'Demo County Circuit Court', 'Active');
 
 -- Insert sample legal patterns
 INSERT OR IGNORE INTO legal_patterns (pattern_name, pattern_type, pattern_description, detection_criteria) VALUES
