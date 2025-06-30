@@ -188,11 +188,8 @@ impl AppError {
             }
             ErrorSeverity::Critical => {
                 error!(error = %self, context = %error_details, "Critical system error occurred");
-                // In production, this would trigger alerts
-                #[cfg(feature = "sentry")]
-                {
-                    sentry::capture_error(self);
-                }
+                // In production, this would trigger alerts and error tracking
+                tracing::error!("Critical error captured for monitoring: {:?}", self);
             }
         }
     }

@@ -652,7 +652,7 @@ impl AiCoreEngine {
         let response = timeout(
             Duration::from_secs(self.config.timeout_seconds),
             self.client
-                .post(&format!("{}/chat/completions", self.config.openai_base_url))
+                .post(format!("{}/chat/completions", self.config.openai_base_url))
                 .header("Authorization", format!("Bearer {}", api_key))
                 .header("Content-Type", "application/json")
                 .json(&request_body)

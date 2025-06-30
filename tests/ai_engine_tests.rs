@@ -1,8 +1,9 @@
-use crate::ai::core_engine::{AdvancedPromptRequest, AiCoreEngine, ConversationContext, InputType};
-use crate::ai::{AiConfig, AiService, AnalysisRequest, InsightType};
+use moodbridge_rust::ai::core_engine::{
+    AdvancedPromptRequest, AiCoreEngine, ConversationContext, InputType,
+};
+use moodbridge_rust::ai::{AiConfig, AnalysisRequest, InsightType};
 use serde_json::json;
 use std::collections::HashMap;
-use tokio::test;
 
 #[tokio::test]
 async fn test_ai_config_default() {
@@ -16,7 +17,7 @@ async fn test_ai_config_default() {
 #[tokio::test]
 async fn test_ai_core_engine_creation() {
     let config = AiConfig::default();
-    let engine = AiCoreEngine::new(config);
+    let _engine = AiCoreEngine::new(config);
     // Test that engine is created successfully
     assert!(true); // Engine creation doesn't fail
 }
@@ -89,7 +90,7 @@ async fn test_analysis_request() {
 #[cfg(test)]
 mod ai_insights_tests {
     use super::*;
-    use crate::ai::AiInsight;
+    use moodbridge_rust::ai::AiInsight;
 
     #[tokio::test]
     async fn test_ai_insight_creation() {

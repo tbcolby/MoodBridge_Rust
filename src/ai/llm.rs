@@ -35,7 +35,7 @@ impl OpenAiService {
 
         let response = self
             .client
-            .post(&format!("{}/chat/completions", self.config.openai_base_url))
+            .post(format!("{}/chat/completions", self.config.openai_base_url))
             .header("Authorization", format!("Bearer {}", api_key))
             .header("Content-Type", "application/json")
             .json(&request)

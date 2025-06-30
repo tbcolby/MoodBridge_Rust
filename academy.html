@@ -670,9 +670,10 @@
                     <p>1. Navigate to your MoodBridge project directory</p>
                     <p>2. Run: <code>./devops_commit_checker.sh</code></p>
                     <p>3. Review the generated reports in <code>devops_reports/</code></p>
+                    <p>4. Open the DevOps dashboard: <code>devops_dashboard.html</code></p>
                     
                     <div class="quiz-container">
-                        <h3>Quick Quiz</h3>
+                        <h3>Knowledge Check</h3>
                         <div class="question">
                             <h4>What is the main purpose of the DevOps commit checker?</h4>
                             <div class="options">
@@ -682,28 +683,201 @@
                                 <div class="option" onclick="selectOption(this, false)">D) Only work with Rust projects</div>
                             </div>
                         </div>
+                        <div class="question">
+                            <h4>Which file contains the DevOps system configuration?</h4>
+                            <div class="options">
+                                <div class="option" onclick="selectOption(this, false)">A) config.toml</div>
+                                <div class="option" onclick="selectOption(this, true)">B) devops_config.yaml</div>
+                                <div class="option" onclick="selectOption(this, false)">C) settings.json</div>
+                                <div class="option" onclick="selectOption(this, false)">D) .env</div>
+                            </div>
+                        </div>
                     </div>
                     
                     <button class="btn btn-success" onclick="completeModule(1)" style="margin-top: 20px;">Complete Module</button>
                 `,
                 2: `
                     <h2>🔄 Commit Automation</h2>
-                    <p>Advanced commit automation and reporting systems...</p>
+                    <h3>Advanced Multi-Repository Management</h3>
+                    <p>Learn to automate commit analysis across multiple repositories with comprehensive reporting and cross-project insights.</p>
+                    
+                    <h3>Core Components</h3>
+                    <ul>
+                        <li><strong>Multi-Project Scanner:</strong> Analyzes multiple repositories simultaneously</li>
+                        <li><strong>Report Generator:</strong> Creates detailed analysis reports</li>
+                        <li><strong>TODO Tracker:</strong> Identifies and prioritizes technical debt</li>
+                        <li><strong>Documentation Monitor:</strong> Tracks documentation coverage</li>
+                    </ul>
+                    
+                    <h3>Hands-on Lab</h3>
+                    <p>1. Configure multiple repositories in <code>devops_config.yaml</code></p>
+                    <p>2. Run cross-project analysis: <code>./devops_commit_checker.sh</code></p>
+                    <p>3. Interpret generated reports in <code>devops_reports/</code></p>
+                    <p>4. Customize report templates for your needs</p>
+                    
+                    <h3>Performance Optimization</h3>
+                    <p>Learn to optimize commit analysis for large codebases and multiple repositories.</p>
+                    
+                    <div class="quiz-container">
+                        <h3>Knowledge Check</h3>
+                        <div class="question">
+                            <h4>What file extension do DevOps reports use?</h4>
+                            <div class="options">
+                                <div class="option" onclick="selectOption(this, false)">A) .txt</div>
+                                <div class="option" onclick="selectOption(this, true)">B) .md</div>
+                                <div class="option" onclick="selectOption(this, false)">C) .json</div>
+                                <div class="option" onclick="selectOption(this, false)">D) .xml</div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <button class="btn btn-success" onclick="completeModule(2)">Complete Module</button>
                 `,
                 3: `
                     <h2>⚡ Quality Gates & Pre-commit Hooks</h2>
-                    <p>Implement and customize quality enforcement...</p>
+                    <h3>Automated Quality Enforcement</h3>
+                    <p>Implement robust quality gates that prevent low-quality code from entering your repositories.</p>
+                    
+                    <h3>Hook Types</h3>
+                    <ul>
+                        <li><strong>Pre-commit:</strong> Code formatting, linting, compilation checks</li>
+                        <li><strong>Commit-msg:</strong> Message format validation</li>
+                        <li><strong>Pre-push:</strong> Test execution, security scans</li>
+                        <li><strong>Post-commit:</strong> Notifications, integrations</li>
+                    </ul>
+                    
+                    <h3>Rust Integration</h3>
+                    <p>Deep integration with Rust toolchain:</p>
+                    <ul>
+                        <li>rustfmt for code formatting</li>
+                        <li>Clippy for lint checking</li>
+                        <li>Cargo for compilation verification</li>
+                        <li>Custom security scanners</li>
+                    </ul>
+                    
+                    <h3>Hands-on Lab</h3>
+                    <p>1. Review existing pre-commit hooks in <code>.git/hooks/</code></p>
+                    <p>2. Test the quality gates: attempt a commit with issues</p>
+                    <p>3. Customize hook behavior in <code>devops_config.yaml</code></p>
+                    <p>4. Create custom quality checks</p>
+                    
+                    <div class="quiz-container">
+                        <h3>Knowledge Check</h3>
+                        <div class="question">
+                            <h4>Which Rust tool is used for code formatting?</h4>
+                            <div class="options">
+                                <div class="option" onclick="selectOption(this, false)">A) Clippy</div>
+                                <div class="option" onclick="selectOption(this, true)">B) rustfmt</div>
+                                <div class="option" onclick="selectOption(this, false)">C) Cargo</div>
+                                <div class="option" onclick="selectOption(this, false)">D) rustc</div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <button class="btn btn-success" onclick="completeModule(3)">Complete Module</button>
                 `,
                 4: `
                     <h2>📊 DevOps Dashboard</h2>
-                    <p>Build beautiful monitoring dashboards...</p>
+                    <h3>Modern Data Visualization</h3>
+                    <p>Build beautiful, responsive dashboards with real-time monitoring capabilities.</p>
+                    
+                    <h3>Dashboard Features</h3>
+                    <ul>
+                        <li><strong>Real-time Metrics:</strong> Live project status updates</li>
+                        <li><strong>Interactive Elements:</strong> Clickable actions and controls</li>
+                        <li><strong>Responsive Design:</strong> Works on all devices</li>
+                        <li><strong>Modern UI:</strong> Glassmorphism design principles</li>
+                    </ul>
+                    
+                    <h3>Technologies Used</h3>
+                    <ul>
+                        <li>HTML5 for structure</li>
+                        <li>CSS3 with modern features (Grid, Flexbox, backdrop-filter)</li>
+                        <li>JavaScript for interactivity</li>
+                        <li>Chart.js for data visualization (optional)</li>
+                    </ul>
+                    
+                    <h3>Hands-on Lab</h3>
+                    <p>1. Open <code>devops_dashboard.html</code> in your browser</p>
+                    <p>2. Examine the source code structure</p>
+                    <p>3. Customize the dashboard appearance</p>
+                    <p>4. Add new metrics or project cards</p>
+                    <p>5. Test responsive design on different screen sizes</p>
+                    
+                    <div class="quiz-container">
+                        <h3>Knowledge Check</h3>
+                        <div class="question">
+                            <h4>What design style does the MoodBridge dashboard use?</h4>
+                            <div class="options">
+                                <div class="option" onclick="selectOption(this, false)">A) Flat design</div>
+                                <div class="option" onclick="selectOption(this, true)">B) Glassmorphism</div>
+                                <div class="option" onclick="selectOption(this, false)">C) Skeuomorphism</div>
+                                <div class="option" onclick="selectOption(this, false)">D) Minimalism</div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <button class="btn btn-success" onclick="completeModule(4)">Complete Module</button>
                 `,
                 5: `
                     <h2>🏢 Enterprise Integration</h2>
-                    <p>Scale for enterprise environments...</p>
+                    <h3>Scaling DevOps for Enterprise</h3>
+                    <p>Learn to implement DevOps practices at enterprise scale with advanced security, compliance, and governance.</p>
+                    
+                    <h3>Enterprise Requirements</h3>
+                    <ul>
+                        <li><strong>Security:</strong> Advanced security scanning and compliance</li>
+                        <li><strong>Scalability:</strong> Handle hundreds of repositories</li>
+                        <li><strong>Governance:</strong> Policy enforcement and audit trails</li>
+                        <li><strong>Integration:</strong> Connect with existing enterprise tools</li>
+                    </ul>
+                    
+                    <h3>Architecture Patterns</h3>
+                    <ul>
+                        <li>Microservices architecture</li>
+                        <li>Event-driven workflows</li>
+                        <li>API-first design</li>
+                        <li>Multi-tenant security</li>
+                    </ul>
+                    
+                    <h3>Compliance & Governance</h3>
+                    <ul>
+                        <li>SOC 2 compliance</li>
+                        <li>GDPR data protection</li>
+                        <li>Audit trail management</li>
+                        <li>Role-based access control</li>
+                    </ul>
+                    
+                    <h3>Capstone Project</h3>
+                    <p>Design and implement an enterprise-grade DevOps solution:</p>
+                    <p>1. Architecture design document</p>
+                    <p>2. Security implementation plan</p>
+                    <p>3. Scalability testing strategy</p>
+                    <p>4. Governance framework</p>
+                    <p>5. Integration roadmap</p>
+                    
+                    <div class="quiz-container">
+                        <h3>Final Assessment</h3>
+                        <div class="question">
+                            <h4>What is the primary benefit of enterprise DevOps automation?</h4>
+                            <div class="options">
+                                <div class="option" onclick="selectOption(this, false)">A) Reduced development time only</div>
+                                <div class="option" onclick="selectOption(this, true)">B) Improved quality, security, and compliance at scale</div>
+                                <div class="option" onclick="selectOption(this, false)">C) Lower infrastructure costs</div>
+                                <div class="option" onclick="selectOption(this, false)">D) Simpler deployment processes</div>
+                            </div>
+                        </div>
+                        <div class="question">
+                            <h4>Which compliance framework is mentioned in this module?</h4>
+                            <div class="options">
+                                <div class="option" onclick="selectOption(this, false)">A) ISO 9001</div>
+                                <div class="option" onclick="selectOption(this, true)">B) SOC 2</div>
+                                <div class="option" onclick="selectOption(this, false)">C) HIPAA</div>
+                                <div class="option" onclick="selectOption(this, false)">D) PCI DSS</div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <button class="btn btn-success" onclick="completeModule(5)">Complete Module</button>
                 `
             };

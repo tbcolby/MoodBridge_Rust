@@ -2,9 +2,10 @@ use config::{Config, ConfigError, Environment as ConfigEnvironment, File};
 use serde::{Deserialize, Serialize};
 use std::env;
 use tracing::info;
+use validator::Validate;
 
 /// Application configuration following Odaseva enterprise standards
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Validate, Default)]
 pub struct AppConfig {
     pub server: ServerConfig,
     pub database: DatabaseConfig,
@@ -98,19 +99,6 @@ pub struct LoggingConfig {
     pub console_enabled: bool,
     pub audit_log_enabled: bool,
     pub audit_log_path: String,
-}
-
-impl Default for AppConfig {
-    fn default() -> Self {
-        Self {
-            server: ServerConfig::default(),
-            database: DatabaseConfig::default(),
-            security: SecurityConfig::default(),
-            ai: AiConfig::default(),
-            monitoring: MonitoringConfig::default(),
-            logging: LoggingConfig::default(),
-        }
-    }
 }
 
 impl Default for ServerConfig {

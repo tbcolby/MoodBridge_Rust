@@ -41,8 +41,8 @@ pub async fn dashboard_data(State(pool): State<DbPool>) -> Result<Json<Value>, S
     let stats_query = sqlx::query(
         "SELECT 
             COUNT(*) as total_incidents,
-            COALESCE(SUM(duration_hours), 0) as total_hours,
-            COALESCE(AVG(duration_hours), 0) as avg_duration,
+            COALESCE(SUM(duration_hours), 0.0) as total_hours,
+            COALESCE(AVG(duration_hours), 0.0) as avg_duration,
             COUNT(CASE WHEN denied_date LIKE '2024-06%' THEN 1 END) as this_month
          FROM placement_denials",
     );
@@ -280,8 +280,8 @@ async fn get_quick_stats(pool: &DbPool) -> Result<Value, StatusCode> {
     let stats_query = sqlx::query(
         "SELECT 
             COUNT(*) as total_incidents,
-            COALESCE(SUM(duration_hours), 0) as total_hours,
-            COALESCE(AVG(duration_hours), 0) as avg_duration
+            COALESCE(SUM(duration_hours), 0.0) as total_hours,
+            COALESCE(AVG(duration_hours), 0.0) as avg_duration
          FROM placement_denials",
     );
 

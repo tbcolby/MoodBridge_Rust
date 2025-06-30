@@ -48,8 +48,7 @@ impl LegalFabricPatterns {
         &self,
         events: &[serde_json::Value],
     ) -> Result<Vec<AiInsight>, AiError> {
-        let events_json =
-            serde_json::to_string_pretty(events).map_err(|e| AiError::JsonError(e))?;
+        let events_json = serde_json::to_string_pretty(events).map_err(AiError::JsonError)?;
 
         let pattern = Self::get_timeline_correlation_pattern();
         self.execute_pattern_analysis(&events_json, &pattern).await

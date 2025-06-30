@@ -1,7 +1,8 @@
 use moodbridge_rust::db::{create_pool, run_migrations, seed_sample_data};
-use moodbridge_rust::models::{CaseInfo, Communication, Exhibit, PlacementDenial, TimelineEvent};
+use moodbridge_rust::models::{
+    CaseInfo, Communication, Exhibit, PlacementDenial, TimelineEvent, Violation,
+};
 use sqlx::{Row, SqlitePool};
-use tokio::test;
 
 #[tokio::test]
 async fn test_database_connection() {
