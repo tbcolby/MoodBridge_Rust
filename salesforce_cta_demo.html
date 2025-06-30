@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Salesforce CTA Portal</title>
+    <style>
+        :root {
+            --sf-blue: #0176d3;
+            --sf-dark-blue: #032d60;
+            --sf-orange: #ffa500;
+            --sf-light-gray: #f3f2f2;
+            --sf-dark-gray: #080707;
+            --sf-green: #04844b;
+            --sf-yellow: #ffb75d;
+            --sf-red: #c23934;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Salesforce Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--sf-light-gray);
+            color: var(--sf-dark-gray);
+            line-height: 1.6;
+        }
+
+        .portal-header {
+            background: linear-gradient(135deg, var(--sf-blue) 0%, var(--sf-dark-blue) 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .portal-header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .portal-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: var(--sf-green);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .portal-nav {
+            background: white;
+            border-bottom: 3px solid var(--sf-blue);
+            padding: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-links::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--sf-dark-gray);
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+            border-radius: 0;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(1, 118, 211, 0.1);
+            border-bottom-color: var(--sf-blue);
+            color: var(--sf-blue);
+        }
+
+        .nav-badge {
+            background: var(--sf-orange);
+            color: white;
+            border-radius: 50%;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.7rem;
+            margin-left: 0.5rem;
+            min-width: 1.5rem;
+            text-align: center;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .action-btn {
+            background: white;
+            border: 2px solid var(--sf-blue);
+            color: var(--sf-blue);
+            padding: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn:hover {
+            background: var(--sf-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(1, 118, 211, 0.3);
+        }
+
+        .action-btn .icon {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-btn .shortcut {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .widget {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--sf-blue);
+            transition: transform 0.3s ease;
+        }
+
+        .widget:hover {
+            transform: translateY(-2px);
+        }
+
+        .widget h3 {
+            color: var(--sf-blue);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .widget-content {
+            color: var(--sf-dark-gray);
+        }
+
+        .org-health {
+            border-left-color: var(--sf-green);
+        }
+
+        .org-health .score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--sf-green);
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .org-health .trend {
+            text-align: center;
+            color: var(--sf-green);
+            font-weight: 500;
+        }
+
+        .performance-chart {
+            border-left-color: var(--sf-orange);
+        }
+
+        .chart-placeholder {
+            height: 150px;
+            background: linear-gradient(45deg, rgba(255,165,0,0.1), rgba(255,165,0,0.2));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--sf-orange);
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-placeholder::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(90deg, 
+                transparent 10%, var(--sf-orange) 15%, var(--sf-orange) 25%, transparent 30%,
+                transparent 40%, var(--sf-orange) 45%, var(--sf-orange) 60%, transparent 65%,
+                transparent 70%, var(--sf-orange) 75%, var(--sf-orange) 90%, transparent 95%);
+            opacity: 0.3;
+        }
+
+        .architecture-insights {
+            border-left-color: var(--sf-red);
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            background: rgba(194, 57, 52, 0.1);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .alert-icon {
+            margin-right: 0.5rem;
+            color: var(--sf-red);
+        }
+
+        .recent-activity {
+            border-left-color: var(--sf-blue);
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-status {
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-completed {
+            background: rgba(4, 132, 75, 0.2);
+            color: var(--sf-green);
+        }
+
+        .status-in-progress {
+            background: rgba(255, 165, 0, 0.2);
+            color: var(--sf-orange);
+        }
+
+        .integration-status {
+            border-left-color: var(--sf-yellow);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 181, 93, 0.1);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--sf-yellow);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .task-queue {
+            border-left-color: var(--sf-dark-blue);
+            grid-column: span 2;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: rgba(3, 45, 96, 0.05);
+            border-radius: 6px;
+            border-left: 3px solid var(--sf-dark-blue);
+        }
+
+        .task-title {
+            font-weight: 500;
+            flex-grow: 1;
+        }
+
+        .task-progress {
+            margin-left: 1rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 4px;
+            background: #eee;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 0.3rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--sf-blue);
+            transition: width 0.3s ease;
+        }
+
+        .floating-help {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--sf-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(1, 118, 211, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-help:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(1, 118, 211, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .portal-header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .task-queue {
+                grid-column: span 1;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="portal-header">
+        <h1>⚡ Salesforce CTA Portal</h1>
+        <p>Enterprise-grade Salesforce architecture guidance and technical consulting. Get expert recommendations for complex Salesforce implementations, integrations, and optimizations.</p>
+        <span class="status-badge">🟢 Active & Ready</span>
+    </div>
+    
+    <nav class="portal-nav">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#dashboard" class="nav-link active">📊 Dashboard</a></li>
+                <li><a href="#architecture" class="nav-link">🏗️ Architecture</a></li>
+                <li><a href="#integrations" class="nav-link">🔗 Integrations <span class="nav-badge">3</span></a></li>
+                <li><a href="#security" class="nav-link">🛡️ Security</a></li>
+                <li><a href="#performance" class="nav-link">⚡ Performance</a></li>
+                <li><a href="#reports" class="nav-link">📋 Reports</a></li>
+                <li><a href="#settings" class="nav-link">⚙️ Settings</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="quick-actions slide-in">
+            <button class="action-btn" onclick="executeAction('architecture_review')" title="Perform comprehensive architecture analysis">
+                <span class="shortcut">Ctrl+R</span>
+                <span class="icon">🔍</span>
+                <span>Architecture Review</span>
+            </button>
+            <button class="action-btn" onclick="executeAction('performance_analysis')" title="Deep-dive performance analysis">
+                <span class="shortcut">Ctrl+P</span>
+                <span class="icon">⚡</span>
+                <span>Analyze Performance</span>
+            </button>
+            <button class="action-btn" onclick="executeAction('security_assessment')" title="Comprehensive security review">
+                <span class="shortcut">Ctrl+S</span>
+                <span class="icon">🛡️</span>
+                <span>Security Assessment</span>
+            </button>
+            <button class="action-btn" onclick="executeAction('integration_design')" title="Launch integration design wizard">
+                <span class="shortcut">Ctrl+I</span>
+                <span class="icon">🔗</span>
+                <span>Design Integration</span>
+            </button>
+            <button class="action-btn" onclick="executeAction('generate_report')" title="Create comprehensive report">
+                <span class="shortcut">Ctrl+G</span>
+                <span class="icon">📊</span>
+                <span>Generate Report</span>
+            </button>
+            <button class="action-btn" onclick="executeAction('configure_alerts')" title="Set up monitoring alerts">
+                <span class="shortcut">Ctrl+A</span>
+                <span class="icon">🔔</span>
+                <span>Configure Alerts</span>
+            </button>
+        </div>
+        
+        <div class="dashboard slide-in">
+            <div class="widget org-health">
+                <h3>📊 Org Health Score</h3>
+                <div class="widget-content">
+                    <div class="score pulse">8.5</div>
+                    <div class="trend">↗️ +0.3 from last month</div>
+                    <p style="text-align: center; margin-top: 1rem; color: #666;">
+                        Excellent overall health with minor optimization opportunities
+                    </p>
+                </div>
+            </div>
+            
+            <div class="widget performance-chart">
+                <h3>⚡ Performance Metrics</h3>
+                <div class="widget-content">
+                    <div class="chart-placeholder">
+                        📈 Real-time Performance Data
+                    </div>
+                    <div style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                        <strong>Page Load Time:</strong> 1.2s avg<br>
+                        <strong>API Response:</strong> 200ms avg<br>
+                        <strong>User Sessions:</strong> 2,450 active
+                    </div>
+                </div>
+            </div>
+            
+            <div class="widget architecture-insights">
+                <h3>🔍 Architecture Insights</h3>
+                <div class="widget-content">
+                    <div class="alert-item">
+                        <span class="alert-icon">⚠️</span>
+                        <span>Governor limit approaching in Data Loader processes</span>
+                    </div>
+                    <div class="alert-item">
+                        <span class="alert-icon">🔔</span>
+                        <span>New integration pattern recommendation available</span>
+                    </div>
+                    <div class="alert-item">
+                        <span class="alert-icon">📊</span>
+                        <span>Performance optimization completed successfully</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="widget recent-activity">
+                <h3>🕒 Recent Architecture Analyses</h3>
+                <div class="widget-content">
+                    <div class="activity-item">
+                        <div>
+                            <strong>Enterprise Integration Review</strong><br>
+                            <small>15 minutes ago</small>
+                        </div>
+                        <span class="activity-status status-completed">Completed</span>
+                    </div>
+                    <div class="activity-item">
+                        <div>
+                            <strong>Security Assessment - Sales Cloud</strong><br>
+                            <small>2 hours ago</small>
+                        </div>
+                        <span class="activity-status status-in-progress">In Progress</span>
+                    </div>
+                    <div class="activity-item">
+                        <div>
+                            <strong>Performance Optimization Study</strong><br>
+                            <small>1 day ago</small>
+                        </div>
+                        <span class="activity-status status-completed">Completed</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="widget integration-status">
+                <h3>🔗 Integration Status</h3>
+                <div class="widget-content">
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Active Integrations</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Failed Connections</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">145ms</div>
+                            <div class="stat-label">Avg Response Time</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="widget task-queue">
+                <h3>📋 Analysis Queue</h3>
+                <div class="widget-content">
+                    <div class="task-item">
+                        <div class="task-title">🔍 Complete architecture assessment for Service Cloud</div>
+                        <div class="task-progress">
+                            75%
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-title">🛡️ Security review for custom applications</div>
+                        <div class="task-progress">
+                            45%
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-title">⚡ Performance optimization for Lightning pages</div>
+                        <div class="task-progress">
+                            20%
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 20%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-title">🔗 Integration pattern review for ERP system</div>
+                        <div class="task-progress">
+                            Queued
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div class="floating-help" onclick="showHelp()" title="Get Help & Documentation">
+        ❓
+    </div>
+    
+    <script>
+        // Navigation functionality
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Simulate page content change
+                console.log('Navigating to:', this.textContent);
+            });
+        });
+        
+        // Quick action execution
+        function executeAction(actionId) {
+            console.log('Executing action:', actionId);
+            
+            // Show visual feedback
+            const btn = event.target.closest('.action-btn');
+            const originalBg = btn.style.background;
+            btn.style.background = 'var(--sf-green)';
+            btn.style.color = 'white';
+            
+            // Simulate processing
+            setTimeout(() => {
+                btn.style.background = originalBg;
+                btn.style.color = 'var(--sf-blue)';
+                showNotification(`${actionId.replace('_', ' ')} completed successfully!`);
+            }, 1500);
+            
+            // Simulate real action execution
+            switch(actionId) {
+                case 'architecture_review':
+                    simulateArchitectureReview();
+                    break;
+                case 'performance_analysis':
+                    simulatePerformanceAnalysis();
+                    break;
+                case 'security_assessment':
+                    simulateSecurityAssessment();
+                    break;
+                case 'integration_design':
+                    simulateIntegrationDesign();
+                    break;
+                case 'generate_report':
+                    simulateReportGeneration();
+                    break;
+                case 'configure_alerts':
+                    simulateAlertConfiguration();
+                    break;
+            }
+        }
+        
+        function simulateArchitectureReview() {
+            updateOrgHealth(8.7);
+            addRecentActivity('Architecture Review - Complete', 'completed');
+        }
+        
+        function simulatePerformanceAnalysis() {
+            addRecentActivity('Performance Analysis - Deep Dive', 'in-progress');
+            updateTaskProgress('Performance optimization for Lightning pages', 60);
+        }
+        
+        function simulateSecurityAssessment() {
+            addRecentActivity('Security Assessment - Comprehensive', 'in-progress');
+            updateTaskProgress('Security review for custom applications', 80);
+        }
+        
+        function simulateIntegrationDesign() {
+            showNotification('Integration Design Wizard launched!');
+            addRecentActivity('Integration Design - New Pattern', 'in-progress');
+        }
+        
+        function simulateReportGeneration() {
+            showNotification('Generating comprehensive report...');
+            setTimeout(() => {
+                showNotification('Report ready for download!');
+            }, 3000);
+        }
+        
+        function simulateAlertConfiguration() {
+            showNotification('Alert configuration panel opened');
+        }
+        
+        function updateOrgHealth(newScore) {
+            const scoreElement = document.querySelector('.score');
+            const currentScore = parseFloat(scoreElement.textContent);
+            const diff = newScore - currentScore;
+            
+            scoreElement.textContent = newScore.toFixed(1);
+            
+            if (diff > 0) {
+                scoreElement.style.color = 'var(--sf-green)';
+                document.querySelector('.trend').innerHTML = `↗️ +${diff.toFixed(1)} improvement`;
+            }
+        }
+        
+        function addRecentActivity(title, status) {
+            const activityContainer = document.querySelector('.recent-activity .widget-content');
+            const newActivity = document.createElement('div');
+            newActivity.className = 'activity-item slide-in';
+            newActivity.innerHTML = `
+                <div>
+                    <strong>${title}</strong><br>
+                    <small>Just now</small>
+                </div>
+                <span class="activity-status status-${status}">${status.replace('-', ' ')}</span>
+            `;
+            
+            activityContainer.insertBefore(newActivity, activityContainer.firstChild);
+            
+            // Remove oldest if more than 3
+            const activities = activityContainer.querySelectorAll('.activity-item');
+            if (activities.length > 3) {
+                activities[activities.length - 1].remove();
+            }
+        }
+        
+        function updateTaskProgress(taskTitle, newProgress) {
+            const tasks = document.querySelectorAll('.task-item');
+            tasks.forEach(task => {
+                const title = task.querySelector('.task-title').textContent;
+                if (title.includes(taskTitle.split(' ').slice(0, 3).join(' '))) {
+                    const progressText = task.querySelector('.task-progress');
+                    const progressBar = task.querySelector('.progress-fill');
+                    
+                    progressText.firstChild.textContent = newProgress + '%';
+                    progressBar.style.width = newProgress + '%';
+                }
+            });
+        }
+        
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 2rem;
+                right: 2rem;
+                background: var(--sf-green);
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+                z-index: 1001;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        function showHelp() {
+            const helpContent = `
+                <h3>🎯 Salesforce CTA Portal Help</h3>
+                <p><strong>Quick Actions:</strong></p>
+                <ul>
+                    <li><kbd>Ctrl+R</kbd> - Run Architecture Review</li>
+                    <li><kbd>Ctrl+P</kbd> - Analyze Performance</li>
+                    <li><kbd>Ctrl+S</kbd> - Security Assessment</li>
+                    <li><kbd>Ctrl+I</kbd> - Design Integration</li>
+                    <li><kbd>Ctrl+G</kbd> - Generate Report</li>
+                    <li><kbd>Ctrl+A</kbd> - Configure Alerts</li>
+                </ul>
+                <p><strong>Features:</strong></p>
+                <ul>
+                    <li>Real-time org health monitoring</li>
+                    <li>Performance metrics and optimization</li>
+                    <li>Architecture assessment and recommendations</li>
+                    <li>Integration design and monitoring</li>
+                    <li>Security reviews and compliance</li>
+                    <li>Automated reporting and analytics</li>
+                </ul>
+            `;
+            
+            showModal('Salesforce CTA Portal Help', helpContent);
+        }
+        
+        function showModal(title, content) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1002;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: white;
+                    padding: 2rem;
+                    border-radius: 12px;
+                    max-width: 500px;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    animation: slideIn 0.3s ease-out;
+                ">
+                    <h2 style="color: var(--sf-blue); margin-bottom: 1rem;">${title}</h2>
+                    <div>${content}</div>
+                    <button onclick="this.closest('.modal').remove()" style="
+                        background: var(--sf-blue);
+                        color: white;
+                        border: none;
+                        padding: 0.5rem 1rem;
+                        border-radius: 6px;
+                        margin-top: 1rem;
+                        cursor: pointer;
+                    ">Close</button>
+                </div>
+            `;
+            modal.className = 'modal';
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+            
+            document.body.appendChild(modal);
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey) {
+                switch(e.key) {
+                    case 'r':
+                        e.preventDefault();
+                        executeAction('architecture_review');
+                        break;
+                    case 'p':
+                        e.preventDefault();
+                        executeAction('performance_analysis');
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        executeAction('security_assessment');
+                        break;
+                    case 'i':
+                        e.preventDefault();
+                        executeAction('integration_design');
+                        break;
+                    case 'g':
+                        e.preventDefault();
+                        executeAction('generate_report');
+                        break;
+                    case 'a':
+                        e.preventDefault();
+                        executeAction('configure_alerts');
+                        break;
+                }
+            }
+        });
+        
+        // Auto-refresh dashboard data
+        setInterval(() => {
+            // Simulate real-time updates
+            const healthScore = document.querySelector('.score');
+            const currentScore = parseFloat(healthScore.textContent);
+            const variation = (Math.random() - 0.5) * 0.2;
+            const newScore = Math.max(7.0, Math.min(10.0, currentScore + variation));
+            
+            if (Math.abs(variation) > 0.05) {
+                healthScore.textContent = newScore.toFixed(1);
+            }
+        }, 30000);
+        
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add slide-in animation to widgets
+            const widgets = document.querySelectorAll('.widget');
+            widgets.forEach((widget, index) => {
+                setTimeout(() => {
+                    widget.classList.add('slide-in');
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
