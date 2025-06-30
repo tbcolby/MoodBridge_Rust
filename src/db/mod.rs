@@ -8,7 +8,7 @@ pub async fn create_pool(database_url: &str) -> Result<DbPool, sqlx::Error> {
     info!("Connecting to database: {}", database_url);
     
     // Ensure the database directory exists
-    let db_path = database_url.strip_prefix("sqlite://").unwrap_or(database_url);
+    let db_path = database_url.strip_prefix("sqlite://").or_else(|| database_url.strip_prefix("sqlite:")).unwrap_or(database_url);
     if let Some(parent) = Path::new(db_path).parent() {
         std::fs::create_dir_all(parent).expect("Failed to create database directory");
     }

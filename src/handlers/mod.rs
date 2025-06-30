@@ -11,12 +11,24 @@ use sqlx::Row;
 use crate::models::*;
 use crate::db::DbPool;
 
+// Project management handlers module
+pub mod project;
+
 // Health check endpoint
 pub async fn health_check() -> Result<Json<Value>, StatusCode> {
     Ok(Json(json!({
         "status": "healthy",
         "message": "Legal dashboard API is running"
     })))
+}
+
+// Project Management Dashboard HTML page
+pub async fn project_dashboard() -> Html<String> {
+    let html = std::fs::read_to_string("templates/project_dashboard.html")
+        .unwrap_or_else(|_| {
+            "<html><body><h1>Project Dashboard Template Not Found</h1><p>Please ensure templates/project_dashboard.html exists</p></body></html>".to_string()
+        });
+    Html(html)
 }
 
 // Dashboard HTML page
@@ -284,7 +296,7 @@ async fn dashboard_data_impl(pool: &DbPool) -> Result<Json<Value>, StatusCode> {
          FROM placement_denials"
     );
     
-    let stats_row = stats_query.fetch_one(&pool).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let stats_row = stats_query.fetch_one(pool).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
     
     let stats = json!({
         "total_incidents": stats_row.get::<i64, _>("total_incidents"),
@@ -303,8 +315,8 @@ async fn dashboard_data_impl(pool: &DbPool) -> Result<Json<Value>, StatusCode> {
          ORDER BY month"
     );
     
-    let monthly_rows = monthly_query.fetch_all(&pool).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-    let monthly_trend: Vec<Value> = monthly_rows.iter().map(|row| {
+    let monthly_rows = monthly_query.fetch_all(pool).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let monthly_trend: Vec<Value> = monthly_rows.iter().map(|row: &sqlx::sqlite::SqliteRow| {
         json!({
             "month": row.get::<String, _>("month"),
             "count": row.get::<i64, _>("count")
@@ -321,8 +333,8 @@ async fn dashboard_data_impl(pool: &DbPool) -> Result<Json<Value>, StatusCode> {
          ORDER BY count DESC"
     );
     
-    let category_rows = category_query.fetch_all(&pool).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-    let categories: Vec<Value> = category_rows.iter().map(|row| {
+    let category_rows = category_query.fetch_all(pool).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let categories: Vec<Value> = category_rows.iter().map(|row: &sqlx::sqlite::SqliteRow| {
         json!({
             "category": row.get::<String, _>("category"),
             "count": row.get::<i64, _>("count")
@@ -337,8 +349,8 @@ async fn dashboard_data_impl(pool: &DbPool) -> Result<Json<Value>, StatusCode> {
          LIMIT 10"
     );
     
-    let recent_rows = recent_query.fetch_all(&pool).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-    let recent_incidents: Vec<Value> = recent_rows.iter().map(|row| {
+    let recent_rows = recent_query.fetch_all(pool).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let recent_incidents: Vec<Value> = recent_rows.iter().map(|row: &sqlx::sqlite::SqliteRow| {
         json!({
             "denied_date": row.get::<String, _>("denied_date"),
             "denial_reason": row.get::<String, _>("denial_reason"),
