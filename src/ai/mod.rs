@@ -1,27 +1,27 @@
 pub mod analytics;
-pub mod knuthian_analytics;
-pub mod llm;
+pub mod core_engine;
 pub mod fabric_integration;
+pub mod llm;
 pub mod patterns;
 
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use chrono::{DateTime, Utc};
 
-/// AI Insight types for legal analysis
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+/// Types of AI insights that can be generated
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum InsightType {
     Pattern,
-    RiskAssessment,
-    Recommendation,
-    TimelineCorrelation,
-    SentimentAnalysis,
+    Anomaly,
+    Prediction,
+    Risk,
+    Sentiment,
     DocumentAnalysis,
-    Classification,
-    Optimization,
+    TimelineCorrelation,
+    ComplianceViolation,
 }
 
-/// AI-generated insight structure
+/// AI-generated insight
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AiInsight {
     pub insight_type: InsightType,
@@ -63,9 +63,16 @@ pub struct AnalysisResponse {
 /// Main AI service trait
 #[async_trait::async_trait]
 pub trait AiService {
-    async fn analyze_document(&self, content: &str, document_type: &str) -> Result<AnalysisResponse, AiError>;
+    async fn analyze_document(
+        &self,
+        content: &str,
+        document_type: &str,
+    ) -> Result<AnalysisResponse, AiError>;
     async fn detect_patterns(&self, data: &serde_json::Value) -> Result<Vec<AiInsight>, AiError>;
-    async fn generate_timeline_events(&self, context: &str) -> Result<Vec<serde_json::Value>, AiError>;
+    async fn generate_timeline_events(
+        &self,
+        context: &str,
+    ) -> Result<Vec<serde_json::Value>, AiError>;
     async fn assess_risk(&self, placement_denial: &serde_json::Value) -> Result<f64, AiError>;
     async fn analyze_communication_sentiment(&self, message: &str) -> Result<f64, AiError>;
 }
@@ -85,16 +92,24 @@ pub enum AiError {
     TimeoutError,
 }
 
-/// AI service configuration
+/// Enhanced AI service configuration with multi-modal capabilities
 #[derive(Debug, Clone)]
 pub struct AiConfig {
     pub openai_api_key: Option<String>,
     pub openai_base_url: String,
     pub default_model: String,
+    pub advanced_model: String,
+    pub embedding_model: String,
     pub fabric_patterns_path: Option<String>,
     pub enable_fabric_integration: bool,
+    pub enable_voice_processing: bool,
+    pub enable_predictive_analytics: bool,
+    pub enable_real_time_monitoring: bool,
+    pub confidence_threshold: f64,
     pub max_retries: u32,
     pub timeout_seconds: u64,
+    pub context_memory_size: usize,
+    pub learning_rate: f64,
 }
 
 impl Default for AiConfig {
@@ -103,10 +118,18 @@ impl Default for AiConfig {
             openai_api_key: std::env::var("OPENAI_API_KEY").ok(),
             openai_base_url: "https://api.openai.com/v1".to_string(),
             default_model: "gpt-4".to_string(),
+            advanced_model: "gpt-4-turbo".to_string(),
+            embedding_model: "text-embedding-3-large".to_string(),
             fabric_patterns_path: std::env::var("FABRIC_PATTERNS_PATH").ok(),
             enable_fabric_integration: true,
+            enable_voice_processing: true,
+            enable_predictive_analytics: true,
+            enable_real_time_monitoring: true,
+            confidence_threshold: 0.75,
             max_retries: 3,
             timeout_seconds: 30,
+            context_memory_size: 50,
+            learning_rate: 0.01,
         }
     }
 }

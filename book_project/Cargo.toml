@@ -1,0 +1,55 @@
+[package]
+name = "moodbridge_book_writer"
+version = "0.1.0"
+edition = "2021"
+authors = ["MoodBridge AI Team <ai@moodbridge.dev>"]
+description = "Hofstadterian AI-powered book writing application with collaborative agent architecture"
+license = "MIT"
+repository = "https://github.com/moodbridge/book-writer"
+keywords = ["writing", "ai", "hofstadter", "collaboration", "philosophy"]
+categories = ["text-processing", "web-programming"]
+
+[dependencies]
+# Web Framework & HTTP
+axum = { version = "0.7", features = ["multipart", "ws", "macros"] }
+tower = { version = "0.4", features = ["util", "timeout", "limit"] }
+tower-http = { version = "0.5", features = ["cors", "trace", "fs", "add-extension", "set-header"] }
+hyper = { version = "1.0", features = ["full"] }
+
+# Database & Persistence
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "sqlite", "chrono", "uuid", "migrate"] }
+
+# Async Runtime
+tokio = { version = "1.0", features = ["full"] }
+async-trait = "0.1"
+
+# Serialization & Data
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }
+
+# Templating & UI
+askama = { version = "0.12", features = ["with-axum"] }
+askama_axum = "0.4"
+
+# Error Handling & Logging
+thiserror = "1.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Configuration
+config = "0.14"
+dotenvy = "0.15"
+
+# AI Integration
+reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
+
+# Text Processing
+markdown = "1.0"
+pulldown-cmark = "0.9"
+
+[dev-dependencies]
+tokio-test = "0.4"
+tempfile = "3.0"

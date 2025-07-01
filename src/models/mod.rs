@@ -2,6 +2,8 @@
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
+pub mod requests;
+
 #[derive(Debug, Serialize, Deserialize, FromRow)]
 pub struct CaseInfo {
     pub id: i64,

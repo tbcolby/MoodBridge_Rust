@@ -1,17 +1,21 @@
-// use std::collections::HashMap;
-use serde::{Deserialize, Serialize};
 use crate::ai::{AiError, AiInsight, InsightType};
 use chrono::Utc;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 /// Legal-specific Fabric patterns for document analysis
 pub struct LegalFabricPatterns;
 
 impl LegalFabricPatterns {
     /// Analyze legal document using fabric-style patterns
-    pub async fn analyze_legal_document(&self, content: &str, document_type: &str) -> Result<Vec<AiInsight>, AiError> {
+    pub async fn analyze_legal_document(
+        &self,
+        content: &str,
+        document_type: &str,
+    ) -> Result<Vec<AiInsight>, AiError> {
         let pattern = match document_type {
             "court_order" => Self::get_court_order_pattern(),
-            "communication" => Self::get_communication_pattern(), 
+            "communication" => Self::get_communication_pattern(),
             "evidence" => Self::get_evidence_pattern(),
             "placement_denial" => Self::get_placement_denial_pattern(),
             _ => Self::get_general_legal_pattern(),
@@ -28,17 +32,24 @@ impl LegalFabricPatterns {
     }
 
     /// Analyze communication sentiment and legal implications
-    pub async fn analyze_communication_legal_context(&self, message: &str, context: &str) -> Result<Vec<AiInsight>, AiError> {
+    pub async fn analyze_communication_legal_context(
+        &self,
+        message: &str,
+        context: &str,
+    ) -> Result<Vec<AiInsight>, AiError> {
         let pattern = Self::get_legal_communication_analysis_pattern();
         let combined_input = format!("Context: {}\n\nMessage: {}", context, message);
-        self.execute_pattern_analysis(&combined_input, &pattern).await
+        self.execute_pattern_analysis(&combined_input, &pattern)
+            .await
     }
 
     /// Generate timeline correlation insights
-    pub async fn correlate_timeline_events(&self, events: &[serde_json::Value]) -> Result<Vec<AiInsight>, AiError> {
-        let events_json = serde_json::to_string_pretty(events)
-            .map_err(|e| AiError::JsonError(e))?;
-        
+    pub async fn correlate_timeline_events(
+        &self,
+        events: &[serde_json::Value],
+    ) -> Result<Vec<AiInsight>, AiError> {
+        let events_json = serde_json::to_string_pretty(events).map_err(AiError::JsonError)?;
+
         let pattern = Self::get_timeline_correlation_pattern();
         self.execute_pattern_analysis(&events_json, &pattern).await
     }
@@ -237,12 +248,16 @@ impl LegalFabricPatterns {
     }
 
     /// Execute pattern analysis (simulated for now - would integrate with actual LLM)
-    async fn execute_pattern_analysis(&self, content: &str, pattern: &FabricPattern) -> Result<Vec<AiInsight>, AiError> {
+    async fn execute_pattern_analysis(
+        &self,
+        content: &str,
+        pattern: &FabricPattern,
+    ) -> Result<Vec<AiInsight>, AiError> {
         // For now, simulate AI analysis with structured response
         // In production, this would call OpenAI API with the fabric pattern
-        
+
         let mut insights = Vec::new();
-        
+
         // Simulate document analysis insight
         let analysis_data = serde_json::json!({
             "pattern_used": pattern.name,
@@ -251,7 +266,7 @@ impl LegalFabricPatterns {
             "analysis_summary": format!("Analyzed using {} pattern", pattern.name),
             "key_findings": [
                 "Structured analysis completed",
-                "Legal context identified", 
+                "Legal context identified",
                 "Patterns detected in content"
             ]
         });
@@ -265,7 +280,8 @@ impl LegalFabricPatterns {
         });
 
         // Simulate pattern detection insight
-        if content.to_lowercase().contains("denial") || content.to_lowercase().contains("violation") {
+        if content.to_lowercase().contains("denial") || content.to_lowercase().contains("violation")
+        {
             let pattern_data = serde_json::json!({
                 "pattern_type": "potential_violation",
                 "indicators": ["denial_keyword", "legal_terminology"],
