@@ -5,6 +5,35 @@
 
 ## 🎯 High Priority - Core Features Missing
 
+### Epic 1: Legal Compliance & Ethics (Partially Built - Integration Needed)
+- [ ] **LexGuard-Bot Integration** (Legal Ethics and Compliance Bot)
+  - [x] Core bot implementation (`legal_ethics_compliance_bot.rs`)
+  - [x] Compliance checker module (`compliance_check.rs`)
+  - [ ] Integration with all sensitive functions
+  - [ ] Runtime enforcement of legal protections
+  - [ ] User interface for bot interactions
+  - [ ] Testing and validation of compliance rules
+  - [ ] Documentation for legal compliance workflows
+
+- [ ] **Legal Compliance Module Integration**
+  - [x] Legal disclaimers module
+  - [x] User consent management
+  - [x] Role-based access control
+  - [x] Audit logging framework
+  - [x] Automated compliance checking rules
+  - [ ] Integration into main application flow
+  - [ ] Database schema for compliance data
+  - [ ] API endpoints for compliance operations
+  - [ ] Frontend components for legal workflows
+
+- [ ] **Compliance Dashboard & Reporting**
+  - [ ] Real-time compliance monitoring
+  - [ ] Violation tracking and resolution
+  - [ ] Audit report generation
+  - [ ] Legal authority citation system
+  - [ ] Compliance metrics and analytics
+  - [ ] Export functionality for legal records
+
 ### Epic 2: Advanced Features (Not Built)
 - [ ] **Task Categories System** (Story 2.1)
   - [ ] Category CRUD operations
