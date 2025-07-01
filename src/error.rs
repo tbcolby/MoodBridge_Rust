@@ -51,6 +51,16 @@ pub enum AppError {
 
     #[error("Service unavailable: {message}")]
     ServiceUnavailable { message: String },
+
+    // Simple error variants for backward compatibility
+    #[error("Internal error: {0}")]
+    InternalError(String),
+
+    #[error("Validation error: {0}")]
+    ValidationError(String),
+
+    #[error("Security violation: {0}")]
+    SecurityViolation(String),
 }
 
 /// Error severity levels for monitoring and alerting
@@ -118,16 +128,18 @@ impl AppError {
         match self {
             AppError::Authentication { .. } => StatusCode::UNAUTHORIZED,
             AppError::Authorization { .. } => StatusCode::FORBIDDEN,
-            AppError::Validation { .. } => StatusCode::BAD_REQUEST,
+            AppError::Validation { .. } | AppError::ValidationError(_) => StatusCode::BAD_REQUEST,
             AppError::NotFound { .. } => StatusCode::NOT_FOUND,
             AppError::Conflict { .. } => StatusCode::CONFLICT,
             AppError::RateLimit { .. } => StatusCode::TOO_MANY_REQUESTS,
             AppError::ServiceUnavailable { .. } => StatusCode::SERVICE_UNAVAILABLE,
+            AppError::SecurityViolation(_) => StatusCode::FORBIDDEN,
             AppError::Database { .. }
             | AppError::ExternalService { .. }
             | AppError::AiProcessing { .. }
             | AppError::Configuration { .. }
-            | AppError::Internal { .. } => StatusCode::INTERNAL_SERVER_ERROR,
+            | AppError::Internal { .. }
+            | AppError::InternalError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 

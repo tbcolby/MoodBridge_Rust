@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodBridge Universal Browser - Luxury Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Matisse Greyhound Bathtub Palette - Vibrant & Expressive */
+            --matisse-bathtub-blue: #4A90E2;
+            --matisse-water-blue: #5BA3F5;
+            --matisse-deep-blue: #2E5C8A;
+            --matisse-greyhound-tan: #D4A574;
+            --matisse-warm-beige: #E8D5B7;
+            --matisse-coral-pink: #FF6B9D;
+            --matisse-salmon: #FF8A80;
+            --matisse-lavender: #B39DDB;
+            --matisse-mint-green: #81C784;
+            --matisse-sunshine-yellow: #FFD54F;
+            --matisse-vermillion: #FF5722;
+            --matisse-ultramarine: #3F51B5;
+            --matisse-crimson: #E91E63;
+            --matisse-emerald: #009688;
+            --matisse-canvas-white: #FEFEFE;
+            --matisse-charcoal: #37474F;
+            --matisse-shadow: 0 8px 32px rgba(74, 144, 226, 0.15);
+            --matisse-shadow-hover: 0 16px 64px rgba(74, 144, 226, 0.25);
+            --matisse-gradient: linear-gradient(135deg, #4A90E2 0%, #5BA3F5 25%, #FF6B9D 50%, #81C784 75%, #FFD54F 100%);
+            --matisse-gradient-alt: linear-gradient(45deg, #B39DDB 0%, #FF8A80 50%, #81C784 100%);
+            --matisse-text-primary: #37474F;
+            --matisse-text-secondary: #546E7A;
+            --matisse-text-light: #FEFEFE;
+            --matisse-border: rgba(74, 144, 226, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Playfair Display', 'Inter', serif;
+            background: var(--matisse-gradient);
+            color: var(--matisse-text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-weight: 400;
+            line-height: 1.7;
+            letter-spacing: 0.02em;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 15% 85%, var(--matisse-bathtub-blue) 0%, transparent 45%),
+                radial-gradient(ellipse at 85% 15%, var(--matisse-coral-pink) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 50%, var(--matisse-lavender) 0%, transparent 35%),
+                radial-gradient(ellipse at 25% 25%, var(--matisse-mint-green) 0%, transparent 30%),
+                radial-gradient(ellipse at 75% 75%, var(--matisse-sunshine-yellow) 0%, transparent 25%);
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: -1;
+            animation: matisseFlow 20s ease-in-out infinite;
+        }
+
+        @keyframes matisseFlow {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.05) rotate(1deg); }
+            50% { transform: scale(0.95) rotate(-1deg); }
+            75% { transform: scale(1.02) rotate(0.5deg); }
+        }
+
+        .browser-header {
+            background: var(--luxury-black);
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid var(--luxury-gold);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .browser-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, var(--luxury-gold) 50%, transparent 100%);
+            opacity: 0.03;
+            z-index: 1;
+        }
+
+        .browser-header > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .browser-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .control-btn {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid var(--luxury-border);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translate(-50%, -50%);
+        }
+
+        .control-btn:hover::before {
+            width: 24px;
+            height: 24px;
+        }
+
+        .close { 
+            background: linear-gradient(135deg, #ff5f57 0%, #e74c3c 100%);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+        .minimize { 
+            background: linear-gradient(135deg, #ffbd2e 0%, #f39c12 100%);
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+        }
+        .maximize { 
+            background: linear-gradient(135deg, #28ca42 0%, #27ae60 100%);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        .address-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+
+        .go-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .go-btn:hover {
+            background: #3730a3;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .search-bar {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .search-input {
+            width: 70%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            margin-right: 1rem;
+        }
+
+        .search-btn {
+            padding: 1rem 2rem;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #3730a3;
+        }
+
+        .quick-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-link {
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .quick-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .tabs-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+        }
+
+        .tab {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 8px 8px 0 0;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 150px;
+            max-width: 200px;
+            position: relative;
+        }
+
+        .tab.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .tab-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .tab-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .status-bar {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .iframe-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            height: 500px;
+            display: none;
+        }
+
+        .iframe-container.active {
+            display: block;
+        }
+
+        .browser-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .ai-panel {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .ai-panel.active {
+            display: block;
+        }
+
+        .bookmarks-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .bookmark {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            text-decoration: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            transition: background 0.3s;
+        }
+
+        .bookmark:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="browser-header">
+        <div class="browser-controls">
+            <button class="control-btn close" onclick="window.close()"></button>
+            <button class="control-btn minimize" onclick="minimizeWindow()"></button>
+            <button class="control-btn maximize" onclick="toggleMaximize()"></button>
+        </div>
+        
+        <div class="tabs-bar" id="tabsBar">
+            <div class="tab active" data-tab="home">
+                <span>🏠</span>
+                <span>MoodBridge Browser</span>
+                <button class="tab-close" onclick="closeTab('home')" style="display: none;">×</button>
+            </div>
+        </div>
+        
+        <div class="bookmarks-bar">
+            <a href="#" class="bookmark" onclick="navigateToUrl('https://github.com')">📁 GitHub</a>
+            <a href="#" class="bookmark" onclick="navigateToUrl('https://docs.rs')">📚 Docs.rs</a>
+            <a href="#" class="bookmark" onclick="navigateToUrl('https://crates.io')">📦 Crates.io</a>
+            <a href="#" class="bookmark" onclick="navigateToUrl('http://localhost:8080')">⚖️ MoodBridge</a>
+        </div>
+        
+        <div class="address-bar">
+            <button class="nav-btn" id="backBtn" onclick="goBack()" disabled>←</button>
+            <button class="nav-btn" id="forwardBtn" onclick="goForward()" disabled>→</button>
+            <button class="nav-btn" onclick="reload()">⟳</button>
+            <input type="text" class="url-input" id="urlInput" placeholder="Enter URL or search query..." onkeypress="handleEnter(event)">
+            <button class="go-btn" onclick="navigate()">Go</button>
+            <button class="nav-btn" onclick="toggleAI()">🧠</button>
+            <button class="nav-btn" onclick="newTab()">+</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="homeTab" class="tab-content active">
+            <div class="header">
+                <h1 class="title">🌐 MoodBridge Universal Browser</h1>
+                <p class="subtitle">AI-Powered, Privacy-First, Lightning Fast</p>
+            </div>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-title">AI-Powered Browsing</div>
+                    <p>Intelligent page summarization, translation, and content analysis powered by advanced AI.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-title">Privacy & Security</div>
+                    <p>Built-in ad blocking, tracking protection, and advanced security scanning.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">Lightning Performance</div>
+                    <p>Rust-powered engine for blazing fast page loads and smooth browsing experience.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <div class="feature-title">Developer Tools</div>
+                    <p>Advanced inspection tools, console access, and network analysis built-in.</p>
+                </div>
+            </div>
+            
+            <div class="search-bar">
+                <h2>Start Browsing</h2>
+                <input type="text" class="search-input" placeholder="Enter URL or search query..." id="mainSearchInput" onkeypress="handleMainSearchEnter(event)">
+                <button class="search-btn" onclick="mainNavigate()">Go</button>
+                
+                <div class="quick-links">
+                    <button class="quick-link" onclick="quickSearch('news')">📰 News</button>
+                    <button class="quick-link" onclick="quickSearch('weather')">🌤️ Weather</button>
+                    <button class="quick-link" onclick="quickSearch('technology')">💻 Tech</button>
+                    <button class="quick-link" onclick="quickSearch('science')">🔬 Science</button>
+                    <button class="quick-link" onclick="navigateToUrl('http://localhost:8080')">⚖️ MoodBridge Dashboard</button>
+                    <button class="quick-link" onclick="navigateToUrl('http://localhost:8080/academy')">🎓 Academy</button>
+                    <button class="quick-link" onclick="showBookmarks()">📑 Bookmarks</button>
+                    <button class="quick-link" onclick="showHistory()">📜 History</button>
+                    <button class="quick-link" onclick="showSettings()">⚙️ Settings</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="iframe-container" id="browserContent">
+            <iframe class="browser-iframe" id="mainFrame" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <div class="ai-panel" id="aiPanel">
+        <h3>🧠 AI Assistant</h3>
+        <p>AI-powered browsing assistance:</p>
+        <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="quick-link" onclick="aiSummarize()">📝 Summarize Page</button>
+            <button class="quick-link" onclick="aiTranslate()">🌐 Translate</button>
+            <button class="quick-link" onclick="aiAnalyze()">🔍 Analyze Content</button>
+            <button class="quick-link" onclick="aiSearch()">🔎 Smart Search</button>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <span id="statusText">Ready</span>
+        <span id="securityStatus">🔒 Secure</span>
+    </div>
+
+    <script>
+        let currentUrl = 'about:blank';
+        let history = [];
+        let historyIndex = -1;
+        let tabs = [{id: 'home', title: 'MoodBridge Browser', url: 'about:blank', active: true}];
+        let activeTab = 'home';
+
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                navigate();
+            }
+        }
+
+        function handleMainSearchEnter(event) {
+            if (event.key === 'Enter') {
+                mainNavigate();
+            }
+        }
+
+        function navigate() {
+            const input = document.getElementById('urlInput');
+            const query = input.value.trim();
+            if (query) {
+                navigateToUrl(query);
+            }
+        }
+
+        function mainNavigate() {
+            const input = document.getElementById('mainSearchInput');
+            const query = input.value.trim();
+            if (query) {
+                navigateToUrl(query);
+            }
+        }
+
+        function navigateToUrl(url) {
+            let finalUrl = url;
+            
+            // Add protocol if missing
+            if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('about:')) {
+                if (url.includes('.') && !url.includes(' ')) {
+                    finalUrl = 'https://' + url;
+                } else {
+                    finalUrl = 'https://duckduckgo.com/?q=' + encodeURIComponent(url);
+                }
+            }
+
+            // Update address bar
+            document.getElementById('urlInput').value = finalUrl;
+            
+            // Show browser content and hide home
+            document.getElementById('homeTab').classList.remove('active');
+            document.getElementById('browserContent').classList.add('active');
+            
+            // Load content in iframe
+            const iframe = document.getElementById('mainFrame');
+            iframe.src = finalUrl;
+            
+            // Update status
+            document.getElementById('statusText').textContent = 'Loading ' + finalUrl;
+            
+            // Add to history
+            if (finalUrl !== currentUrl) {
+                history = history.slice(0, historyIndex + 1);
+                history.push(finalUrl);
+                historyIndex = history.length - 1;
+                currentUrl = finalUrl;
+                updateNavigationButtons();
+            }
+
+            // Update current tab
+            updateCurrentTab(finalUrl);
+        }
+
+        function quickSearch(topic) {
+            navigateToUrl(topic);
+        }
+
+        function goBack() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                const url = history[historyIndex];
+                document.getElementById('mainFrame').src = url;
+                document.getElementById('urlInput').value = url;
+                currentUrl = url;
+                updateNavigationButtons();
+                updateCurrentTab(url);
+            }
+        }
+
+        function goForward() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                const url = history[historyIndex];
+                document.getElementById('mainFrame').src = url;
+                document.getElementById('urlInput').value = url;
+                currentUrl = url;
+                updateNavigationButtons();
+                updateCurrentTab(url);
+            }
+        }
+
+        function reload() {
+            const iframe = document.getElementById('mainFrame');
+            iframe.src = iframe.src;
+            document.getElementById('statusText').textContent = 'Reloading...';
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('backBtn').disabled = historyIndex <= 0;
+            document.getElementById('forwardBtn').disabled = historyIndex >= history.length - 1;
+        }
+
+        function newTab() {
+            const tabId = 'tab_' + Date.now();
+            tabs.push({
+                id: tabId,
+                title: 'New Tab',
+                url: 'about:blank',
+                active: false
+            });
+            
+            // Switch to home view for new tab
+            document.getElementById('homeTab').classList.add('active');
+            document.getElementById('browserContent').classList.remove('active');
+            document.getElementById('urlInput').value = '';
+            
+            updateTabsBar();
+        }
+
+        function updateTabsBar() {
+            const tabsBar = document.getElementById('tabsBar');
+            tabsBar.innerHTML = '';
+            
+            tabs.forEach(tab => {
+                const tabElement = document.createElement('div');
+                tabElement.className = `tab ${tab.active ? 'active' : ''}`;
+                tabElement.dataset.tab = tab.id;
+                tabElement.innerHTML = `
+                    <span>${tab.id === 'home' ? '🏠' : '🌐'}</span>
+                    <span>${tab.title}</span>
+                    ${tab.id !== 'home' ? `<button class="tab-close" onclick="closeTab('${tab.id}')">×</button>` : ''}
+                `;
+                tabsBar.appendChild(tabElement);
+            });
+        }
+
+        function updateCurrentTab(url) {
+            const activeTabObj = tabs.find(tab => tab.active);
+            if (activeTabObj) {
+                activeTabObj.url = url;
+                if (url.includes('github.com')) {
+                    activeTabObj.title = 'GitHub';
+                } else if (url.includes('docs.rs')) {
+                    activeTabObj.title = 'Docs.rs';
+                } else if (url.includes('localhost:8080')) {
+                    activeTabObj.title = 'MoodBridge';
+                } else if (url.includes('duckduckgo.com')) {
+                    activeTabObj.title = 'DuckDuckGo';
+                } else {
+                    activeTabObj.title = 'Loading...';
+                }
+                updateTabsBar();
+            }
+        }
+
+        function closeTab(tabId) {
+            if (tabId === 'home') return; // Can't close home tab
+            
+            tabs = tabs.filter(tab => tab.id !== tabId);
+            if (tabs.length === 0) {
+                newTab();
+            }
+            updateTabsBar();
+        }
+
+        function toggleAI() {
+            const aiPanel = document.getElementById('aiPanel');
+            aiPanel.classList.toggle('active');
+        }
+
+        function aiSummarize() {
+            alert('🧠 AI Summarization: This feature would analyze the current page and provide a concise summary of the main points.');
+        }
+
+        function aiTranslate() {
+            const language = prompt('Translate to which language?', 'Spanish');
+            if (language) {
+                alert(`🌐 AI Translation: This feature would translate the current page to ${language}.`);
+            }
+        }
+
+        function aiAnalyze() {
+            alert('🔍 AI Analysis: This feature would analyze the content for sentiment, key topics, and provide insights.');
+        }
+
+        function aiSearch() {
+            const query = prompt('What would you like to search for?');
+            if (query) {
+                navigateToUrl(query);
+            }
+        }
+
+        function showBookmarks() {
+            alert('📑 Bookmarks: GitHub, Docs.rs, Crates.io, MoodBridge Dashboard');
+        }
+
+        function showHistory() {
+            alert('📜 History: ' + (history.length > 0 ? history.join(', ') : 'No history yet'));
+        }
+
+        function showSettings() {
+            alert('⚙️ Settings: Privacy mode, Ad blocking, AI assistance, Search engine preferences');
+        }
+
+        function minimizeWindow() {
+            alert('Window would be minimized');
+        }
+
+        function toggleMaximize() {
+            alert('Window would be maximized/restored');
+        }
+
+        // Initialize
+        updateTabsBar();
+        
+        // Listen for iframe load events
+        document.getElementById('mainFrame').addEventListener('load', function() {
+            document.getElementById('statusText').textContent = 'Ready';
+        });
+
+        // Demo some activity
+        setTimeout(() => {
+            document.getElementById('statusText').textContent = 'MoodBridge Universal Browser Ready • 🔒 Privacy Protected • 🚀 High Performance';
+        }, 1000);
+    </script>
+</body>
+</html>

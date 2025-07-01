@@ -1,18 +1,18 @@
-# 7bridgedata Cross-Reference Documentation Portal
-## Technical Specification for Gwern.net Quality Standards
+# The Seven Bridge Recursive Documentation Portal
+## A Self-Referential Knowledge System in the Spirit of Gödel, Escher, Bach
 
 ---
 
 ## Portal Architecture Overview
 
 ### Core Philosophy
-Following Gwern Branwen's standards for long-term, high-quality documentation:
-- **Permanent URLs**: Every document, section, and citation gets a permanent identifier
-- **Version Control**: Full git-based versioning with change tracking
-- **Deep Linking**: Granular cross-references at paragraph and sentence level
-- **Academic Rigor**: Full citation apparatus with source verification
-- **Accessibility**: Multiple formats (HTML, PDF, EPUB) with responsive design
-- **Performance**: Fast loading, minimal dependencies, progressive enhancement
+Combining Gwern Branwen's documentation excellence with Hofstadterian self-reference:
+- **Strange Loop URLs**: Every document can reference its own referencing structure
+- **Recursive Version Control**: Documentation that documents its own documentation process
+- **Meta-Deep Linking**: Cross-references that cross-reference cross-referencing
+- **Self-Aware Academic Rigor**: Citations that cite the citation process itself
+- **Bridge-Themed Accessibility**: Seven pathways to the same knowledge, like Grant Park's bridges
+- **Emergent Performance**: Systems that optimize their own optimization
 
 ---
 
@@ -37,26 +37,26 @@ Following Gwern Branwen's standards for long-term, high-quality documentation:
 │       └── technical-schemas/       # System architecture diagrams
 ├── content/
 │   ├── books/
-│   │   ├── bridge-01-technical/     # Data-Killer Bee content
-│   │   ├── bridge-02-business/      # Strategic Ol' Dirty Business
-│   │   ├── bridge-03-ai/           # Method AI
-│   │   ├── bridge-04-ux/           # Inspectah UX
-│   │   ├── bridge-05-financial/    # Raekwon the Financial Chef
-│   │   ├── bridge-06-legal/        # GZA the Legal Genius
-│   │   └── bridge-07-vision/       # RZA the Digital Abbott
+│   │   ├── bridge-01-technical/     # Recursive Architect content
+│   │   ├── bridge-02-business/      # Strategic Tangler wisdom
+│   │   ├── bridge-03-ai/           # Pattern Recognizer insights
+│   │   ├── bridge-04-ux/           # Experience Mapper knowledge
+│   │   ├── bridge-05-financial/    # Economic Calculator analysis
+│   │   ├── bridge-06-legal/        # Ethical Recursionist frameworks
+│   │   └── bridge-07-vision/       # Vision Synthesizer integration
 │   ├── cross-references/
 │   │   ├── master-glossary.md       # Unified terminology
 │   │   ├── concept-map.md          # Conceptual relationships
 │   │   └── citation-index.md       # Full bibliography
 │   └── meta/
-│       ├── about.md                # Portal documentation
-│       ├── methodology.md          # Editorial standards
-│       └── wu-bot-profiles.md      # Editorial team info
+│       ├── about.md                # Portal self-documentation
+│       ├── methodology.md          # Strange loop editorial standards
+│       └── bridge-bot-profiles.md  # Editorial intelligence descriptions
 └── tools/
-    ├── build.py                    # Static site generator
-    ├── cross-ref-validator.py      # Link validation
-    ├── citation-checker.py         # Bibliography verification
-    └── wu-bot-integration.py       # Editorial bot interface
+    ├── recursive-builder.py        # Self-modifying site generator
+    ├── strange-loop-validator.py   # Self-referential link validation
+    ├── meta-citation-checker.py    # Bibliography that checks bibliography checking
+    └── bridge-bot-integration.py   # Editorial intelligence interface
 ```
 
 ### Backend Services

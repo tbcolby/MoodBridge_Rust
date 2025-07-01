@@ -114,6 +114,10 @@ pub async fn create_app(pool: Pool<Sqlite>) -> Router {
         .route("/api/ai/voice", post(handlers::ai_voice))
         .route("/api/data/diff", get(handlers::diff_data))
         .route("/api/data/commit", post(handlers::commit_changes))
+        
+        // Merge browser application routes
+        .merge(moodbridge_rust::browser::create_browser_app())
+        
         .nest_service("/", ServeDir::new("frontend/dist"))
         .fallback(handlers::handle_fallback)
         .with_state(pool)

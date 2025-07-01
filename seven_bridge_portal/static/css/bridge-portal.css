@@ -1,0 +1,373 @@
+/* Seven Bridge Portal - Gwern.net Style with LVMH Typography */
+
+/* LVMH-inspired premium typography */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Milwaukee/Grant Park Color Palette */
+  --lake-michigan-blue: #1e3a8a;
+  --wisconsin-gold: #f59e0b;
+  --stone-bridge-gray: #6b7280;
+  --ravine-green: #059669;
+  --limestone-white: #fefefe;
+  --charcoal-text: #1f2937;
+  --mist-gray: #f3f4f6;
+  --bridge-shadow: rgba(0, 0, 0, 0.1);
+  
+  /* LVMH Premium Typography Scale */
+  --font-luxury-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-modern-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  /* Gwern-inspired sizing */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+}
+
+/* Base styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 18px; /* Gwern.net standard */
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-luxury-serif);
+  line-height: 1.6;
+  color: var(--charcoal-text);
+  background: var(--limestone-white);
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-luxury-serif);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: var(--lake-michigan-blue);
+}
+
+h1 {
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  margin-bottom: 2rem;
+  border-bottom: 3px solid var(--wisconsin-gold);
+  padding-bottom: 0.5rem;
+}
+
+h2 {
+  font-size: var(--text-3xl);
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+h3 {
+  font-size: var(--text-2xl);
+  margin-top: 1.5rem;
+}
+
+h4 {
+  font-size: var(--text-xl);
+  font-weight: 500;
+}
+
+/* Main layout container */
+.bridge-portal {
+  max-width: 80ch;
+  margin: 0 auto;
+  padding: 2rem;
+  position: relative;
+}
+
+/* Seven Bridge Navigation */
+.bridge-navigation {
+  position: fixed;
+  left: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px var(--bridge-shadow);
+}
+
+.bridge-link {
+  display: block;
+  width: 3rem;
+  height: 0.5rem;
+  background: var(--stone-bridge-gray);
+  margin: 1rem 0;
+  border-radius: 0.25rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  position: relative;
+  cursor: pointer;
+}
+
+.bridge-link:hover {
+  background: var(--wisconsin-gold);
+  transform: scale(1.1);
+}
+
+.bridge-link.active {
+  background: var(--lake-michigan-blue);
+  transform: scale(1.2);
+}
+
+.bridge-link::after {
+  content: attr(data-bridge);
+  position: absolute;
+  left: 4rem;
+  top: -0.25rem;
+  background: var(--charcoal-text);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-family: var(--font-modern-sans);
+  font-size: var(--text-xs);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+}
+
+.bridge-link:hover::after {
+  opacity: 1;
+}
+
+/* Content styling */
+.book-content {
+  margin-top: 2rem;
+}
+
+.chapter {
+  margin-bottom: 3rem;
+}
+
+.chapter-title {
+  border-left: 4px solid var(--wisconsin-gold);
+  padding-left: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Paragraphs and text */
+p {
+  margin-bottom: 1.5rem;
+  text-align: justify;
+  hyphens: auto;
+}
+
+/* Links */
+a {
+  color: var(--lake-michigan-blue);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+
+a:hover {
+  border-bottom-color: var(--wisconsin-gold);
+}
+
+/* Blockquotes */
+blockquote {
+  border-left: 4px solid var(--ravine-green);
+  padding-left: 2rem;
+  margin: 2rem 0;
+  font-style: italic;
+  color: var(--stone-bridge-gray);
+  background: var(--mist-gray);
+  padding: 1.5rem 2rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+/* Code blocks */
+pre, code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+pre {
+  background: var(--mist-gray);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 2rem 0;
+  border: 1px solid var(--stone-bridge-gray);
+}
+
+code {
+  background: var(--mist-gray);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(107, 114, 128, 0.3);
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-family: var(--font-modern-sans);
+}
+
+th, td {
+  border: 1px solid var(--stone-bridge-gray);
+  padding: 0.75rem;
+  text-align: left;
+}
+
+th {
+  background: var(--lake-michigan-blue);
+  color: white;
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background: var(--mist-gray);
+}
+
+/* Citations and footnotes */
+.citation {
+  font-family: var(--font-modern-sans);
+  font-size: var(--text-sm);
+  color: var(--stone-bridge-gray);
+  border: 1px solid var(--stone-bridge-gray);
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  background: var(--mist-gray);
+}
+
+.footnote {
+  font-size: var(--text-sm);
+  color: var(--stone-bridge-gray);
+  border-top: 1px solid var(--stone-bridge-gray);
+  padding-top: 1rem;
+  margin-top: 2rem;
+}
+
+/* Bridge-bot verification indicators */
+.verification-matrix {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.verification-item {
+  background: var(--mist-gray);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border-left: 4px solid var(--ravine-green);
+  font-family: var(--font-modern-sans);
+}
+
+.verification-item.verified {
+  border-left-color: var(--ravine-green);
+}
+
+.verification-item.pending {
+  border-left-color: var(--wisconsin-gold);
+}
+
+.verification-item.failed {
+  border-left-color: #dc2626;
+}
+
+/* Interactive elements */
+.cross-reference {
+  background: linear-gradient(135deg, var(--wisconsin-gold), var(--lake-michigan-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cross-reference:hover {
+  text-decoration: underline;
+}
+
+/* LaTeX math styling */
+.math {
+  font-family: 'Latin Modern Math', 'STIX Two Math', serif;
+}
+
+.math-display {
+  text-align: center;
+  margin: 2rem 0;
+  padding: 1rem;
+  background: var(--mist-gray);
+  border-radius: 0.5rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .bridge-navigation {
+    position: static;
+    transform: none;
+    margin-bottom: 2rem;
+    left: auto;
+    top: auto;
+  }
+  
+  .bridge-portal {
+    padding: 1rem;
+  }
+  
+  html {
+    font-size: 16px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .bridge-navigation {
+    display: none;
+  }
+  
+  .bridge-portal {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --limestone-white: #1a1a1a;
+    --charcoal-text: #e5e5e5;
+    --mist-gray: #2a2a2a;
+    --bridge-shadow: rgba(255, 255, 255, 0.1);
+  }
+  
+  .bridge-navigation {
+    background: rgba(42, 42, 42, 0.95);
+  }
+}

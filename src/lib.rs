@@ -17,4 +17,4 @@ pub mod powerpoint_bots;
 pub mod research_bots;
 pub mod youtube;
 pub mod wu_bot;
-pub mod wizard;
+pub mod browser;

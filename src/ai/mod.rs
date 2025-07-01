@@ -19,6 +19,8 @@ pub enum InsightType {
     DocumentAnalysis,
     TimelineCorrelation,
     ComplianceViolation,
+    Recommendation,
+    RiskAssessment,
 }
 
 /// AI-generated insight

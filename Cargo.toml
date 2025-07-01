@@ -3,43 +3,116 @@ name = "moodbridge_rust"
 version = "0.1.0"
 edition = "2021"
 authors = ["Legal Technology Solutions <contact@example.com>"]
-description = "High-performance legal dashboard in Rust with SQLite and Axum"
+description = "Enterprise-grade legal dashboard with AI analytics and compliance"
+license = "MIT"
+repository = "https://github.com/example/moodbridge_rust"
+documentation = "https://docs.rs/moodbridge_rust"
+keywords = ["legal", "analytics", "compliance", "dashboard", "ai"]
+categories = ["web-programming", "database"]
+readme = "README.md"
 
 [lib]
 name = "moodbridge_rust"
 path = "src/lib.rs"
 
 [dependencies]
-axum = "0.6"
+# Web Framework & HTTP
+axum = { version = "0.7", features = ["multipart", "ws"] }
+tower = { version = "0.4", features = ["util", "timeout", "limit"] }
+tower-http = { version = "0.5", features = ["cors", "trace", "fs", "add-extension", "set-header", "limit", "timeout"] }
+hyper = { version = "1.0", features = ["full"] }
+
+# Database & Persistence
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "sqlite", "chrono", "uuid", "migrate", "json"] }
+sea-query = "0.30"
+sea-query-binder = { version = "0.5", features = ["sqlx-sqlite"] }
+
+# Async Runtime
 tokio = { version = "1.0", features = ["full"] }
-sqlx = { version = "0.6", features = ["runtime-tokio-rustls", "sqlite", "chrono"] }
-serde = { version = "1.0", features = ["derive"] }
+futures = "0.3"
+async-trait = "0.1"
+
+# Serialization & Data
+serde = { version = "1.0", features = ["derive", "rc"] }
 serde_json = "1.0"
 chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }
+
+# Security & Authentication
+jsonwebtoken = "9.0"
+argon2 = "0.5"
+rand = "0.8"
+ring = "0.17"
+aes-gcm = "0.10"
+
+# Validation & Input Sanitization
+validator = { version = "0.18", features = ["derive"] }
+ammonia = "4.0"
+regex = "1.0"
+
+# Error Handling & Logging
 thiserror = "1.0"
 anyhow = "1.0"
 tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-tower-http = { version = "0.4", features = ["cors", "fs"] }
-reqwest = { version = "0.11", features = ["json", "multipart"] }
-futures = "0.3"
-async-trait = "0.1"
-uuid = { version = "1.0", features = ["v4", "serde"] }
-tokio-util = { version = "0.7", features = ["io"] }
-multipart = "0.18"
-sha2 = "0.10"
-hex = "0.4"
-mime_guess = "2.0"
-base64 = "0.21"
-# WARP COMMAND system dependencies
-lettre = { version = "0.11", default-features = false, features = ["builder", "smtp-transport", "tokio1-native-tls", "pool"] }
-cron = "0.12"
-regex = "1.10"
-clap = { version = "4.0", features = ["derive"] }
-tokio-cron-scheduler = "0.9"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json", "chrono"] }
+tracing-appender = "0.2"
+sentry = { version = "0.32", features = ["tracing"] }
 log = "0.4"
 env_logger = "0.10"
-rand = "0.8"
+
+# HTTP Client & External APIs
+reqwest = { version = "0.11", features = ["json", "rustls-tls", "gzip", "brotli", "stream"] }
+multipart = "0.18"
+hex = "0.4"
+
+# Configuration & Environment
+config = "0.14"
+dotenvy = "0.15"
+
+# Monitoring & Metrics
+prometheus = "0.13"
+metrics = "0.23"
+metrics-prometheus = "0.7"
+
+# Rate Limiting & Security
+tower_governor = "0.3"
+headers = "0.3"
+
+# Email and Communication
+lettre = { version = "0.11", default-features = false, features = ["builder", "smtp-transport", "tokio1-native-tls", "pool"] }
+handlebars = "4.0"
+
+# PDF Generation
+wkhtmltopdf = "0.3"
+
+# Excel/CSV Export
+csv = "1.0"
+rust_xlsxwriter = "0.64"
+
+# Payment Processing
+async-stripe = "1.0.0-alpha.2"
+
+# File Upload and Storage
+aws-sdk-s3 = "1.0"
+
+# Utility libraries
+tokio-util = { version = "0.7", features = ["io"] }
+sha2 = "0.10"
+mime_guess = "2.0"
+base64 = "0.21"
+flate2 = "1.0"
+
+# WARP COMMAND system dependencies
+cron = "0.12"
+clap = { version = "4.0", features = ["derive"] }
+tokio-cron-scheduler = "0.9"
 urlencoding = "2.1"
-# Wizard dependencies (already covered by existing dependencies)
-# uuid, chrono, serde, serde_json, async-trait, anyhow are already included
+
+# Testing (dev dependencies)
+[dev-dependencies]
+tokio-test = "0.4"
+tempfile = "3.0"
+fake = { version = "2.8", features = ["chrono", "uuid"] }
+proptest = "1.0"
+insta = "1.0"
+criterion = { version = "0.5", features = ["html_reports"] }

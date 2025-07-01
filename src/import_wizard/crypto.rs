@@ -7,7 +7,7 @@ use std::path::Path;
 use crate::error::AppError;
 use crate::import_wizard::classifier::SensitivityLevel;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum EncryptionStandard {
     AES256GCM,      // For HighlyConfidential/TopSecret
     AES128GCM,      // For Confidential
